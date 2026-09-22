@@ -28,6 +28,7 @@ BOOKHUB/
 │   ├── cart.html
 │   ├── checkout.html
 │   └── orders.html
+│   └── successorder.html
 │
 ├── admin/
 │   ├── login.html
@@ -35,7 +36,7 @@ BOOKHUB/
 │   ├── customers.html
 │   ├── categories.html
 │   ├── products.html
-│   ├── imports.html
+│   ├── import.html
 │   ├── prices.html
 │   ├── orders.html
 │   └── inventory.html
@@ -46,33 +47,15 @@ BOOKHUB/
 │   └── admin.css
 │
 ├── js/
-│   ├── main.js
-│   ├── auth.js
-│   ├── storage.js
-│   ├── products.js
-│   ├── product-detail.js
-│   ├── cart.js
-│   ├── checkout.js
-│   ├── orders.js
-│   └── admin/
-│       ├── dashboard.js
-│       ├── customers.js
-│       ├── categories.js
-│       ├── products.js
-│       ├── imports.js
-│       ├── prices.js
-│       ├── orders.js
-│       └── inventory.js
-│
-├── data/
-│   ├── books.js
+│   ├── admin.js
 │   ├── categories.js
-│   └── users.js
+│   └── cart.js
+│   └── checkout.js
+│   └── order.js
+│   └── products.js
+│   └── register.js
 │
 ├── images/
-│   ├── logo/
-│   ├── books/
-│   └── banners/
 │
 └── README.md
 ```
@@ -117,29 +100,6 @@ Dữ liệu demo được xử lý bằng JavaScript và lưu trong trình duy�
 localStorage
 ```
 
-Cách này phù hợp với mục đích **demo/prototype frontend** của dự án. Dữ liệu `localStorage` chỉ tồn tại trên trình duyệt và thiết bị đang sử dụng.
-
-## Cách chạy dự án
-
-### Cách 1: Mở trực tiếp
-
-Mở file:
-
-```text
-index.html
-```
-
-bằng trình duyệt.
-
-### Cách 2: Sử dụng VS Code
-
-Có thể sử dụng extension **Live Server** trong Visual Studio Code.
-
-1. Mở thư mục `BOOKHUB` bằng VS Code.
-2. Mở file `index.html`.
-3. Chọn **Open with Live Server**.
-4. Website sẽ được chạy trên trình duyệt.
-
 ## Lưu ý
 
 Đây là dự án frontend mô phỏng hệ thống quản lý cửa hàng sách.
@@ -156,7 +116,5 @@ Dự án nhằm xây dựng một website mô phỏng quy trình hoạt động 
 
 - **Khách hàng:** tìm kiếm, xem sách, thêm vào giỏ hàng và đặt hàng.
 - **Quản trị viên:** quản lý khách hàng, sách, danh mục, giá, nhập hàng, đơn hàng và tồn kho.
-
----
 
 **BOOKHUB — Bookstore Management System**
