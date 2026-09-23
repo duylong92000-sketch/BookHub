@@ -3,18 +3,192 @@
 
     <head> 
         <meta charset="UTF-8">
-        <title></title>
-        <link rel="" href="">
-    </head>
+        <title>SGU - BookHub</title>
+        <style>
+            /* Reset lề trang để header phủ kín mép màn hình */
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
 
-    <body>
-        <header>
-            
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            /* Bố cục header tràn toàn bộ bề ngang */
+            header.top {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px 40px;
+                background-color: #F5EFEB;
+                border-bottom: 1px solid #E6DEC9;
+                font-family: sans-serif;
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+            }
+
+            /* Cụm bên trái: Gom Logo và Danh mục lại cạnh nhau */
+            .left-section {
+                display: flex;
+                align-items: center;
+                gap: 25px;
+            }
+
+            .logo-section {
+                display: flex;
+                align-items: center;
+                gap: 10px;                
+            }
+
+            .logo-section h1 {
+                font-size: 1.5em;
+                line-height: 1.1;
+                margin: 0;
+                color: #4A3525;
+            }
+
+            .logo-section p {
+                font-size: 0.85em;
+                color: #795548;
+                margin: 0;
+            }
+
+            /* Khối nút Danh mục */
+            .category-wrapper {
+                position: relative;
+            }
+
+            .category-btn {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                background-color: #ffffff;
+                border: 1px solid #D7CCC8;
+                padding: 8px 14px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 14px;
+                font-weight: bold;
+                color: #4A3525;
+                transition: all 0.1s ease;
+            }
+
+            .category-btn:hover {
+                border-color: #5D4037;
+                background-color: #FAF6F0;
+            }
+
+            /* Bảng chọn thể loại đổ xuống khi hover */
+            .category-dropdown {
+                display: none;
+                position: absolute;
+                top: calc(100% + 5px);
+                left: 0;
+                background-color: #ffffff;
+                min-width: 220px;
+                border-radius: 6px;
+                box-shadow: 0 4px 15px rgba(74, 53, 37, 0.12);
+                padding: 8px 0;
+                list-style: none;
+            }
+
+            .category-dropdown li a {
+                display: block;
+                padding: 10px 16px;
+                color: #4A3525;
+                text-decoration: none;
+                font-size: 14px;
+            }
+
+            .category-dropdown li a:hover {
+                background-color: #F7F4EE;
+                color: #000;
+            }
+
+            .category-wrapper:hover .category-dropdown {
+                display: block;
+            }
+
+            /* Cụm bên phải: Các nút chức năng */
+            .action-section {
+                display: flex;
+                align-items: center;
+                gap: 25px;
+            }
+
+            .action-section a {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                text-decoration: none;
+                color: #4A3525;
+                font-size: 14px;
+                font-weight: 500;
+            }
+
+            .action-section a:hover {
+                color: #8D6E63;
+            }
+        </style>
+
+        <header class="top">
+            <!-- Logo + Danh mục sách -->
+            <div class="left-section">
+                <div class="logo-section">
+                    <img src="images/logoweb.png" alt="Logo" width="50" height="50">
+                    <div>
+                        <h1>BOOKHUB</h1>
+                        <p>Chắp cánh tri thức</p>
+                    </div>
+                </div>
+
+                <!-- Danh mục thể loại-->
+                <div class="category-wrapper">
+                    <button class="category-btn" type="button">
+                        <img src="images/category.png" alt="Danh mục" width="20" height="20">
+                        <span>Danh mục</span>
+                    </button>
+
+                    <!-- Bảng danh mục-->
+                    <ul class="category-dropdown">
+                        <li><a href="#">Sách Trong Nước</a></li>
+                        <li><a href="#">Sách Ngoại Văn</a></li>
+                        <li><a href="#">Kinh Tế & Quản Trị</a></li>
+                        <li><a href="#">Văn Học Nghệ Thuật</a></li>
+                        <li><a href="#">Kỹ Năng Sống</a></li>
+                        <li><a href="#">Sách Thiếu Nhi</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Cụm phải: Chức năng -->
+            <div class="action-section">
+                <a href="customer/cart.html" target="_blank" title="Xem giỏ hàng">
+                    <img src="images/cart.png" alt="Giỏ hàng" width="20" height="20">
+                    Giỏ hàng
+                </a>
+
+                <a href="customer/login.html" target="_blank" title="Đăng nhập">
+                    <img src="images/login.png" alt="Đăng nhập" width="20" height="20">
+                    Đăng nhập
+                </a>
+
+                <a href="customer/register.html" target="_blank" title="Đăng ký tài khoản">
+                    <img src="images/signup.png" alt="Đăng ký tài khoản" width="20" height="20">
+                    Đăng ký
+                </a>
+
+                <a href="admin/login.html" target="_blank" title="Đi đến khu vực admin">
+                    <img src="images/admin.png" alt="Admin" width="20" height="20">
+                    Admin
+                </a>
+            </div>
         </header>
-
-        <nav>
-
-        </nav>
 
         <main>
 
