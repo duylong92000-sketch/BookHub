@@ -1,12 +1,31 @@
-/* Admin dashboard */
+/* ==================== DATA ==================== */
 
-function getData(key) {
-    return JSON.parse(localStorage.getItem(key)) || [];
+const getData = key => JSON.parse(localStorage.getItem(key)) || [];
+const setData = (key, data) =>
+    localStorage.setItem(key, JSON.stringify(data));
+
+const money = v => Number(v || 0).toLocaleString("vi-VN") + " VNĐ";
+
+const statusText = {
+    pending: "Chờ xử lý",
+    processing: "Đang xử lý",
+    delivered: "Đã giao",
+    cancelled: "Đã hủy"
+};
+
+const getOrderStatus = s => statusText[s] || s;
+
+function generateId(prefix, data, field) {
+    const max = data.reduce((m, x) => {
+        const n = parseInt(String(x[field] || "").replace(prefix, ""));
+        return !isNaN(n) && n > m ? n : m;
+    }, 0);
+
+    return prefix + String(max + 1).padStart(3, "0");
 }
 
-function money(value) {
-    return Number(value || 0).toLocaleString("vi-VN") + " VNĐ";
-}
+
+/* ==================== DASHBOARD ==================== */
 
 function renderDashboard() {
     const products = getData("products");
@@ -15,205 +34,98 @@ function renderDashboard() {
     const orders = getData("orders");
 
     const revenue = orders
-        .filter(order => order.orderStatus !== "cancelled")
-        .reduce((sum, order) => sum + Number(order.totalAmount || 0), 0);
-
-    const pending = orders.filter(
-        order => order.orderStatus === "pending"
-    ).length;
+        .filter(o => o.orderStatus !== "cancelled")
+        .reduce((s, o) => s + Number(o.totalAmount || 0), 0);
 
     document.getElementById("productCount").textContent = products.length;
     document.getElementById("categoryCount").textContent = categories.length;
     document.getElementById("customerCount").textContent = customers.length;
     document.getElementById("orderCount").textContent = orders.length;
     document.getElementById("revenue").textContent = money(revenue);
-    document.getElementById("pendingCount").textContent = pending;
+    document.getElementById("pendingCount").textContent =
+        orders.filter(o => o.orderStatus === "pending").length;
 
     renderRecentOrders(orders);
 }
 
 function renderRecentOrders(orders) {
     const tbody = document.getElementById("recentOrders");
+    if (!tbody) return;
 
-    if (!tbody) {
-        return;
-    }
+    const customers = getData("customers");
 
     const recent = [...orders]
         .sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate))
         .slice(0, 5);
 
-    if (recent.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="5" class="empty">
-                    Chưa có đơn hàng
-                </td>
-            </tr>
-        `;
-        return;
-    }
-
-    const customers = getData("customers");
-
-    tbody.innerHTML = recent.map(order => {
-        const customer = customers.find(
-            item => item.customerId === order.customerId
-        );
+    tbody.innerHTML = recent.length ? recent.map(o => {
+        const c = customers.find(x => x.customerId === o.customerId);
 
         return `
-            <tr>
-                <td>${order.orderId}</td>
-                <td>${customer ? customer.fullName : order.customerId}</td>
-                <td>${order.orderDate}</td>
-                <td>${money(order.totalAmount)}</td>
-                <td>
-                    <span class="badge badge-${order.orderStatus}">
-                        ${getOrderStatus(order.orderStatus)}
-                    </span>
-                </td>
-            </tr>
-        `;
-    }).join("");
+        <tr>
+            <td>${o.orderId}</td>
+            <td>${c?.fullName || o.customerId}</td>
+            <td>${o.orderDate}</td>
+            <td>${money(o.totalAmount)}</td>
+            <td><span class="badge badge-${o.orderStatus}">
+                ${getOrderStatus(o.orderStatus)}
+            </span></td>
+        </tr>`;
+    }).join("") : `
+        <tr><td colspan="5" class="empty">Chưa có đơn hàng</td></tr>
+    `;
 }
 
-function getOrderStatus(status) {
-    const data = {
-        pending: "Chờ xử lý",
-        processing: "Đang xử lý",
-        delivered: "Đã giao",
-        cancelled: "Đã hủy"
-    };
 
-    return data[status] || status;
-}
-
-document.addEventListener("DOMContentLoaded", renderDashboard);
-
-/* Admin data */
-
-function getData(key) {
-    return JSON.parse(localStorage.getItem(key)) || [];
-}
-
-function setData(key, data) {
-    localStorage.setItem(key, JSON.stringify(data));
-}
-
-function money(value) {
-    return Number(value || 0).toLocaleString("vi-VN") + " VNĐ";
-}
-
-function generateId(prefix, data, field) {
-    let max = 0;
-
-    data.forEach(item => {
-        const number = parseInt(
-            String(item[field] || "").replace(prefix, "")
-        );
-
-        if (!isNaN(number) && number > max) {
-            max = number;
-        }
-    });
-
-    return prefix + String(max + 1).padStart(3, "0");
-}
-
-/* Category */
+/* ==================== CATEGORY ==================== */
 
 function renderCategories() {
     const tbody = document.getElementById("categoryList");
-
-    if (!tbody) {
-        return;
-    }
+    if (!tbody) return;
 
     const categories = getData("categories");
     const products = getData("products");
-    const keyword = (
-        document.getElementById("categorySearch")?.value || ""
-    ).toLowerCase();
+    const key = document.getElementById("categorySearch")?.value.toLowerCase() || "";
 
-    const result = categories.filter(category =>
-        category.categoryId.toLowerCase().includes(keyword) ||
-        category.categoryName.toLowerCase().includes(keyword)
+    const result = categories.filter(c =>
+        c.categoryId.toLowerCase().includes(key) ||
+        c.categoryName.toLowerCase().includes(key)
     );
 
-    if (result.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="5" class="empty">
-                    Không có danh mục
-                </td>
-            </tr>
-        `;
-        return;
-    }
-
-    tbody.innerHTML = result.map(category => {
-        const count = products.filter(
-            product => product.categoryId === category.categoryId
-        ).length;
+    tbody.innerHTML = result.length ? result.map(c => {
+        const count = products.filter(p => p.categoryId === c.categoryId).length;
 
         return `
-            <tr>
-                <td>${category.categoryId}</td>
-                <td>${category.categoryName}</td>
-                <td>${count}</td>
-                <td>
-                    <span class="badge badge-${category.status}">
-                        ${category.status === "active" ? "Hoạt động" : "Ẩn"}
-                    </span>
-                </td>
-                <td>
-                    <div class="actions">
-                        <button class="btn btn-small"
-                            onclick="editCategory('${category.categoryId}')">
-                            Sửa
-                        </button>
-
-                        <button class="btn btn-small btn-danger"
-                            onclick="deleteCategory('${category.categoryId}')">
-                            Xóa
-                        </button>
-                    </div>
-                </td>
-            </tr>
-        `;
-    }).join("");
+        <tr>
+            <td>${c.categoryId}</td>
+            <td>${c.categoryName}</td>
+            <td>${count}</td>
+            <td><span class="badge badge-${c.status}">
+                ${c.status === "active" ? "Hoạt động" : "Ẩn"}
+            </span></td>
+            <td>
+                <button class="btn btn-small"
+                    onclick="editCategory('${c.categoryId}')">Sửa</button>
+                <button class="btn btn-small btn-danger"
+                    onclick="deleteCategory('${c.categoryId}')">Xóa</button>
+            </td>
+        </tr>`;
+    }).join("") : `
+        <tr><td colspan="5" class="empty">Không có danh mục</td></tr>
+    `;
 }
 
 function openCategoryForm(id = "") {
     const modal = document.getElementById("categoryModal");
+    if (!modal) return;
 
-    if (!modal) {
-        return;
-    }
+    const c = getData("categories").find(x => x.categoryId === id);
 
-    document.getElementById("categoryId").value = "";
-    document.getElementById("categoryName").value = "";
-    document.getElementById("categoryStatus").value = "active";
+    document.getElementById("categoryId").value = c?.categoryId || "";
+    document.getElementById("categoryName").value = c?.categoryName || "";
+    document.getElementById("categoryStatus").value = c?.status || "active";
     document.getElementById("categoryModalTitle").textContent =
-        "Thêm danh mục";
-
-    if (id) {
-        const categories = getData("categories");
-
-        const category = categories.find(
-            item => item.categoryId === id
-        );
-
-        if (!category) {
-            return;
-        }
-
-        document.getElementById("categoryId").value = category.categoryId;
-        document.getElementById("categoryName").value = category.categoryName;
-        document.getElementById("categoryStatus").value = category.status;
-        document.getElementById("categoryModalTitle").textContent =
-            "Sửa danh mục";
-    }
+        c ? "Sửa danh mục" : "Thêm danh mục";
 
     modal.classList.add("show");
 }
@@ -222,206 +134,118 @@ function closeCategoryForm() {
     document.getElementById("categoryModal")?.classList.remove("show");
 }
 
-function saveCategory(event) {
-    event.preventDefault();
+function saveCategory(e) {
+    e.preventDefault();
 
-    const categories = getData("categories");
-
+    const data = getData("categories");
     const id = document.getElementById("categoryId").value;
-
-    const name = document
-        .getElementById("categoryName")
-        .value.trim();
-
+    const name = document.getElementById("categoryName").value.trim();
     const status = document.getElementById("categoryStatus").value;
 
-    if (!name) {
-        alert("Vui lòng nhập tên danh mục");
-        return;
-    }
+    if (!name) return alert("Vui lòng nhập tên danh mục");
 
     if (id) {
-        const category = categories.find(
-            item => item.categoryId === id
-        );
-
-        if (category) {
-            category.categoryName = name;
-            category.status = status;
-        }
+        const c = data.find(x => x.categoryId === id);
+        if (c) Object.assign(c, { categoryName: name, status });
     } else {
-        categories.push({
-            categoryId: generateId(
-                "DM",
-                categories,
-                "categoryId"
-            ),
+        data.push({
+            categoryId: generateId("DM", data, "categoryId"),
             categoryName: name,
-            status: status
+            status
         });
     }
 
-    setData("categories", categories);
-
+    setData("categories", data);
     closeCategoryForm();
     renderCategories();
 }
 
-function editCategory(id) {
-    openCategoryForm(id);
-}
+const editCategory = id => openCategoryForm(id);
 
 function deleteCategory(id) {
-    const products = getData("products");
+    if (getData("products").some(p => p.categoryId === id))
+        return alert("Không thể xóa danh mục đang có sản phẩm");
 
-    const used = products.some(
-        product => product.categoryId === id
+    if (!confirm("Bạn có chắc muốn xóa danh mục này?")) return;
+
+    setData("categories",
+        getData("categories").filter(c => c.categoryId !== id)
     );
-
-    if (used) {
-        alert("Không thể xóa danh mục đang có sản phẩm");
-        return;
-    }
-
-    if (!confirm("Bạn có chắc muốn xóa danh mục này?")) {
-        return;
-    }
-
-    const categories = getData("categories").filter(
-        category => category.categoryId !== id
-    );
-
-    setData("categories", categories);
 
     renderCategories();
 }
 
-/* Product */
+
+/* ==================== PRODUCT ==================== */
 
 function renderProducts() {
     const tbody = document.getElementById("productList");
-
-    if (!tbody) {
-        return;
-    }
+    if (!tbody) return;
 
     const products = getData("products");
     const categories = getData("categories");
+    const key = document.getElementById("productSearch")?.value.toLowerCase() || "";
 
-    const keyword = (
-        document.getElementById("productSearch")?.value || ""
-    ).toLowerCase();
-
-    const result = products.filter(product =>
-        product.productId.toLowerCase().includes(keyword) ||
-        product.productName.toLowerCase().includes(keyword) ||
-        product.author.toLowerCase().includes(keyword)
+    const result = products.filter(p =>
+        p.productId.toLowerCase().includes(key) ||
+        p.productName.toLowerCase().includes(key) ||
+        (p.author || "").toLowerCase().includes(key)
     );
 
-    if (result.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="8" class="empty">
-                    Không có sản phẩm
-                </td>
-            </tr>
-        `;
-        return;
-    }
-
-    tbody.innerHTML = result.map(product => {
-        const category = categories.find(
-            item => item.categoryId === product.categoryId
-        );
+    tbody.innerHTML = result.length ? result.map(p => {
+        const c = categories.find(x => x.categoryId === p.categoryId);
 
         return `
-            <tr>
-                <td>${product.productId}</td>
-                <td>${product.productName}</td>
-                <td>${category?.categoryName || ""}</td>
-                <td>${product.author || ""}</td>
-                <td>${money(product.importPrice)}</td>
-                <td>${money(product.salePrice)}</td>
-                <td>${product.stockQuantity || 0}</td>
-                <td>
-                    <div class="actions">
-                        <button class="btn btn-small"
-                            onclick="editProduct('${product.productId}')">
-                            Sửa
-                        </button>
-
-                        <button class="btn btn-small btn-danger"
-                            onclick="deleteProduct('${product.productId}')">
-                            Xóa
-                        </button>
-                    </div>
-                </td>
-            </tr>
-        `;
-    }).join("");
+        <tr>
+            <td>${p.productId}</td>
+            <td>${p.productName}</td>
+            <td>${c?.categoryName || ""}</td>
+            <td>${p.author || ""}</td>
+            <td>${money(p.importPrice)}</td>
+            <td>${money(p.salePrice)}</td>
+            <td>${p.stockQuantity || 0}</td>
+            <td>
+                <button class="btn btn-small"
+                    onclick="editProduct('${p.productId}')">Sửa</button>
+                <button class="btn btn-small btn-danger"
+                    onclick="deleteProduct('${p.productId}')">Xóa</button>
+            </td>
+        </tr>`;
+    }).join("") : `
+        <tr><td colspan="8" class="empty">Không có sản phẩm</td></tr>
+    `;
 }
 
 function openProductForm(id = "") {
     const modal = document.getElementById("productModal");
-
-    if (!modal) {
-        return;
-    }
+    if (!modal) return;
 
     const categories = getData("categories");
+    const p = getData("products").find(x => x.productId === id);
 
-    const select = document.getElementById("productCategory");
+    const fields = {
+        productId: p?.productId || "",
+        productName: p?.productName || "",
+        productAuthor: p?.author || "",
+        productPublisher: p?.publisher || "",
+        productCategory: p?.categoryId || categories[0]?.categoryId || "",
+        productImportPrice: p?.importPrice || 0,
+        productProfitRate: p?.profitRate || 30,
+        productStock: p?.stockQuantity || 0,
+        productDescription: p?.description || ""
+    };
 
-    select.innerHTML = categories.map(category => `
-        <option value="${category.categoryId}">
-            ${category.categoryName}
-        </option>
-    `).join("");
+    document.getElementById("productCategory").innerHTML =
+        categories.map(c =>
+            `<option value="${c.categoryId}">${c.categoryName}</option>`
+        ).join("");
 
-    document.getElementById("productId").value = "";
-    document.getElementById("productName").value = "";
-    document.getElementById("productAuthor").value = "";
-    document.getElementById("productPublisher").value = "";
-    document.getElementById("productCategory").value =
-        categories[0]?.categoryId || "";
-    document.getElementById("productImportPrice").value = 0;
-    document.getElementById("productProfitRate").value = 30;
-    document.getElementById("productStock").value = 0;
-    document.getElementById("productDescription").value = "";
+    Object.entries(fields).forEach(([id, value]) =>
+        document.getElementById(id).value = value
+    );
 
     document.getElementById("productModalTitle").textContent =
-        "Thêm sản phẩm";
-
-    if (id) {
-        const products = getData("products");
-
-        const product = products.find(
-            item => item.productId === id
-        );
-
-        if (!product) {
-            return;
-        }
-
-        document.getElementById("productId").value = product.productId;
-        document.getElementById("productName").value = product.productName;
-        document.getElementById("productAuthor").value = product.author || "";
-        document.getElementById("productPublisher").value =
-            product.publisher || "";
-        document.getElementById("productCategory").value =
-            product.categoryId;
-        document.getElementById("productImportPrice").value =
-            product.importPrice || 0;
-        document.getElementById("productProfitRate").value =
-            product.profitRate || 30;
-        document.getElementById("productStock").value =
-            product.stockQuantity || 0;
-        document.getElementById("productDescription").value =
-            product.description || "";
-
-        document.getElementById("productModalTitle").textContent =
-            "Sửa sản phẩm";
-    }
+        p ? "Sửa sản phẩm" : "Thêm sản phẩm";
 
     modal.classList.add("show");
 }
@@ -430,300 +254,164 @@ function closeProductForm() {
     document.getElementById("productModal")?.classList.remove("show");
 }
 
-function saveProduct(event) {
-    event.preventDefault();
+function saveProduct(e) {
+    e.preventDefault();
 
     const products = getData("products");
-
     const id = document.getElementById("productId").value;
 
-    const product = {
-        productId: id || generateId(
-            "SP",
-            products,
-            "productId"
-        ),
-
-        productName: document
-            .getElementById("productName")
-            .value.trim(),
-
+    const p = {
+        productId: id || generateId("SP", products, "productId"),
+        productName: document.getElementById("productName").value.trim(),
         categoryId: document.getElementById("productCategory").value,
-
-        author: document
-            .getElementById("productAuthor")
-            .value.trim(),
-
-        publisher: document
-            .getElementById("productPublisher")
-            .value.trim(),
-
-        importPrice: Number(
-            document.getElementById("productImportPrice").value
-        ),
-
-        profitRate: Number(
-            document.getElementById("productProfitRate").value
-        ),
-
-        stockQuantity: Number(
-            document.getElementById("productStock").value
-        ),
-
-        description: document
-            .getElementById("productDescription")
-            .value.trim(),
-
+        author: document.getElementById("productAuthor").value.trim(),
+        publisher: document.getElementById("productPublisher").value.trim(),
+        importPrice: Number(document.getElementById("productImportPrice").value),
+        profitRate: Number(document.getElementById("productProfitRate").value),
+        stockQuantity: Number(document.getElementById("productStock").value),
+        description: document.getElementById("productDescription").value.trim(),
         status: "active"
     };
 
-    product.salePrice = Math.round(
-        product.importPrice +
-        product.importPrice * product.profitRate / 100
+    if (!p.productName)
+        return alert("Vui lòng nhập tên sản phẩm");
+
+    p.salePrice = Math.round(
+        p.importPrice * (1 + p.profitRate / 100)
     );
 
-    if (!product.productName) {
-        alert("Vui lòng nhập tên sản phẩm");
-        return;
-    }
+    const index = products.findIndex(x => x.productId === id);
 
-    if (id) {
-        const index = products.findIndex(
-            item => item.productId === id
-        );
-
-        if (index !== -1) {
-            product.image = products[index].image || "";
-            products[index] = {
-                ...products[index],
-                ...product
-            };
-        }
-    } else {
-        product.image = "";
-
-        products.push(product);
-    }
+    if (index >= 0)
+        products[index] = { ...products[index], ...p };
+    else
+        products.push({ ...p, image: "" });
 
     setData("products", products);
-
     closeProductForm();
     renderProducts();
 }
 
-function editProduct(id) {
-    openProductForm(id);
-}
+const editProduct = id => openProductForm(id);
 
 function deleteProduct(id) {
-    if (!confirm("Bạn có chắc muốn xóa sản phẩm này?")) {
-        return;
-    }
+    if (!confirm("Bạn có chắc muốn xóa sản phẩm này?")) return;
 
-    const products = getData("products").filter(
-        product => product.productId !== id
+    setData("products",
+        getData("products").filter(p => p.productId !== id)
     );
-
-    setData("products", products);
 
     renderProducts();
 }
 
-/* Customers */
+
+/* ==================== CUSTOMER ==================== */
 
 function renderCustomers() {
     const tbody = document.getElementById("customerList");
+    if (!tbody) return;
 
-    if (!tbody) {
-        return;
-    }
+    const key = document.getElementById("customerSearch")?.value.toLowerCase() || "";
 
-    const customers = getData("customers");
-
-    const keyword = (
-        document.getElementById("customerSearch")?.value || ""
-    ).toLowerCase();
-
-    const result = customers.filter(customer =>
-        customer.customerId.toLowerCase().includes(keyword) ||
-        customer.username.toLowerCase().includes(keyword) ||
-        customer.fullName.toLowerCase().includes(keyword) ||
-        customer.email.toLowerCase().includes(keyword)
+    const result = getData("customers").filter(c =>
+        c.customerId.toLowerCase().includes(key) ||
+        c.username.toLowerCase().includes(key) ||
+        c.fullName.toLowerCase().includes(key) ||
+        c.email.toLowerCase().includes(key)
     );
 
-    if (!result.length) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="7" class="empty">
-                    Không có khách hàng
-                </td>
-            </tr>
-        `;
-        return;
-    }
-
-    tbody.innerHTML = result.map(customer => `
+    tbody.innerHTML = result.length ? result.map(c => `
         <tr>
-            <td>${customer.customerId}</td>
-            <td>${customer.username}</td>
-            <td>${customer.fullName}</td>
-            <td>${customer.email}</td>
-            <td>${customer.phone}</td>
-            <td>${customer.address}</td>
-            <td>
-                <span class="badge badge-${customer.status}">
-                    ${customer.status === "active" ? "Hoạt động" : "Khóa"}
-                </span>
-            </td>
+            <td>${c.customerId}</td>
+            <td>${c.username}</td>
+            <td>${c.fullName}</td>
+            <td>${c.email}</td>
+            <td>${c.phone}</td>
+            <td>${c.address}</td>
+            <td><span class="badge badge-${c.status}">
+                ${c.status === "active" ? "Hoạt động" : "Khóa"}
+            </span></td>
         </tr>
-    `).join("");
+    `).join("") : `
+        <tr><td colspan="7" class="empty">Không có khách hàng</td></tr>
+    `;
 }
 
-/* Orders */
+
+/* ==================== ORDER ==================== */
 
 function renderOrders() {
     const tbody = document.getElementById("orderList");
-
-    if (!tbody) {
-        return;
-    }
+    if (!tbody) return;
 
     const orders = getData("orders");
     const customers = getData("customers");
 
-    if (!orders.length) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="7" class="empty">
-                    Chưa có đơn hàng
-                </td>
-            </tr>
-        `;
-        return;
-    }
-
-    tbody.innerHTML = orders.map(order => {
-        const customer = customers.find(
-            item => item.customerId === order.customerId
-        );
+    tbody.innerHTML = orders.length ? orders.map(o => {
+        const c = customers.find(x => x.customerId === o.customerId);
 
         return `
-            <tr>
-                <td>${order.orderId}</td>
-                <td>${customer?.fullName || order.customerId}</td>
-                <td>${order.orderDate}</td>
-                <td>${order.items?.length || 0}</td>
-                <td>${money(order.totalAmount)}</td>
-                <td>
-                    <span class="badge badge-${order.orderStatus}">
-                        ${getOrderStatus(order.orderStatus)}
-                    </span>
-                </td>
-                <td>
-                    <select
-                        onchange="changeOrderStatus('${order.orderId}', this.value)">
-                        <option value="pending"
-                            ${order.orderStatus === "pending" ? "selected" : ""}>
-                            Chờ xử lý
-                        </option>
-
-                        <option value="processing"
-                            ${order.orderStatus === "processing" ? "selected" : ""}>
-                            Đang xử lý
-                        </option>
-
-                        <option value="delivered"
-                            ${order.orderStatus === "delivered" ? "selected" : ""}>
-                            Đã giao
-                        </option>
-
-                        <option value="cancelled"
-                            ${order.orderStatus === "cancelled" ? "selected" : ""}>
-                            Đã hủy
-                        </option>
-                    </select>
-                </td>
-            </tr>
-        `;
-    }).join("");
-}
-
-function getOrderStatus(status) {
-    const data = {
-        pending: "Chờ xử lý",
-        processing: "Đang xử lý",
-        delivered: "Đã giao",
-        cancelled: "Đã hủy"
-    };
-
-    return data[status] || status;
+        <tr>
+            <td>${o.orderId}</td>
+            <td>${c?.fullName || o.customerId}</td>
+            <td>${o.orderDate}</td>
+            <td>${o.items?.length || 0}</td>
+            <td>${money(o.totalAmount)}</td>
+            <td><span class="badge badge-${o.orderStatus}">
+                ${getOrderStatus(o.orderStatus)}
+            </span></td>
+            <td>
+                <select onchange="changeOrderStatus('${o.orderId}',this.value)">
+                    ${Object.entries(statusText).map(([v, t]) =>
+                        `<option value="${v}" ${o.orderStatus === v ? "selected" : ""}>${t}</option>`
+                    ).join("")}
+                </select>
+            </td>
+        </tr>`;
+    }).join("") : `
+        <tr><td colspan="7" class="empty">Chưa có đơn hàng</td></tr>
+    `;
 }
 
 function changeOrderStatus(id, status) {
     const orders = getData("orders");
+    const order = orders.find(o => o.orderId === id);
 
-    const order = orders.find(
-        item => item.orderId === id
-    );
-
-    if (order) {
-        order.orderStatus = status;
-    }
+    if (order) order.orderStatus = status;
 
     setData("orders", orders);
-
     renderOrders();
 }
 
-/* Import */
+
+/* ==================== IMPORT ==================== */
 
 function renderImports() {
     const tbody = document.getElementById("importList");
+    if (!tbody) return;
 
-    if (!tbody) {
-        return;
-    }
+    const data = getData("imports");
 
-    const imports = getData("imports");
-
-    if (!imports.length) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="6" class="empty">
-                    Chưa có phiếu nhập
-                </td>
-            </tr>
-        `;
-        return;
-    }
-
-    tbody.innerHTML = imports.map(item => `
+    tbody.innerHTML = data.length ? data.map(i => `
         <tr>
-            <td>${item.importId}</td>
-            <td>${item.importDate}</td>
-            <td>${item.items?.length || 0}</td>
-            <td>${money(item.totalAmount)}</td>
-            <td>
-                <span class="badge badge-completed">
-                    Hoàn tất
-                </span>
-            </td>
+            <td>${i.importId}</td>
+            <td>${i.importDate}</td>
+            <td>${i.items?.length || 0}</td>
+            <td>${money(i.totalAmount)}</td>
+            <td><span class="badge badge-completed">Hoàn tất</span></td>
             <td>
                 <button class="btn btn-small btn-danger"
-                    onclick="deleteImport('${item.importId}')">
-                    Xóa
-                </button>
+                    onclick="deleteImport('${i.importId}')">Xóa</button>
             </td>
         </tr>
-    `).join("");
+    `).join("") : `
+        <tr><td colspan="6" class="empty">Chưa có phiếu nhập</td></tr>
+    `;
 }
 
 function openImportForm() {
     const modal = document.getElementById("importModal");
-
-    if (!modal) {
-        return;
-    }
+    if (!modal) return;
 
     const products = getData("products");
 
@@ -731,11 +419,9 @@ function openImportForm() {
         new Date().toISOString().split("T")[0];
 
     document.getElementById("importProduct").innerHTML =
-        products.map(product => `
-            <option value="${product.productId}">
-                ${product.productName}
-            </option>
-        `).join("");
+        products.map(p =>
+            `<option value="${p.productId}">${p.productName}</option>`
+        ).join("");
 
     document.getElementById("importQuantity").value = 1;
     document.getElementById("importPrice").value = 0;
@@ -747,260 +433,156 @@ function closeImportForm() {
     document.getElementById("importModal")?.classList.remove("show");
 }
 
-function saveImport(event) {
-    event.preventDefault();
+function saveImport(e) {
+    e.preventDefault();
 
     const products = getData("products");
     const imports = getData("imports");
 
-    const productId = document.getElementById("importProduct").value;
-
-    const quantity = Number(
-        document.getElementById("importQuantity").value
+    const product = products.find(p =>
+        p.productId === document.getElementById("importProduct").value
     );
 
-    const importPrice = Number(
-        document.getElementById("importPrice").value
-    );
+    const quantity = Number(document.getElementById("importQuantity").value);
+    const price = Number(document.getElementById("importPrice").value);
+    const date = document.getElementById("importDate").value;
 
-    const importDate =
-        document.getElementById("importDate").value;
+    if (!product || quantity <= 0 || price <= 0)
+        return alert("Dữ liệu phiếu nhập không hợp lệ");
 
-    const product = products.find(
-        item => item.productId === productId
-    );
-
-    if (!product || quantity <= 0 || importPrice <= 0) {
-        alert("Dữ liệu phiếu nhập không hợp lệ");
-        return;
-    }
-
-    product.stockQuantity =
-        Number(product.stockQuantity || 0) + quantity;
-
-    product.importPrice = importPrice;
-
+    product.stockQuantity = Number(product.stockQuantity || 0) + quantity;
+    product.importPrice = price;
     product.salePrice = Math.round(
-        importPrice +
-        importPrice * Number(product.profitRate || 30) / 100
+        price * (1 + Number(product.profitRate || 30) / 100)
     );
 
     const item = {
-        productId: productId,
-        quantity: quantity,
-        importPrice: importPrice,
-        subtotal: quantity * importPrice
+        productId: product.productId,
+        quantity,
+        importPrice: price,
+        subtotal: quantity * price
     };
 
-    const receipt = {
-        importId: generateId(
-            "PN",
-            imports,
-            "importId"
-        ),
-
-        importDate: importDate,
-
+    imports.push({
+        importId: generateId("PN", imports, "importId"),
+        importDate: date,
         items: [item],
-
         totalAmount: item.subtotal,
-
         status: "completed"
-    };
-
-    imports.push(receipt);
+    });
 
     setData("products", products);
     setData("imports", imports);
 
     closeImportForm();
-
     renderImports();
 }
 
 function deleteImport(id) {
-    if (!confirm("Xóa phiếu nhập này?")) {
-        return;
-    }
+    if (!confirm("Xóa phiếu nhập này?")) return;
 
-    const imports = getData("imports").filter(
-        item => item.importId !== id
+    setData("imports",
+        getData("imports").filter(i => i.importId !== id)
     );
-
-    setData("imports", imports);
 
     renderImports();
 }
 
-/* Inventory */
+
+/* ==================== INVENTORY ==================== */
 
 function renderInventory() {
     const tbody = document.getElementById("inventoryList");
-
-    if (!tbody) {
-        return;
-    }
+    if (!tbody) return;
 
     const products = getData("products");
     const categories = getData("categories");
 
-    const filter =
-        document.getElementById("inventoryFilter")?.value || "all";
+    const filter = document.getElementById("inventoryFilter")?.value || "all";
+    const key = document.getElementById("inventorySearch")?.value.toLowerCase() || "";
 
-    const keyword = (
-        document.getElementById("inventorySearch")?.value || ""
-    ).toLowerCase();
-
-    let result = products.filter(product =>
-        product.productId.toLowerCase().includes(keyword) ||
-        product.productName.toLowerCase().includes(keyword)
+    let result = products.filter(p =>
+        p.productId.toLowerCase().includes(key) ||
+        p.productName.toLowerCase().includes(key)
     );
 
-    if (filter === "low") {
-        result = result.filter(
-            product => Number(product.stockQuantity) > 0 &&
-            Number(product.stockQuantity) <= 5
-        );
-    }
+    if (filter === "low")
+        result = result.filter(p => p.stockQuantity > 0 && p.stockQuantity <= 5);
 
-    if (filter === "out") {
-        result = result.filter(
-            product => Number(product.stockQuantity) === 0
-        );
-    }
+    if (filter === "out")
+        result = result.filter(p => Number(p.stockQuantity) === 0);
 
-    if (filter === "available") {
-        result = result.filter(
-            product => Number(product.stockQuantity) > 0
-        );
-    }
+    if (filter === "available")
+        result = result.filter(p => Number(p.stockQuantity) > 0);
 
-    if (!result.length) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="7" class="empty">
-                    Không có dữ liệu tồn kho
-                </td>
-            </tr>
-        `;
-        return;
-    }
-
-    tbody.innerHTML = result.map(product => {
-        const category = categories.find(
-            item => item.categoryId === product.categoryId
-        );
-
-        const stock = Number(product.stockQuantity || 0);
-
-        const inventoryValue =
-            stock * Number(product.importPrice || 0);
-
-        let stockClass = "";
-
-        if (stock === 0) {
-            stockClass = "out-stock";
-        } else if (stock <= 5) {
-            stockClass = "low-stock";
-        }
+    tbody.innerHTML = result.length ? result.map(p => {
+        const stock = Number(p.stockQuantity || 0);
+        const c = categories.find(x => x.categoryId === p.categoryId);
 
         return `
-            <tr>
-                <td>${product.productId}</td>
-                <td>${product.productName}</td>
-                <td>${category?.categoryName || ""}</td>
-                <td class="${stockClass}">
-                    ${stock}
-                </td>
-                <td>${money(product.importPrice)}</td>
-                <td>${money(inventoryValue)}</td>
-                <td>
-                    ${
-                        stock === 0
-                        ? `<span class="badge badge-cancelled">Hết hàng</span>`
-                        : stock <= 5
-                        ? `<span class="badge badge-pending">Sắp hết</span>`
-                        : `<span class="badge badge-active">Còn hàng</span>`
-                    }
-                </td>
-            </tr>
-        `;
-    }).join("");
+        <tr>
+            <td>${p.productId}</td>
+            <td>${p.productName}</td>
+            <td>${c?.categoryName || ""}</td>
+            <td>${stock}</td>
+            <td>${money(p.importPrice)}</td>
+            <td>${money(stock * Number(p.importPrice || 0))}</td>
+            <td>
+                <span class="badge ${
+                    stock === 0 ? "badge-cancelled" :
+                    stock <= 5 ? "badge-pending" : "badge-active"
+                }">
+                    ${stock === 0 ? "Hết hàng" :
+                      stock <= 5 ? "Sắp hết" : "Còn hàng"}
+                </span>
+            </td>
+        </tr>`;
+    }).join("") : `
+        <tr><td colspan="7" class="empty">Không có dữ liệu tồn kho</td></tr>
+    `;
 }
 
-/* Prices */
+
+/* ==================== PRICE ==================== */
 
 function renderPrices() {
     const tbody = document.getElementById("priceList");
+    if (!tbody) return;
 
-    if (!tbody) {
-        return;
-    }
+    const key = document.getElementById("priceSearch")?.value.toLowerCase() || "";
 
-    const products = getData("products");
-
-    const keyword = (
-        document.getElementById("priceSearch")?.value || ""
-    ).toLowerCase();
-
-    const result = products.filter(product =>
-        product.productId.toLowerCase().includes(keyword) ||
-        product.productName.toLowerCase().includes(keyword)
+    const result = getData("products").filter(p =>
+        p.productId.toLowerCase().includes(key) ||
+        p.productName.toLowerCase().includes(key)
     );
 
-    if (!result.length) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="6" class="empty">
-                    Không có sản phẩm
-                </td>
-            </tr>
-        `;
-        return;
-    }
-
-    tbody.innerHTML = result.map(product => `
+    tbody.innerHTML = result.length ? result.map(p => `
         <tr>
-            <td>${product.productId}</td>
-            <td>${product.productName}</td>
-            <td>${money(product.importPrice)}</td>
-            <td>${product.profitRate || 0}%</td>
-            <td>${money(product.salePrice)}</td>
+            <td>${p.productId}</td>
+            <td>${p.productName}</td>
+            <td>${money(p.importPrice)}</td>
+            <td>${p.profitRate || 0}%</td>
+            <td>${money(p.salePrice)}</td>
             <td>
                 <button class="btn btn-small"
-                    onclick="openPriceForm('${product.productId}')">
-                    Sửa
-                </button>
+                    onclick="openPriceForm('${p.productId}')">Sửa</button>
             </td>
         </tr>
-    `).join("");
+    `).join("") : `
+        <tr><td colspan="6" class="empty">Không có sản phẩm</td></tr>
+    `;
 }
 
 function openPriceForm(id) {
-    const products = getData("products");
+    const p = getData("products").find(x => x.productId === id);
+    if (!p) return;
 
-    const product = products.find(
-        item => item.productId === id
-    );
-
-    if (!product) {
-        return;
-    }
-
-    document.getElementById("priceProductId").value =
-        product.productId;
-
-    document.getElementById("priceProductName").value =
-        product.productName;
-
-    document.getElementById("priceImport").value =
-        product.importPrice;
-
-    document.getElementById("priceProfit").value =
-        product.profitRate || 30;
+    document.getElementById("priceProductId").value = p.productId;
+    document.getElementById("priceProductName").value = p.productName;
+    document.getElementById("priceImport").value = p.importPrice;
+    document.getElementById("priceProfit").value = p.profitRate || 30;
 
     calculatePrice();
-
     document.getElementById("priceModal").classList.add("show");
 }
 
@@ -1009,102 +591,60 @@ function closePriceForm() {
 }
 
 function calculatePrice() {
-    const importPrice =
-        Number(document.getElementById("priceImport")?.value || 0);
+    const price = Number(document.getElementById("priceImport")?.value || 0);
+    const profit = Number(document.getElementById("priceProfit")?.value || 0);
 
-    const profit =
-        Number(document.getElementById("priceProfit")?.value || 0);
-
-    const salePrice =
-        importPrice + importPrice * profit / 100;
-
-    const result =
-        document.getElementById("calculatedPrice");
-
-    if (result) {
-        result.textContent = money(Math.round(salePrice));
-    }
+    document.getElementById("calculatedPrice").textContent =
+        money(Math.round(price * (1 + profit / 100)));
 }
 
-function savePrice(event) {
-    event.preventDefault();
+function savePrice(e) {
+    e.preventDefault();
 
     const products = getData("products");
-
-    const id =
-        document.getElementById("priceProductId").value;
-
-    const importPrice =
-        Number(document.getElementById("priceImport").value);
-
-    const profitRate =
-        Number(document.getElementById("priceProfit").value);
-
-    const product = products.find(
-        item => item.productId === id
+    const p = products.find(x =>
+        x.productId === document.getElementById("priceProductId").value
     );
 
-    if (!product) {
-        return;
-    }
+    if (!p) return;
 
-    product.importPrice = importPrice;
-
-    product.profitRate = profitRate;
-
-    product.salePrice = Math.round(
-        importPrice +
-        importPrice * profitRate / 100
-    );
+    p.importPrice = Number(document.getElementById("priceImport").value);
+    p.profitRate = Number(document.getElementById("priceProfit").value);
+    p.salePrice = Math.round(p.importPrice * (1 + p.profitRate / 100));
 
     setData("products", products);
-
     closePriceForm();
-
     renderPrices();
 }
 
-/* Events */
+
+/* ==================== EVENTS ==================== */
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    renderProducts();
-    renderCategories();
-    renderCustomers();
-    renderOrders();
-    renderImports();
-    renderInventory();
-    renderPrices();
+    [
+        renderDashboard,
+        renderProducts,
+        renderCategories,
+        renderCustomers,
+        renderOrders,
+        renderImports,
+        renderInventory,
+        renderPrices
+    ].forEach(fn => fn());
 
-    document
-        .getElementById("categorySearch")
-        ?.addEventListener("input", renderCategories);
+    const events = {
+        categorySearch: ["input", renderCategories],
+        productSearch: ["input", renderProducts],
+        customerSearch: ["input", renderCustomers],
+        inventorySearch: ["input", renderInventory],
+        inventoryFilter: ["change", renderInventory],
+        priceSearch: ["input", renderPrices],
+        priceImport: ["input", calculatePrice],
+        priceProfit: ["input", calculatePrice]
+    };
 
-    document
-        .getElementById("productSearch")
-        ?.addEventListener("input", renderProducts);
-
-    document
-        .getElementById("customerSearch")
-        ?.addEventListener("input", renderCustomers);
-
-    document
-        .getElementById("inventorySearch")
-        ?.addEventListener("input", renderInventory);
-
-    document
-        .getElementById("inventoryFilter")
-        ?.addEventListener("change", renderInventory);
-
-    document
-        .getElementById("priceSearch")
-        ?.addEventListener("input", renderPrices);
-
-    document
-        .getElementById("priceImport")
-        ?.addEventListener("input", calculatePrice);
-
-    document
-        .getElementById("priceProfit")
-        ?.addEventListener("input", calculatePrice);
+    Object.entries(events).forEach(([id, [event, fn]]) =>
+        document.getElementById(id)?.addEventListener(event, fn)
+    );
 });
