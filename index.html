@@ -114,6 +114,55 @@
                 display: block;
             }
 
+            /* Khối bao bọc thanh tìm kiếm */
+            .search-wrapper {
+                display: flex;
+                align-items: center;
+                background-color: #ffffff;
+                border: 1px solid #D7CCC8;
+                border-radius: 6px;
+                overflow: hidden; /* Đảm bảo các thành phần con không bị tràn ra ngoài góc bo */
+                width: 550px; /* Độ rộng của thanh tìm kiếm, có thể điều chỉnh tùy ý */
+                transition: border-color 0.2s ease;
+            }
+
+            /* Hiệu ứng khi người dùng click vào ô nhập liệu */
+            .search-wrapper:focus-within {
+                border-color: #5D4037; /* Đổi màu viền đậm hơn giống hiệu ứng hover của Danh mục */
+                box-shadow: 0 0 0 2px rgba(93, 64, 55, 0.1); /* Thêm quầng sáng nhẹ */
+            }
+
+            /* Ô nhập chữ (Input) */
+            .search-input {
+                flex: 1; /* Cho phép ô input chiếm hết không gian trống còn lại */
+                border: none; /* Bỏ viền mặc định của input vì wrapper đã có viền */
+                padding: 8px 14px;
+                outline: none; /* Bỏ viền đen viền xanh mặc định khi click của trình duyệt */
+                font-size: 14px;
+                color: #4A3525;
+                background-color: transparent;
+            }
+
+            .search-input::placeholder {
+                color: #A1887F; /* Màu chữ mờ cho placeholder */
+            }
+
+            /* Nút kính lúp */
+            .search-btn {
+                background-color: transparent;
+                border: none;
+                padding: 8px 12px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background-color 0.1s ease;
+            }
+
+            .search-btn:hover {
+                background-color: #FAF6F0; /* Màu nền khi hover giống với nút Danh mục */
+            }
+
             /* Cụm bên phải: Các nút chức năng */
             .action-section {
                 display: flex;
@@ -164,6 +213,14 @@
                         <li><a href="#">Sách Thiếu Nhi</a></li>
                     </ul>
                 </div>
+
+                <!-- THANH TÌM KIẾM MỚI THÊM VÀO -->
+                <div class="search-wrapper">
+                    <input type="text" id="searchInput" placeholder="Tìm kiếm sách, tác giả..." class="search-input">
+                    <button type="button" id="btnSearch" class="search-btn">
+                        <img src="images/icon-search.png" alt="Tìm kiếm" width="20" height="20">
+                    </button>
+        </div>
             </div>
 
             <!-- Cụm phải: Chức năng -->
