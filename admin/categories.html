@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>BookHub - Danh mục</title>
+
+    <link rel="stylesheet" href="../css/admin.css">
+
+</head>
+
+<body>
+
+<header class="admin-header">
+
+    <div class="admin-logo">
+        <h2>BookHub Admin</h2>
+    </div>
+
+    <nav class="admin-nav">
+
+        <a href="dashboard.html">Dashboard</a>
+        <a href="product.html">Sản phẩm</a>
+        <a href="categories.html" class="active">Danh mục</a>
+        <a href="customers.html">Khách hàng</a>
+        <a href="orders.html">Đơn hàng</a>
+        <a href="import.html">Nhập hàng</a>
+        <a href="inventory.html">Tồn kho</a>
+        <a href="prices.html">Giá bán</a>
+
+    </nav>
+
+    <div class="admin-user">
+        <span>Admin</span>
+        <a href="login.html" class="logout-link">Đăng xuất</a>
+    </div>
+
+</header>
+
+<main class="admin-content">
+
+    <section class="page-heading">
+
+        <div>
+            <h1>Danh mục</h1>
+            <p>Quản lý danh mục sách</p>
+        </div>
+
+        <button
+            class="btn"
+            onclick="openCategoryForm()">
+
+            + Thêm danh mục
+
+        </button>
+
+    </section>
+
+    <section class="panel">
+
+        <div class="toolbar">
+
+            <input
+                id="categorySearch"
+                class="search-input"
+                type="text"
+                placeholder="Tìm danh mục...">
+
+        </div>
+
+        <div class="table-wrap">
+
+            <table class="data-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Mã danh mục</th>
+
+                        <th>Tên danh mục</th>
+
+                        <th>Số sản phẩm</th>
+
+                        <th>Trạng thái</th>
+
+                        <th>Thao tác</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="categoryList"></tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+
+<div class="modal" id="categoryModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2 id="categoryModalTitle">
+                Thêm danh mục
+            </h2>
+
+            <button
+                class="close-btn"
+                onclick="closeCategoryForm()">
+
+                ×
+
+            </button>
+
+        </div>
+
+        <form onsubmit="saveCategory(event)">
+
+            <input
+                type="hidden"
+                id="categoryId">
+
+            <div class="form-group">
+
+                <label>Tên danh mục</label>
+
+                <input
+                    type="text"
+                    id="categoryName"
+                    required>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Trạng thái</label>
+
+                <select id="categoryStatus">
+
+                    <option value="active">
+                        Hoạt động
+                    </option>
+
+                    <option value="inactive">
+                        Ẩn
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="form-actions">
+
+                <button
+                    type="button"
+                    class="btn"
+                    onclick="closeCategoryForm()">
+
+                    Hủy
+
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+
+                    Lưu
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script src="../js/admin.js"></script>
+
+</body>
+
+</html>

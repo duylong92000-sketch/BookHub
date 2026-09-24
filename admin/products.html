@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>BookHub - Sản phẩm</title>
+
+    <link rel="stylesheet" href="../css/admin.css">
+
+</head>
+
+<body>
+
+<header class="admin-header">
+
+    <div class="admin-logo">
+        <h2>BookHub Admin</h2>
+    </div>
+
+    <nav class="admin-nav">
+
+        <a href="dashboard.html">Dashboard</a>
+        <a href="product.html" class="active">Sản phẩm</a>
+        <a href="categories.html">Danh mục</a>
+        <a href="customers.html">Khách hàng</a>
+        <a href="orders.html">Đơn hàng</a>
+        <a href="import.html">Nhập hàng</a>
+        <a href="inventory.html">Tồn kho</a>
+        <a href="prices.html">Giá bán</a>
+
+    </nav>
+
+    <div class="admin-user">
+        <span>Admin</span>
+        <a href="login.html" class="logout-link">Đăng xuất</a>
+    </div>
+
+</header>
+
+<main class="admin-content">
+
+    <section class="page-heading">
+
+        <div>
+            <h1>Sản phẩm</h1>
+            <p>Quản lý sách trong cửa hàng</p>
+        </div>
+
+        <button
+            class="btn"
+            onclick="openProductForm()">
+
+            + Thêm sản phẩm
+
+        </button>
+
+    </section>
+
+    <section class="panel">
+
+        <div class="toolbar">
+
+            <input
+                id="productSearch"
+                class="search-input"
+                type="text"
+                placeholder="Tìm sản phẩm...">
+
+        </div>
+
+        <div class="table-wrap">
+
+            <table class="data-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Mã SP</th>
+                        <th>Tên sách</th>
+                        <th>Danh mục</th>
+                        <th>Tác giả</th>
+                        <th>Giá nhập</th>
+                        <th>Giá bán</th>
+                        <th>Tồn kho</th>
+                        <th>Thao tác</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="productList"></tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+
+<div class="modal" id="productModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2 id="productModalTitle">
+                Thêm sản phẩm
+            </h2>
+
+            <button
+                class="close-btn"
+                onclick="closeProductForm()">
+
+                ×
+
+            </button>
+
+        </div>
+
+        <form onsubmit="saveProduct(event)">
+
+            <input type="hidden" id="productId">
+
+            <div class="form-grid">
+
+                <div class="form-group full">
+
+                    <label>Tên sản phẩm</label>
+
+                    <input
+                        id="productName"
+                        type="text"
+                        required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Tác giả</label>
+
+                    <input id="productAuthor">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Nhà xuất bản</label>
+
+                    <input id="productPublisher">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Danh mục</label>
+
+                    <select id="productCategory"></select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Giá nhập</label>
+
+                    <input
+                        id="productImportPrice"
+                        type="number"
+                        min="0"
+                        required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Tỷ lệ lợi nhuận (%)</label>
+
+                    <input
+                        id="productProfitRate"
+                        type="number"
+                        min="0"
+                        value="30">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Số lượng tồn</label>
+
+                    <input
+                        id="productStock"
+                        type="number"
+                        min="0"
+                        value="0">
+
+                </div>
+
+                <div class="form-group full">
+
+                    <label>Mô tả</label>
+
+                    <textarea
+                        id="productDescription"></textarea>
+
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+
+                <button
+                    type="button"
+                    class="btn"
+                    onclick="closeProductForm()">
+
+                    Hủy
+
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+
+                    Lưu
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script src="../js/admin.js"></script>
+
+</body>
+
+</html>

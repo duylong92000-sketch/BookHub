@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>BookHub - Tồn kho</title>
+
+    <link rel="stylesheet" href="../css/admin.css">
+
+</head>
+
+<body>
+
+<header class="admin-header">
+
+    <div class="admin-logo">
+        <h2>BookHub Admin</h2>
+    </div>
+
+    <nav class="admin-nav">
+
+        <a href="dashboard.html">Dashboard</a>
+        <a href="product.html">Sản phẩm</a>
+        <a href="categories.html">Danh mục</a>
+        <a href="customers.html">Khách hàng</a>
+        <a href="orders.html">Đơn hàng</a>
+        <a href="import.html">Nhập hàng</a>
+        <a href="inventory.html" class="active">Tồn kho</a>
+        <a href="prices.html">Giá bán</a>
+
+    </nav>
+
+    <div class="admin-user">
+        <span>Admin</span>
+        <a href="login.html" class="logout-link">Đăng xuất</a>
+    </div>
+
+</header>
+
+<main class="admin-content">
+
+    <section class="page-heading">
+
+        <div>
+            <h1>Tồn kho</h1>
+            <p>Theo dõi số lượng sách trong kho</p>
+        </div>
+
+    </section>
+
+    <section class="panel">
+
+        <div class="toolbar">
+
+            <input
+                id="inventorySearch"
+                class="search-input"
+                type="text"
+                placeholder="Tìm sản phẩm...">
+
+            <select id="inventoryFilter">
+
+                <option value="all">
+                    Tất cả
+                </option>
+
+                <option value="available">
+                    Còn hàng
+                </option>
+
+                <option value="low">
+                    Sắp hết
+                </option>
+
+                <option value="out">
+                    Hết hàng
+                </option>
+
+            </select>
+
+        </div>
+
+        <div class="table-wrap">
+
+            <table class="data-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Mã SP</th>
+                        <th>Sản phẩm</th>
+                        <th>Danh mục</th>
+                        <th>Số lượng</th>
+                        <th>Giá nhập</th>
+                        <th>Giá trị tồn</th>
+                        <th>Trạng thái</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="inventoryList"></tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+
+<script src="../js/admin.js"></script>
+
+</body>
+
+</html>

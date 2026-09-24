@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>BookHub - Nhập hàng</title>
+
+    <link rel="stylesheet" href="../css/admin.css">
+
+</head>
+
+<body>
+
+<header class="admin-header">
+
+    <div class="admin-logo">
+        <h2>BookHub Admin</h2>
+    </div>
+
+    <nav class="admin-nav">
+
+        <a href="dashboard.html">Dashboard</a>
+        <a href="product.html">Sản phẩm</a>
+        <a href="categories.html">Danh mục</a>
+        <a href="customers.html">Khách hàng</a>
+        <a href="orders.html">Đơn hàng</a>
+        <a href="import.html" class="active">Nhập hàng</a>
+        <a href="inventory.html">Tồn kho</a>
+        <a href="prices.html">Giá bán</a>
+
+    </nav>
+
+    <div class="admin-user">
+        <span>Admin</span>
+        <a href="login.html" class="logout-link">Đăng xuất</a>
+    </div>
+
+</header>
+
+<main class="admin-content">
+
+    <section class="page-heading">
+
+        <div>
+            <h1>Nhập hàng</h1>
+            <p>Quản lý phiếu nhập sách</p>
+        </div>
+
+        <button
+            class="btn"
+            onclick="openImportForm()">
+
+            + Tạo phiếu nhập
+
+        </button>
+
+    </section>
+
+    <section class="panel">
+
+        <div class="table-wrap">
+
+            <table class="data-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Mã phiếu</th>
+                        <th>Ngày nhập</th>
+                        <th>Số mặt hàng</th>
+                        <th>Tổng tiền</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="importList"></tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+
+<div class="modal" id="importModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2>Tạo phiếu nhập</h2>
+
+            <button
+                class="close-btn"
+                onclick="closeImportForm()">
+
+                ×
+
+            </button>
+
+        </div>
+
+        <form onsubmit="saveImport(event)">
+
+            <div class="form-group">
+
+                <label>Ngày nhập</label>
+
+                <input
+                    type="date"
+                    id="importDate"
+                    required>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Sản phẩm</label>
+
+                <select
+                    id="importProduct"
+                    required>
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Số lượng</label>
+
+                <input
+                    type="number"
+                    id="importQuantity"
+                    min="1"
+                    required>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Giá nhập</label>
+
+                <input
+                    type="number"
+                    id="importPrice"
+                    min="1"
+                    required>
+
+            </div>
+
+            <div class="form-actions">
+
+                <button
+                    type="button"
+                    class="btn"
+                    onclick="closeImportForm()">
+
+                    Hủy
+
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+
+                    Lưu phiếu
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script src="../js/admin.js"></script>
+
+</body>
+
+</html>
