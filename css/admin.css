@@ -33,13 +33,42 @@ body {
 /*HEADER */
 
 .admin-header {
+    height: 70px;
+    background-color: #3f5f45;
+    color: white;
+
     display: flex;
-
-    justify-content: space-between;
-
     align-items: center;
+    padding: 0 30px;
 
-    margin-bottom: 25px;
+    gap: 40px;
+}
+
+.logo h2 {
+    margin: 0;
+    white-space: nowrap;
+}
+
+.admin-nav {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.admin-nav a {
+    color: white;
+    text-decoration: none;
+    padding: 25px 12px;
+    font-size: 14px;
+}
+
+.admin-nav a:hover {
+    background-color: #324c38;
+}
+
+.admin-nav a.active {
+    background-color: #324c38;
+    font-weight: bold;
 }
 
 
