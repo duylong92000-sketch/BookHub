@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Kho hàng - BookHub</title>
+
+    <link rel="stylesheet"
+          href="../css/admin.css">
+
+    <link rel="stylesheet"
+          href="../css/admin-extra.css">
+
+</head>
+
+
+<body>
+
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <h2>BookHub</h2>
+
+            <p>Admin</p>
+
+        </div>
+
+
+        <nav>
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="product.html">
+                Quản lý sản phẩm
+            </a>
+
+            <a href="categories.html">
+                Quản lý danh mục
+            </a>
+
+            <a href="customers.html">
+                Quản lý khách hàng
+            </a>
+
+            <a href="orders.html">
+                Quản lý đơn hàng
+            </a>
+
+            <a href="import.html">
+                Nhập hàng
+            </a>
+
+            <a href="inventory.html"
+               class="active">
+
+                Kho hàng
+
+            </a>
+
+            <a href="prices.html">
+                Quản lý giá
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+
+    <main class="admin-main">
+
+
+        <header class="admin-header">
+
+            <div>
+
+                <h1>Quản lý kho hàng</h1>
+
+                <p>
+                    Theo dõi số lượng tồn kho
+                </p>
+
+            </div>
+
+
+            <div class="admin-user">
+                Admin
+            </div>
+
+        </header>
+
+
+
+        <section class="admin-section">
+
+            <div class="toolbar">
+
+                <input
+                    type="text"
+                    id="searchInventory"
+                    placeholder="Tìm kiếm sản phẩm...">
+
+
+                <select id="inventoryFilter">
+
+                    <option value="">
+                        Tất cả tồn kho
+                    </option>
+
+                    <option value="low">
+                        Sắp hết hàng ≤ 5
+                    </option>
+
+                    <option value="out">
+                        Hết hàng
+                    </option>
+
+                    <option value="available">
+                        Còn hàng
+                    </option>
+
+                </select>
+
+            </div>
+
+        </section>
+
+
+
+        <section class="admin-section">
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Mã SP</th>
+
+                            <th>Tên sách</th>
+
+                            <th>Danh mục</th>
+
+                            <th>Tồn kho</th>
+
+                            <th>Giá nhập</th>
+
+                            <th>Giá trị tồn</th>
+
+                            <th>Tình trạng</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="inventoryTableBody">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+
+    <script src="../js/admin-extra.js"></script>
+
+</body>
+
+</html>
