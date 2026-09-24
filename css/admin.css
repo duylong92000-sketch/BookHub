@@ -14,74 +14,11 @@ body {
 
 /*SIDEBAR */
 
-.sidebar {
-    position: fixed;
-
-    left: 0;
-    top: 0;
-
-    width: 240px;
-    height: 100vh;
-
-    background-color: #556b2f;
-
-    color: white;
-
-    padding: 25px 15px;
-}
-
-
-.logo {
-    text-align: center;
-
-    margin-bottom: 35px;
-}
-
-
-.logo h2 {
-    font-size: 28px;
-}
-
-
-.logo p {
-    margin-top: 5px;
-
-    color: #ddd;
-}
-
-
-.sidebar nav {
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 8px;
-}
-
-
-.sidebar nav a {
-    text-decoration: none;
-
-    color: white;
-
-    padding: 13px 15px;
-
-    border-radius: 6px;
-
-    transition: 0.2s;
-}
-
-
-.sidebar nav a:hover,
-.sidebar nav a.active {
-    background-color: #6f8b3d;
-}
 
 
 
-/* =========================
-   MAIN
-========================= */
+
+/*MAIN */
 
 .admin-main {
     margin-left: 240px;
@@ -93,9 +30,7 @@ body {
 
 
 
-/* =========================
-   HEADER
-========================= */
+/*HEADER */
 
 .admin-header {
     display: flex;
