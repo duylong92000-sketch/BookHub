@@ -1,0 +1,44 @@
+// Chờ cho giao diện HTML tải xong thì mới chạy JS
+document.addEventListener('DOMContentLoaded', function() {
+    
+    const searchInput = document.getElementById('searchInput');
+    const btnSearch = document.getElementById('btnSearch');
+
+    // Hàm thực hiện tìm kiếm
+    function searchBooks() {
+        // 1. Lấy từ khóa và chuyển hết về chữ thường (để tìm kiếm không phân biệt hoa/thường)
+        const keyword = searchInput.value.toLowerCase().trim();
+        
+        // 2. Lấy danh sách tất cả các khung sản phẩm trên màn hình
+        const productCards = document.querySelectorAll('.product-card');
+        
+        // 3. Duyệt qua từng sản phẩm
+        productCards.forEach(card => {
+            // Lấy tên sách bên trong khung hiện tại
+            const titleElement = card.querySelector('.book-title');
+            const titleText = titleElement.innerText.toLowerCase();
+            
+            // 4. Kiểm tra xem tên sách có chứa từ khóa không
+            if (titleText.includes(keyword)) {
+                card.style.display = 'flex'; // Hiển thị lại nếu khớp (dùng flex vì CSS ở trên set flex)
+            } else {
+                card.style.display = 'none'; // Ẩn đi nếu không khớp
+            }
+        });
+    }
+
+    // Gắn sự kiện khi click vào nút kính lúp
+    btnSearch.addEventListener('click', searchBooks);
+
+    // Mẹo nhỏ: Cho phép nhấn phím Enter trong ô input để tìm kiếm luôn
+    searchInput.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            searchBooks();
+        }
+    });
+
+    // Tùy chọn nâng cao: Tìm kiếm real-time (gõ tới đâu lọc tới đó)
+    // Nếu muốn dùng thì bỏ comment dòng bên dưới:
+    // searchInput.addEventListener('input', searchBooks);
+});
