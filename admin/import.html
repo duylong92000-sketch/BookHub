@@ -1,192 +1,242 @@
 <!DOCTYPE html>
 <html lang="vi">
+    <head>
 
-<head>
+        <meta charset="UTF-8">
 
-    <meta charset="UTF-8">
+        <meta name="viewport"
+            content="width=device-width, initial-scale=1.0">
 
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
+        <title>BookHub - Nhập hàng</title>
 
-    <title>BookHub - Nhập hàng</title>
+        <link rel="stylesheet" href="../css/admin.css">
+        <script src="https://kit.fontawesome.com/9ce030c95a.js" crossorigin="anonymous"></script>
+    </head>
 
-    <link rel="stylesheet" href="../css/admin.css">
+    <body>
 
-</head>
+        <header class="admin-header">
 
-<body>
-
-<header class="admin-header">
-
-    <div class="admin-logo">
-        <h2>BookHub Admin</h2>
-    </div>
-
-    <nav class="admin-nav">
-
-        <a href="dashboard.html">Dashboard</a>
-        <a href="products.html">Sản phẩm</a>
-        <a href="categories.html">Danh mục</a>
-        <a href="customers.html">Khách hàng</a>
-        <a href="orders.html">Đơn hàng</a>
-        <a href="import.html" class="active">Nhập hàng</a>
-        <a href="inventory.html">Tồn kho</a>
-        <a href="prices.html">Giá bán</a>
-
-    </nav>
-
-    <div class="admin-user">
-        <span>Admin</span>
-        <a href="login.html" class="logout-link">Đăng xuất</a>
-    </div>
-
-</header>
-
-<main class="admin-content">
-
-    <section class="page-heading">
-
-        <div>
-            <h1>Nhập hàng</h1>
-            <p>Quản lý phiếu nhập sách</p>
-        </div>
-
-        <button
-            class="btn"
-            onclick="openImportForm()">
-
-            + Tạo phiếu nhập
-
-        </button>
-
-    </section>
-
-    <section class="panel">
-
-        <div class="table-wrap">
-
-            <table class="data-table">
-
-                <thead>
-
-                    <tr>
-
-                        <th>Mã phiếu</th>
-                        <th>Ngày nhập</th>
-                        <th>Số mặt hàng</th>
-                        <th>Tổng tiền</th>
-                        <th>Trạng thái</th>
-                        <th>Thao tác</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody id="importList"></tbody>
-
-            </table>
-
-        </div>
-
-    </section>
-
-</main>
-
-<div class="modal" id="importModal">
-
-    <div class="modal-content">
-
-        <div class="modal-header">
-
-            <h2>Tạo phiếu nhập</h2>
-
-            <button
-                class="close-btn"
-                onclick="closeImportForm()">
-
-                ×
-
-            </button>
-
-        </div>
-
-        <form onsubmit="saveImport(event)">
-
-            <div class="form-group">
-
-                <label>Ngày nhập</label>
-
-                <input
-                    type="date"
-                    id="importDate"
-                    required>
-
+            <div class="admin-logo">
+                <h2>BookHub Admin</h2>
             </div>
 
-            <div class="form-group">
+            <nav class="admin-nav">
 
-                <label>Sản phẩm</label>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="products.html">Sản phẩm</a>
+                <a href="categories.html">Danh mục</a>
+                <a href="customers.html">Khách hàng</a>
+                <a href="orders.html">Đơn hàng</a>
+                <a href="import.html" class="active">Nhập hàng</a>
+                <a href="inventory.html">Tồn kho</a>
+                <a href="prices.html">Giá bán</a>
 
-                <select
-                    id="importProduct"
-                    required>
-                </select>
+            </nav>
 
+            <div class="admin-user">
+                <span>Admin</span>
+                <a href="login.html" class="logout-link">Đăng xuất</a>
             </div>
 
-            <div class="form-group">
+        </header>
 
-                <label>Số lượng</label>
+        <main class="admin-content">
 
-                <input
-                    type="number"
-                    id="importQuantity"
-                    min="1"
-                    required>
+            <section class="page-heading">
 
-            </div>
-
-            <div class="form-group">
-
-                <label>Giá nhập</label>
-
-                <input
-                    type="number"
-                    id="importPrice"
-                    min="1"
-                    required>
-
-            </div>
-
-            <div class="form-actions">
+                <div>
+                    <h1>Nhập hàng</h1>
+                    <p>Quản lý phiếu nhập sách</p>
+                </div>
 
                 <button
-                    type="button"
                     class="btn"
-                    onclick="closeImportForm()">
+                    onclick="openImportForm()">
 
-                    Hủy
-
-                </button>
-
-                <button
-                    type="submit"
-                    class="btn btn-primary">
-
-                    Lưu phiếu
+                    + Tạo phiếu nhập
 
                 </button>
+
+            </section>
+
+            <section class="panel">
+
+                <div class="table-wrap">
+
+                    <table class="data-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Mã phiếu</th>
+                                <th>Ngày nhập</th>
+                                <th>Số mặt hàng</th>
+                                <th>Tổng tiền</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="importList"></tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </main>
+
+        <div class="modal" id="importModal">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <h2>Tạo phiếu nhập</h2>
+
+                    <button
+                        class="close-btn"
+                        onclick="closeImportForm()">
+
+                        ×
+
+                    </button>
+
+                </div>
+
+                <form onsubmit="saveImport(event)">
+
+                    <div class="form-group">
+
+                        <label>Ngày nhập</label>
+
+                        <input
+                            type="date"
+                            id="importDate"
+                            required>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Sản phẩm</label>
+
+                        <select
+                            id="importProduct"
+                            required>
+                        </select>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Số lượng</label>
+
+                        <input
+                            type="number"
+                            id="importQuantity"
+                            min="1"
+                            required>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Giá nhập</label>
+
+                        <input
+                            type="number"
+                            id="importPrice"
+                            min="1"
+                            required>
+
+                    </div>
+
+                    <div class="form-actions">
+
+                        <button
+                            type="button"
+                            class="btn"
+                            onclick="closeImportForm()">
+
+                            Hủy
+
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary">
+
+                            Lưu phiếu
+
+                        </button>
+
+                    </div>
+
+                </form>
 
             </div>
 
-        </form>
+        </div>
 
-    </div>
+        <!-- Phần chân trang -->
+        <footer class="site-footer">
+            <div class="footer-main">
+                <!-- Cột trái: Thông tin Đồ án & Logo -->
+                <div class="footer-col brand-info">
+                    <div class="footer-logo">
+                        <!-- Icon màu cam, bạn thay src bằng ảnh thực tế -->
+                        <img src="images/logoweb.png" alt="Nhà Sách SGU" width="40" height="40">
+                        <span class="logo-text">NHÀ SÁCH SGU</span>
+                    </div>
+                    <p class="project-desc">
+                        Hệ thống website cửa hàng bán sách trực tuyến<br>
+                        Đồ án môn <strong>Lập trình web và ứng dụng</strong>.
+                    </p>
+                    <p class="faculty-info">
+                        
+                        Khoa Công nghệ Thông tin - SGU
+                    </p>
+                </div>
 
-</div>
+                <!-- Cột phải: Thông tin Liên hệ -->
+                <div class="footer-col contact-info">
+                    <h3 class="footer-heading">THÔNG TIN LIÊN HỆ</h3>
+                    <ul class="contact-list">
+                        <li>
+                            <img src="images/location.png" alt="Location" width="16" height="16">
+                            <span>Đại học Sài Gòn (SGU), 273 An Dương Vương,<br>Q.5, TP.HCM</span>
+                        </li>
+                        <li>
+                            <img src="images/phone.png" alt="Phone" width="16" height="16">
+                            <span>(028) 3835 4409 - Khoa CNTT</span>
+                        </li>
+                        <li>
+                            <img src="images/mail.png" alt="Email" width="16" height="16">
+                            <span>cntt@sgu.edu.vn</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
 
-<script src="../js/admin.js"></script>
+            <!-- Thanh bản quyền dưới cùng -->
+            <div class="footer-bottom">
+                <div class="bottom-left">
+                    © 2025 Nhóm Sinh Viên Thực Hiện Đồ Án Lập Trình Web - Đại học Sài Gòn (SGU). All rights reserved.
+                </div>
+                <div class="bottom-right">
+                    Đại học Sài Gòn • Khoa CNTT
+                </div>
+            </div>
+        </footer>
 
-</body>
+        <script src="../js/admin.js"></script>
+
+    </body>
 
 </html>
