@@ -631,8 +631,107 @@ textarea {
     width: 100%;
 }
 
-/* Responsive */
+/*footer*/
+.site-footer {
+    background-color: #2b2825; /* Nền xám đen đặc trưng */
+    color: #c9c9c9; /* Màu chữ xám nhạt dễ đọc */
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+    margin-top: 50px;
+}
 
+/* Khối nội dung chính (chia 2 cột) */
+.footer-main {
+    display: flex;
+    justify-content: space-between; /* Đẩy 2 cột ra 2 sát lề */
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 25px 40px 15px;
+}
+
+/* --- Cột bên trái --- */
+.brand-info {
+    max-width: 450px;
+    margin-left: 50px;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 12px;
+}
+
+.logo-text {
+    color: #ffffff;
+    font-family: 'Times New Roman', serif; /* Font chữ có chân cho Logo */
+    font-size: 22px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.project-desc {
+    margin-bottom: 12px;
+}
+
+.project-desc strong {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.faculty-info {
+    color: #f7ca18; /* Màu vàng cho dòng chữ Khoa */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+}
+
+/* --- Cột bên phải --- */
+.contact-info {
+    max-width: 600px;
+    margin-right: 50px;
+}
+
+.footer-heading {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.contact-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.contact-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.contact-list li img {
+    margin-top: 5px; /* Đẩy icon xuống một chút để cân bằng với dòng chữ có nhiều dòng */
+}
+
+/* --- Thanh bản quyền dưới cùng --- */
+.footer-bottom {
+    border-top: 1px solid #43403d; /* Đường viền phân cách mỏng */
+    padding: 12px 40px;
+    display: flex;
+    justify-content: space-between;
+    max-width: 1400px;
+    margin: 0 auto;
+    font-size: 13px;
+    color: #9a9a9a;
+}
+
+/* danh cho cac thiet bi khac */
 @media (max-width: 1150px) {
 
     .admin-header {

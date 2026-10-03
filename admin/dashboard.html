@@ -15,189 +15,189 @@
 
     <body>
 
-    <header class="admin-header">
+        <header class="admin-header">
 
-        <div class="admin-logo">
-            <h2>BookHub Admin</h2>
-        </div>
-
-        <nav class="admin-nav">
-
-            <a href="dashboard.html" class="active">
-                Dashboard
-            </a>
-
-            <a href="products.html">
-                Sản phẩm
-            </a>
-
-            <a href="categories.html">
-                Danh mục
-            </a>
-
-            <a href="customers.html">
-                Khách hàng
-            </a>
-
-            <a href="orders.html">
-                Đơn hàng
-            </a>
-
-            <a href="import.html">
-                Nhập hàng
-            </a>
-
-            <a href="inventory.html">
-                Tồn kho
-            </a>
-
-            <a href="prices.html">
-                Giá bán
-            </a>
-
-        </nav>
-
-        <div class="admin-user">
-
-            <span>Admin</span>
-
-            <a href="login.html" class="logout-link">
-                Đăng xuất
-            </a>
-
-        </div>
-
-    </header>
-
-    <main class="admin-content">
-
-        <section class="page-heading">
-
-            <div>
-                <h1>Dashboard</h1>
-                <p>Quản lý hoạt động BookHub</p>
+            <div class="admin-logo">
+                <h2>BookHub Admin</h2>
             </div>
 
-        </section>
+            <nav class="admin-nav">
 
-        <section class="dashboard-grid">
+                <a href="dashboard.html" class="active">
+                    Dashboard
+                </a>
 
-            <div class="stat-card">
+                <a href="products.html">
+                    Sản phẩm
+                </a>
 
-                <div>
-                    <h3>Sản phẩm</h3>
-                    <strong id="productCount">0</strong>
-                </div>
+                <a href="categories.html">
+                    Danh mục
+                </a>
 
-                <div class="stat-icon">📚</div>
+                <a href="customers.html">
+                    Khách hàng
+                </a>
 
-            </div>
+                <a href="orders.html">
+                    Đơn hàng
+                </a>
 
-            <div class="stat-card">
+                <a href="import.html">
+                    Nhập hàng
+                </a>
 
-                <div>
-                    <h3>Danh mục</h3>
-                    <strong id="categoryCount">0</strong>
-                </div>
+                <a href="inventory.html">
+                    Tồn kho
+                </a>
 
-                <div class="stat-icon">📁</div>
+                <a href="prices.html">
+                    Giá bán
+                </a>
 
-            </div>
+            </nav>
 
-            <div class="stat-card">
+            <div class="admin-user">
 
-                <div>
-                    <h3>Khách hàng</h3>
-                    <strong id="customerCount">0</strong>
-                </div>
+                <span>Admin</span>
 
-                <div class="stat-icon">👤</div>
-
-            </div>
-
-            <div class="stat-card">
-
-                <div>
-                    <h3>Đơn hàng</h3>
-                    <strong id="orderCount">0</strong>
-                </div>
-
-                <div class="stat-icon">🛒</div>
-
-            </div>
-
-            <div class="stat-card">
-
-                <div>
-                    <h3>Doanh thu</h3>
-                    <strong id="revenue">0 VNĐ</strong>
-                </div>
-
-                <div class="stat-icon">💰</div>
-
-            </div>
-
-            <div class="stat-card">
-
-                <div>
-                    <h3>Đơn chờ xử lý</h3>
-                    <strong id="pendingCount">0</strong>
-                </div>
-
-                <div class="stat-icon">⌛</div>
-
-            </div>
-
-        </section>
-
-        <section class="panel">
-
-            <div class="panel-header">
-
-                <h2>Đơn hàng gần đây</h2>
-
-                <a href="orders.html" class="btn">
-                    Xem tất cả
+                <a href="login.html" class="logout-link">
+                    Đăng xuất
                 </a>
 
             </div>
 
-            <div class="table-wrap">
+        </header>
 
-                <table class="data-table">
+        <main class="admin-content">
 
-                    <thead>
+            <section class="page-heading">
 
-                        <tr>
+                <div>
+                    <h1>Dashboard</h1>
+                    <p>Quản lý hoạt động BookHub</p>
+                </div>
 
-                            <th>Mã đơn</th>
+            </section>
 
-                            <th>Khách hàng</th>
+            <section class="dashboard-grid">
 
-                            <th>Ngày đặt</th>
+                <div class="stat-card">
 
-                            <th>Tổng tiền</th>
+                    <div>
+                        <h3>Sản phẩm</h3>
+                        <strong id="productCount">0</strong>
+                    </div>
 
-                            <th>Trạng thái</th>
+                    <div class="stat-icon">📚</div>
 
-                        </tr>
+                </div>
 
-                    </thead>
+                <div class="stat-card">
 
-                    <tbody id="recentOrders"></tbody>
+                    <div>
+                        <h3>Danh mục</h3>
+                        <strong id="categoryCount">0</strong>
+                    </div>
 
-                </table>
+                    <div class="stat-icon">📁</div>
 
-            </div>
+                </div>
 
-        </section>
+                <div class="stat-card">
 
-    </main>
+                    <div>
+                        <h3>Khách hàng</h3>
+                        <strong id="customerCount">0</strong>
+                    </div>
+
+                    <div class="stat-icon">👤</div>
+
+                </div>
+
+                <div class="stat-card">
+
+                    <div>
+                        <h3>Đơn hàng</h3>
+                        <strong id="orderCount">0</strong>
+                    </div>
+
+                    <div class="stat-icon">🛒</div>
+
+                </div>
+
+                <div class="stat-card">
+
+                    <div>
+                        <h3>Doanh thu</h3>
+                        <strong id="revenue">0 VNĐ</strong>
+                    </div>
+
+                    <div class="stat-icon">💰</div>
+
+                </div>
+
+                <div class="stat-card">
+
+                    <div>
+                        <h3>Đơn chờ xử lý</h3>
+                        <strong id="pendingCount">0</strong>
+                    </div>
+
+                    <div class="stat-icon">⌛</div>
+
+                </div>
+
+            </section>
+
+            <section class="panel">
+
+                <div class="panel-header">
+
+                    <h2>Đơn hàng gần đây</h2>
+
+                    <a href="orders.html" class="btn">
+                        Xem tất cả
+                    </a>
+
+                </div>
+
+                <div class="table-wrap">
+
+                    <table class="data-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Mã đơn</th>
+
+                                <th>Khách hàng</th>
+
+                                <th>Ngày đặt</th>
+
+                                <th>Tổng tiền</th>
+
+                                <th>Trạng thái</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="recentOrders"></tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </main>
 
         <!-- Phần chân trang -->
         <footer class="site-footer">
             <div class="footer-main">
-                <!-- Cột trái: Thông tin Đồ án & Logo -->
+                    <!-- Cột trái: Thông tin Đồ án & Logo -->
                 <div class="footer-col brand-info">
                     <div class="footer-logo">
                         <!-- Icon màu cam, bạn thay src bằng ảnh thực tế -->
@@ -208,8 +208,7 @@
                         Hệ thống website cửa hàng bán sách trực tuyến<br>
                         Đồ án môn <strong>Lập trình web và ứng dụng</strong>.
                     </p>
-                    <p class="faculty-info">
-                        
+                    <p class="faculty-info">        
                         Khoa Công nghệ Thông tin - SGU
                     </p>
                 </div>
