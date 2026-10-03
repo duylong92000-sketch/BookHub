@@ -1,122 +1,171 @@
 <!DOCTYPE html>
 <html lang="vi">
+    <head>
 
-<head>
+        <meta charset="UTF-8">
 
-    <meta charset="UTF-8">
+        <meta name="viewport"
+            content="width=device-width, initial-scale=1.0">
 
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
+        <title>BookHub - Tồn kho</title>
 
-    <title>BookHub - Tồn kho</title>
+        <link rel="stylesheet" href="../css/admin.css">
+        <script src="https://kit.fontawesome.com/9ce030c95a.js" crossorigin="anonymous"></script>
+    </head>
 
-    <link rel="stylesheet" href="../css/admin.css">
-    <script src="https://kit.fontawesome.com/9ce030c95a.js" crossorigin="anonymous"></script>
-</head>
+    <body>
 
-<body>
+    <header class="admin-header">
 
-<header class="admin-header">
-
-    <div class="admin-logo">
-        <h2>BookHub Admin</h2>
-    </div>
-
-    <nav class="admin-nav">
-
-        <a href="dashboard.html">Dashboard</a>
-        <a href="products.html">Sản phẩm</a>
-        <a href="categories.html">Danh mục</a>
-        <a href="customers.html">Khách hàng</a>
-        <a href="orders.html">Đơn hàng</a>
-        <a href="import.html">Nhập hàng</a>
-        <a href="inventory.html" class="active">Tồn kho</a>
-        <a href="prices.html">Giá bán</a>
-
-    </nav>
-
-    <div class="admin-user">
-        <span>Admin</span>
-        <a href="login.html" class="logout-link">Đăng xuất</a>
-    </div>
-
-</header>
-
-<main class="admin-content">
-
-    <section class="page-heading">
-
-        <div>
-            <h1>Tồn kho</h1>
-            <p>Theo dõi số lượng sách trong kho</p>
+        <div class="admin-logo">
+            <h2>BookHub Admin</h2>
         </div>
 
-    </section>
+        <nav class="admin-nav">
 
-    <section class="panel">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="products.html">Sản phẩm</a>
+            <a href="categories.html">Danh mục</a>
+            <a href="customers.html">Khách hàng</a>
+            <a href="orders.html">Đơn hàng</a>
+            <a href="import.html">Nhập hàng</a>
+            <a href="inventory.html" class="active">Tồn kho</a>
+            <a href="prices.html">Giá bán</a>
 
-        <div class="toolbar">
+        </nav>
 
-            <input
-                id="inventorySearch"
-                class="search-input"
-                type="text"
-                placeholder="Tìm sản phẩm...">
-
-            <select id="inventoryFilter">
-
-                <option value="all">
-                    Tất cả
-                </option>
-
-                <option value="available">
-                    Còn hàng
-                </option>
-
-                <option value="low">
-                    Sắp hết
-                </option>
-
-                <option value="out">
-                    Hết hàng
-                </option>
-
-            </select>
-
+        <div class="admin-user">
+            <span>Admin</span>
+            <a href="login.html" class="logout-link">Đăng xuất</a>
         </div>
 
-        <div class="table-wrap">
+    </header>
 
-            <table class="data-table">
+    <main class="admin-content">
 
-                <thead>
+        <section class="page-heading">
 
-                    <tr>
+            <div>
+                <h1>Tồn kho</h1>
+                <p>Theo dõi số lượng sách trong kho</p>
+            </div>
 
-                        <th>Mã SP</th>
-                        <th>Sản phẩm</th>
-                        <th>Danh mục</th>
-                        <th>Số lượng</th>
-                        <th>Giá nhập</th>
-                        <th>Giá trị tồn</th>
-                        <th>Trạng thái</th>
+        </section>
 
-                    </tr>
+        <section class="panel">
 
-                </thead>
+            <div class="toolbar">
 
-                <tbody id="inventoryList"></tbody>
+                <input
+                    id="inventorySearch"
+                    class="search-input"
+                    type="text"
+                    placeholder="Tìm sản phẩm...">
 
-            </table>
+                <select id="inventoryFilter">
 
-        </div>
+                    <option value="all">
+                        Tất cả
+                    </option>
 
-    </section>
+                    <option value="available">
+                        Còn hàng
+                    </option>
 
-</main>
+                    <option value="low">
+                        Sắp hết
+                    </option>
 
-<script src="../js/admin.js"></script>
+                    <option value="out">
+                        Hết hàng
+                    </option>
 
-</body>
+                </select>
+
+            </div>
+
+            <div class="table-wrap">
+
+                <table class="data-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Mã SP</th>
+                            <th>Sản phẩm</th>
+                            <th>Danh mục</th>
+                            <th>Số lượng</th>
+                            <th>Giá nhập</th>
+                            <th>Giá trị tồn</th>
+                            <th>Trạng thái</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="inventoryList"></tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+        <!-- Phần chân trang -->
+        <footer class="site-footer">
+            <div class="footer-main">
+                <!-- Cột trái: Thông tin Đồ án & Logo -->
+                <div class="footer-col brand-info">
+                    <div class="footer-logo">
+                        <!-- Icon màu cam, bạn thay src bằng ảnh thực tế -->
+                        <img src="images/logoweb.png" alt="Nhà Sách SGU" width="40" height="40">
+                        <span class="logo-text">NHÀ SÁCH SGU</span>
+                    </div>
+                    <p class="project-desc">
+                        Hệ thống website cửa hàng bán sách trực tuyến<br>
+                        Đồ án môn <strong>Lập trình web và ứng dụng</strong>.
+                    </p>
+                    <p class="faculty-info">
+                        
+                        Khoa Công nghệ Thông tin - SGU
+                    </p>
+                </div>
+
+                <!-- Cột phải: Thông tin Liên hệ -->
+                <div class="footer-col contact-info">
+                    <h3 class="footer-heading">THÔNG TIN LIÊN HỆ</h3>
+                    <ul class="contact-list">
+                        <li>
+                            <img src="images/location.png" alt="Location" width="16" height="16">
+                            <span>Đại học Sài Gòn (SGU), 273 An Dương Vương,<br>Q.5, TP.HCM</span>
+                        </li>
+                        <li>
+                            <img src="images/phone.png" alt="Phone" width="16" height="16">
+                            <span>(028) 3835 4409 - Khoa CNTT</span>
+                        </li>
+                        <li>
+                            <img src="images/mail.png" alt="Email" width="16" height="16">
+                            <span>cntt@sgu.edu.vn</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Thanh bản quyền dưới cùng -->
+            <div class="footer-bottom">
+                <div class="bottom-left">
+                    © 2025 Nhóm Sinh Viên Thực Hiện Đồ Án Lập Trình Web - Đại học Sài Gòn (SGU). All rights reserved.
+                </div>
+                <div class="bottom-right">
+                    Đại học Sài Gòn • Khoa CNTT
+                </div>
+            </div>
+        </footer>
+        <script src="../js/admin.js"></script>
+
+    </body>
 
 </html>

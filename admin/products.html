@@ -1,246 +1,296 @@
 <!DOCTYPE html>
 <html lang="vi">
 
-<head>
+    <head>
 
-    <meta charset="UTF-8">
+        <meta charset="UTF-8">
 
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
+        <meta name="viewport"
+            content="width=device-width, initial-scale=1.0">
 
-    <title>BookHub - Sản phẩm</title>
+        <title>BookHub - Sản phẩm</title>
 
-    <link rel="stylesheet" href="../css/admin.css">
-    <script src="https://kit.fontawesome.com/9ce030c95a.js" crossorigin="anonymous"></script>
-</head>
+        <link rel="stylesheet" href="../css/admin.css">
+        <script src="https://kit.fontawesome.com/9ce030c95a.js" crossorigin="anonymous"></script>
+    </head>
 
-<body>
+    <body>
 
-<header class="admin-header">
+    <header class="admin-header">
 
-    <div class="admin-logo">
-        <h2>BookHub Admin</h2>
-    </div>
-
-    <nav class="admin-nav">
-
-        <a href="dashboard.html">Dashboard</a>
-        <a href="product.html" class="active">Sản phẩm</a>
-        <a href="categories.html">Danh mục</a>
-        <a href="customers.html">Khách hàng</a>
-        <a href="orders.html">Đơn hàng</a>
-        <a href="import.html">Nhập hàng</a>
-        <a href="inventory.html">Tồn kho</a>
-        <a href="prices.html">Giá bán</a>
-
-    </nav>
-
-    <div class="admin-user">
-        <span>Admin</span>
-        <a href="login.html" class="logout-link">Đăng xuất</a>
-    </div>
-
-</header>
-
-<main class="admin-content">
-
-    <section class="page-heading">
-
-        <div>
-            <h1>Sản phẩm</h1>
-            <p>Quản lý sách trong cửa hàng</p>
+        <div class="admin-logo">
+            <h2>BookHub Admin</h2>
         </div>
 
-        <button
-            class="btn"
-            onclick="openProductForm()">
+        <nav class="admin-nav">
 
-            + Thêm sản phẩm
+            <a href="dashboard.html">Dashboard</a>
+            <a href="product.html" class="active">Sản phẩm</a>
+            <a href="categories.html">Danh mục</a>
+            <a href="customers.html">Khách hàng</a>
+            <a href="orders.html">Đơn hàng</a>
+            <a href="import.html">Nhập hàng</a>
+            <a href="inventory.html">Tồn kho</a>
+            <a href="prices.html">Giá bán</a>
 
-        </button>
+        </nav>
 
-    </section>
-
-    <section class="panel">
-
-        <div class="toolbar">
-
-            <input
-                id="productSearch"
-                class="search-input"
-                type="text"
-                placeholder="Tìm sản phẩm...">
-
+        <div class="admin-user">
+            <span>Admin</span>
+            <a href="login.html" class="logout-link">Đăng xuất</a>
         </div>
 
-        <div class="table-wrap">
+    </header>
 
-            <table class="data-table">
+    <main class="admin-content">
 
-                <thead>
+        <section class="page-heading">
 
-                    <tr>
-
-                        <th>Mã SP</th>
-                        <th>Tên sách</th>
-                        <th>Danh mục</th>
-                        <th>Tác giả</th>
-                        <th>Giá nhập</th>
-                        <th>Giá bán</th>
-                        <th>Tồn kho</th>
-                        <th>Thao tác</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody id="productList"></tbody>
-
-            </table>
-
-        </div>
-
-    </section>
-
-</main>
-
-<div class="modal" id="productModal">
-
-    <div class="modal-content">
-
-        <div class="modal-header">
-
-            <h2 id="productModalTitle">
-                Thêm sản phẩm
-            </h2>
+            <div>
+                <h1>Sản phẩm</h1>
+                <p>Quản lý sách trong cửa hàng</p>
+            </div>
 
             <button
-                class="close-btn"
-                onclick="closeProductForm()">
+                class="btn"
+                onclick="openProductForm()">
 
-                ×
+                + Thêm sản phẩm
 
             </button>
 
-        </div>
+        </section>
 
-        <form onsubmit="saveProduct(event)">
+        <section class="panel">
 
-            <input type="hidden" id="productId">
+            <div class="toolbar">
 
-            <div class="form-grid">
-
-                <div class="form-group full">
-
-                    <label>Tên sản phẩm</label>
-
-                    <input
-                        id="productName"
-                        type="text"
-                        required>
-
-                </div>
-
-                <div class="form-group">
-
-                    <label>Tác giả</label>
-
-                    <input id="productAuthor">
-
-                </div>
-
-                <div class="form-group">
-
-                    <label>Nhà xuất bản</label>
-
-                    <input id="productPublisher">
-
-                </div>
-
-                <div class="form-group">
-
-                    <label>Danh mục</label>
-
-                    <select id="productCategory"></select>
-
-                </div>
-
-                <div class="form-group">
-
-                    <label>Giá nhập</label>
-
-                    <input
-                        id="productImportPrice"
-                        type="number"
-                        min="0"
-                        required>
-
-                </div>
-
-                <div class="form-group">
-
-                    <label>Tỷ lệ lợi nhuận (%)</label>
-
-                    <input
-                        id="productProfitRate"
-                        type="number"
-                        min="0"
-                        value="30">
-
-                </div>
-
-                <div class="form-group">
-
-                    <label>Số lượng tồn</label>
-
-                    <input
-                        id="productStock"
-                        type="number"
-                        min="0"
-                        value="0">
-
-                </div>
-
-                <div class="form-group full">
-
-                    <label>Mô tả</label>
-
-                    <textarea
-                        id="productDescription"></textarea>
-
-                </div>
+                <input
+                    id="productSearch"
+                    class="search-input"
+                    type="text"
+                    placeholder="Tìm sản phẩm...">
 
             </div>
 
-            <div class="form-actions">
+            <div class="table-wrap">
+
+                <table class="data-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Mã SP</th>
+                            <th>Tên sách</th>
+                            <th>Danh mục</th>
+                            <th>Tác giả</th>
+                            <th>Giá nhập</th>
+                            <th>Giá bán</th>
+                            <th>Tồn kho</th>
+                            <th>Thao tác</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="productList"></tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <div class="modal" id="productModal">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h2 id="productModalTitle">
+                    Thêm sản phẩm
+                </h2>
 
                 <button
-                    type="button"
-                    class="btn"
+                    class="close-btn"
                     onclick="closeProductForm()">
 
-                    Hủy
-
-                </button>
-
-                <button
-                    type="submit"
-                    class="btn btn-primary">
-
-                    Lưu
+                    ×
 
                 </button>
 
             </div>
 
-        </form>
+            <form onsubmit="saveProduct(event)">
+
+                <input type="hidden" id="productId">
+
+                <div class="form-grid">
+
+                    <div class="form-group full">
+
+                        <label>Tên sản phẩm</label>
+
+                        <input
+                            id="productName"
+                            type="text"
+                            required>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Tác giả</label>
+
+                        <input id="productAuthor">
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Nhà xuất bản</label>
+
+                        <input id="productPublisher">
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Danh mục</label>
+
+                        <select id="productCategory"></select>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Giá nhập</label>
+
+                        <input
+                            id="productImportPrice"
+                            type="number"
+                            min="0"
+                            required>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Tỷ lệ lợi nhuận (%)</label>
+
+                        <input
+                            id="productProfitRate"
+                            type="number"
+                            min="0"
+                            value="30">
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Số lượng tồn</label>
+
+                        <input
+                            id="productStock"
+                            type="number"
+                            min="0"
+                            value="0">
+
+                    </div>
+
+                    <div class="form-group full">
+
+                        <label>Mô tả</label>
+
+                        <textarea
+                            id="productDescription"></textarea>
+
+                    </div>
+
+                </div>
+
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        class="btn"
+                        onclick="closeProductForm()">
+
+                        Hủy
+
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary">
+
+                        Lưu
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
 
     </div>
 
-</div>
+        <!-- Phần chân trang -->
+        <footer class="site-footer">
+            <div class="footer-main">
+                <!-- Cột trái: Thông tin Đồ án & Logo -->
+                <div class="footer-col brand-info">
+                    <div class="footer-logo">
+                        <!-- Icon màu cam, bạn thay src bằng ảnh thực tế -->
+                        <img src="images/logoweb.png" alt="Nhà Sách SGU" width="40" height="40">
+                        <span class="logo-text">NHÀ SÁCH SGU</span>
+                    </div>
+                    <p class="project-desc">
+                        Hệ thống website cửa hàng bán sách trực tuyến<br>
+                        Đồ án môn <strong>Lập trình web và ứng dụng</strong>.
+                    </p>
+                    <p class="faculty-info">
+                        
+                        Khoa Công nghệ Thông tin - SGU
+                    </p>
+                </div>
 
-<script src="../js/admin.js"></script>
+                <!-- Cột phải: Thông tin Liên hệ -->
+                <div class="footer-col contact-info">
+                    <h3 class="footer-heading">THÔNG TIN LIÊN HỆ</h3>
+                    <ul class="contact-list">
+                        <li>
+                            <img src="images/location.png" alt="Location" width="16" height="16">
+                            <span>Đại học Sài Gòn (SGU), 273 An Dương Vương,<br>Q.5, TP.HCM</span>
+                        </li>
+                        <li>
+                            <img src="images/phone.png" alt="Phone" width="16" height="16">
+                            <span>(028) 3835 4409 - Khoa CNTT</span>
+                        </li>
+                        <li>
+                            <img src="images/mail.png" alt="Email" width="16" height="16">
+                            <span>cntt@sgu.edu.vn</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
 
-</body>
+            <!-- Thanh bản quyền dưới cùng -->
+            <div class="footer-bottom">
+                <div class="bottom-left">
+                    © 2025 Nhóm Sinh Viên Thực Hiện Đồ Án Lập Trình Web - Đại học Sài Gòn (SGU). All rights reserved.
+                </div>
+                <div class="bottom-right">
+                    Đại học Sài Gòn • Khoa CNTT
+                </div>
+            </div>
+        </footer>
+        <script src="../js/admin.js"></script>
+
+    </body>
 
 </html>
