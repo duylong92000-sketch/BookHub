@@ -124,6 +124,7 @@
                 overflow: hidden; /* Đảm bảo các thành phần con không bị tràn ra ngoài góc bo */
                 width: 550px; /* Độ rộng của thanh tìm kiếm, có thể điều chỉnh tùy ý */
                 transition: border-color 0.2s ease;
+                position: relative;
             }
 
             /* Hiệu ứng khi người dùng click vào ô nhập liệu */
@@ -157,6 +158,90 @@
                 align-items: center;
                 justify-content: center;
                 transition: background-color 0.1s ease;
+            }
+
+            .adv-dropdown {
+                display: none; /* Ẩn mặc định, JS sẽ bật lên */
+                position: absolute;
+                top: calc(100% + 10px); /* Nằm ngay dưới thanh tìm kiếm, cách 10px */
+                right: 0; /* Căn sát mép phải thanh tìm kiếm */
+                background-color: #ffffff;
+                width: 320px;
+                border-radius: 8px;
+                box-shadow: 0 4px 20px rgba(74, 53, 37, 0.15);
+                border: 1px solid #D7CCC8;
+                padding: 20px;
+                z-index: 1001; /* Z-index cao để đè lên các hình ảnh sản phẩm ở main */
+                font-family: sans-serif;
+            }
+
+            .adv-title {
+                margin: 0 0 15px 0;
+                color: #4A3525;
+                font-size: 16px;
+                border-bottom: 1px solid #E6DEC9;
+                padding-bottom: 10px;
+            }
+
+            .adv-group {
+                margin-bottom: 15px;
+            }
+
+            .adv-group label {
+                display: block;
+                font-size: 13px;
+                color: #795548;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+
+            .adv-group select, .price-inputs input {
+                width: 100%;
+                padding: 8px 10px;
+                border: 1px solid #D7CCC8;
+                border-radius: 4px;
+                font-size: 14px;
+                color: #4A3525;
+                outline: none;
+            }
+
+            .adv-group select:focus, .price-inputs input:focus {
+                border-color: #5D4037;
+            }
+
+            .price-inputs {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .checkbox-group {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .checkbox-group label {
+                margin: 0;
+                font-weight: normal;
+                cursor: pointer;
+            }
+
+            .btn-apply {
+                width: 100%;
+                background-color: #C65102; /* Đồng bộ với nút Mua hàng */
+                color: #fff;
+                border: none;
+                padding: 10px;
+                border-radius: 6px;
+                font-size: 14px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: background-color 0.2s;
+            }
+
+            .btn-apply:hover {
+                background-color: #A04000;
             }
 
             .filter-btn {
@@ -504,7 +589,7 @@
 
                 <!-- THANH TÌM KIẾM MỚI THÊM VÀO -->
                 <div class="search-wrapper">
-                    <input type="text" id="searchInput" placeholder="Tìm kiếm sách, tác giả..." class="search-input">
+                    <input type="text" id="searchInput" placeholder="Nhập tên sách" class="search-input">
 
                     <button type="button" id="btnAdvancedFilter" class="filter-btn" title="Tìm kiếm nâng cao">
                         <img src="images/filter.png" alt="Lọc" width="20" height="20">
@@ -514,8 +599,39 @@
                         <img src="images/icon-search.png" alt="Tìm kiếm" width="20" height="20">
                     </button>
                     <!-- Khối Dropdown chứa Mức giá và Phân loại (Ẩn mặc định, hiển thị khi bấm nút Filter) -->
-                    <div id="advanced-search-dropdown" class="adv-dropdown" style="display: none; position: absolute; top: 100%;">
+                    <div id="advanced-search-dropdown" class="adv-dropdown">
                         <!-- Các ô input giá và select danh mục -->
+                        <h4 class="adv-title">Tìm kiếm nâng cao</h4>
+                            <!-- Tiêu chí 1: Thể loại -->
+                            <div class="adv-group">
+                                <label for="adv-category">Thể loại sách:</label>
+                                <select id="adv-category">
+                                    <option value="all">Tất cả thể loại</option>
+                                    <option value="vanhoc">Văn học & Tiểu thuyết</option>
+                                    <option value="kinhte">Kinh tế & Quản trị</option>
+                                    <option value="cntt">Công nghệ thông tin</option>
+                                    <option value="thieunhi">Sách thiếu nhi</option>
+                                </select>
+                            </div>
+
+                            <!-- Tiêu chí 2: Mức giá -->
+                            <div class="adv-group">
+                                <label>Mức giá (VNĐ):</label>
+                                <div class="price-inputs">
+                                    <input type="number" id="adv-price-min" placeholder="Từ" min="0">
+                                    <span>-</span>
+                                    <input type="number" id="adv-price-max" placeholder="Đến" min="0">
+                                </div>
+                            </div>
+
+                            <!-- Tiêu chí 3: Tình trạng -->
+                            <div class="adv-group checkbox-group">
+                                <input type="checkbox" id="adv-in-stock">
+                                <label for="adv-in-stock">Chỉ hiện sản phẩm còn hàng</label>
+                            </div>
+
+                            <!-- Nút áp dụng -->
+                            <button type="button" id="btnApplyFilter" class="btn-apply">Áp dụng bộ lọc</button>
                     </div>
                 </div>
             </div>
@@ -554,269 +670,7 @@
             </div>
 
             <div class="product-grid" id="productList">
-                <!-- SẢN PHẨM 1: Mắt Biếc -->
-                <div class="product-card">
-                    <div class="card-image-wrapper">
-                        <span class="badge-sku">MS001</span>
-                        <span class="badge-category">Văn học & Tiểu thuyết</span>
-                        <img src="images/mat-biec.jpg" alt="Mắt Biếc" class="book-cover">
-                    </div>
-                    <div class="card-info">
-                        <p class="author">Tác giả: Nguyễn Nhật Ánh</p>
-                        <h3 class="book-title">Mắt Biếc</h3>
-                        <p class="book-desc">Tác phẩm xúc động viết về mối tình thầm lặng của chàng trai làng Đo Đo tên Ngạn...</p>
-                        <div class="price-row">
-                            <span class="price">Giá: 100.000 đ</span>
-                            <span class="cover-type">Bìa mềm</span>
-                        </div>
-                    </div>
-                    <div class="card-actions">
-                        <button class="btn-detail" type="button"><img src="images/seedetail.png" width="16" height="16"> Chi tiết</button>
-                        <button class="btn-buy" type="button"><img src="images/buy.png" width="16" height="16"> Chọn mua</button>
-                    </div>
-                </div>
-
-                <!-- SẢN PHẨM 2: Nhà Giả Kim -->
-                <div class="product-card">
-                    <div class="card-image-wrapper">
-                        <span class="badge-sku">MS002</span>
-                        <span class="badge-category">Văn học & Tiểu thuyết</span>
-                        <img src="images/nha-gia-kim.jpg" alt="Nhà Giả Kim" class="book-cover">
-                    </div>
-                    <div class="card-info">
-                        <p class="author">Tác giả: Paulo Coelho</p>
-                        <h3 class="book-title">Nhà Giả Kim (The Alchemist)</h3>
-                        <p class="book-desc">Cuốn sách như một câu chuyện cổ tích giản dị, sâu sắc về hành trình theo đuổi...</p>
-                        <div class="price-row">
-                            <span class="price">Giá: 85.000 đ</span>
-                            <span class="cover-type">Bìa mềm</span>
-                        </div>
-                    </div>
-                    <div class="card-actions">
-                        <button class="btn-detail" type="button"><img src="images/seedetail.png" width="16" height="16"> Chi tiết</button>
-                        <button class="btn-buy" type="button"><img src="images/buy.png" width="16" height="16"> Chọn mua</button>
-                    </div>
-                </div>
-
-                <!-- SẢN PHẨM 3: Lập Trình Web Toàn Diện -->
-                <div class="product-card">
-                    <div class="card-image-wrapper">
-                        <span class="badge-sku">MS003</span>
-                        <span class="badge-category">Công nghệ thông tin & Lập trình</span>
-                        <img src="images/lap-trinh-web.jpg" alt="Lập Trình Web Toàn Diện" class="book-cover">
-                    </div>
-                    <div class="card-info">
-                        <p class="author">Tác giả: Nguyễn Văn Minh & Nhóm Tác Giả SGU</p>
-                        <h3 class="book-title">Lập Trình Web Toàn Diện (HTML5, CSS...)</h3>
-                        <p class="book-desc">Giáo trình chuẩn cho sinh viên Khoa Công nghệ Thông tin, hướng dẫn từ kiến thức cơ...</p>
-                        <div class="price-row">
-                            <span class="price">Giá: 180.000 đ</span>
-                            <span class="cover-type">Bìa cứng</span>
-                        </div>
-                    </div>
-                    <div class="card-actions">
-                        <button class="btn-detail" type="button"><img src="images/seedetail.png" width="16" height="16"> Chi tiết</button>
-                        <button class="btn-buy" type="button"><img src="images/buy.png" width="16" height="16"> Chọn mua</button>
-                    </div>
-                </div>
-
-                <!-- SẢN PHẨM 3: Lập Trình Web Toàn Diện -->
-                <div class="product-card">
-                    <div class="card-image-wrapper">
-                        <span class="badge-sku">MS003</span>
-                        <span class="badge-category">Công nghệ thông tin & Lập trình</span>
-                        <img src="images/lap-trinh-web.jpg" alt="Lập Trình Web Toàn Diện" class="book-cover">
-                    </div>
-                    <div class="card-info">
-                        <p class="author">Tác giả: Nguyễn Văn Minh & Nhóm Tác Giả SGU</p>
-                        <h3 class="book-title">Lập Trình Web Toàn Diện (HTML5, CSS...)</h3>
-                        <p class="book-desc">Giáo trình chuẩn cho sinh viên Khoa Công nghệ Thông tin, hướng dẫn từ kiến thức cơ...</p>
-                        <div class="price-row">
-                            <span class="price">Giá: 180.000 đ</span>
-                            <span class="cover-type">Bìa cứng</span>
-                        </div>
-                    </div>
-                    <div class="card-actions">
-                        <button class="btn-detail" type="button"><img src="images/seedetail.png" width="16" height="16"> Chi tiết</button>
-                        <button class="btn-buy" type="button"><img src="images/buy.png" width="16" height="16"> Chọn mua</button>
-                    </div>
-                </div>
-
-                <!-- SẢN PHẨM 3: Lập Trình Web Toàn Diện -->
-                <div class="product-card">
-                    <div class="card-image-wrapper">
-                        <span class="badge-sku">MS003</span>
-                        <span class="badge-category">Công nghệ thông tin & Lập trình</span>
-                        <img src="images/lap-trinh-web.jpg" alt="Lập Trình Web Toàn Diện" class="book-cover">
-                    </div>
-                    <div class="card-info">
-                        <p class="author">Tác giả: Nguyễn Văn Minh & Nhóm Tác Giả SGU</p>
-                        <h3 class="book-title">Lập Trình Web Toàn Diện (HTML5, CSS...)</h3>
-                        <p class="book-desc">Giáo trình chuẩn cho sinh viên Khoa Công nghệ Thông tin, hướng dẫn từ kiến thức cơ...</p>
-                        <div class="price-row">
-                            <span class="price">Giá: 180.000 đ</span>
-                            <span class="cover-type">Bìa cứng</span>
-                        </div>
-                    </div>
-                    <div class="card-actions">
-                        <button class="btn-detail" type="button"><img src="images/seedetail.png" width="16" height="16"> Chi tiết</button>
-                        <button class="btn-buy" type="button"><img src="images/buy.png" width="16" height="16"> Chọn mua</button>
-                    </div>  
-                </div>
-
-                <!-- SẢN PHẨM 3: Lập Trình Web Toàn Diện -->
-                <div class="product-card">
-                    <div class="card-image-wrapper">
-                        <span class="badge-sku">MS003</span>
-                        <span class="badge-category">Công nghệ thông tin & Lập trình</span>
-                        <img src="images/lap-trinh-web.jpg" alt="Lập Trình Web Toàn Diện" class="book-cover">
-                    </div>
-                    <div class="card-info">
-                        <p class="author">Tác giả: Nguyễn Văn Minh & Nhóm Tác Giả SGU</p>
-                        <h3 class="book-title">Lập Trình Web Toàn Diện (HTML5, CSS...)</h3>
-                        <p class="book-desc">Giáo trình chuẩn cho sinh viên Khoa Công nghệ Thông tin, hướng dẫn từ kiến thức cơ...</p>
-                        <div class="price-row">
-                            <span class="price">Giá: 180.000 đ</span>
-                            <span class="cover-type">Bìa cứng</span>
-                        </div>
-                    </div>
-                    <div class="card-actions">
-                        <button class="btn-detail" type="button"><img src="images/seedetail.png" width="16" height="16"> Chi tiết</button>
-                        <button class="btn-buy" type="button"><img src="images/buy.png" width="16" height="16"> Chọn mua</button>
-                    </div>  
-                </div>
-
-                <!-- SẢN PHẨM 3: Lập Trình Web Toàn Diện -->
-                <div class="product-card">
-                    <div class="card-image-wrapper">
-                        <span class="badge-sku">MS003</span>
-                        <span class="badge-category">Công nghệ thông tin & Lập trình</span>
-                        <img src="images/lap-trinh-web.jpg" alt="Lập Trình Web Toàn Diện" class="book-cover">
-                    </div>
-                    <div class="card-info">
-                        <p class="author">Tác giả: Nguyễn Văn Minh & Nhóm Tác Giả SGU</p>
-                        <h3 class="book-title">Lập Trình Web Toàn Diện (HTML5, CSS...)</h3>
-                        <p class="book-desc">Giáo trình chuẩn cho sinh viên Khoa Công nghệ Thông tin, hướng dẫn từ kiến thức cơ...</p>
-                        <div class="price-row">
-                            <span class="price">Giá: 180.000 đ</span>
-                            <span class="cover-type">Bìa cứng</span>
-                        </div>
-                    </div>
-                    <div class="card-actions">
-                        <button class="btn-detail" type="button"><img src="images/seedetail.png" width="16" height="16"> Chi tiết</button>
-                        <button class="btn-buy" type="button"><img src="images/buy.png" width="16" height="16"> Chọn mua</button>
-                    </div>  
-                </div>
-
-                <!-- SẢN PHẨM 3: Lập Trình Web Toàn Diện -->
-                <div class="product-card">
-                    <div class="card-image-wrapper">
-                        <span class="badge-sku">MS003</span>
-                        <span class="badge-category">Công nghệ thông tin & Lập trình</span>
-                        <img src="images/lap-trinh-web.jpg" alt="Lập Trình Web Toàn Diện" class="book-cover">
-                    </div>
-                    <div class="card-info">
-                        <p class="author">Tác giả: Nguyễn Văn Minh & Nhóm Tác Giả SGU</p>
-                        <h3 class="book-title">Lập Trình Web Toàn Diện (HTML5, CSS...)</h3>
-                        <p class="book-desc">Giáo trình chuẩn cho sinh viên Khoa Công nghệ Thông tin, hướng dẫn từ kiến thức cơ...</p>
-                        <div class="price-row">
-                            <span class="price">Giá: 180.000 đ</span>
-                            <span class="cover-type">Bìa cứng</span>
-                        </div>
-                    </div>
-                    <div class="card-actions">
-                        <button class="btn-detail" type="button"><img src="images/seedetail.png" width="16" height="16"> Chi tiết</button>
-                        <button class="btn-buy" type="button"><img src="images/buy.png" width="16" height="16"> Chọn mua</button>
-                    </div>  
-                </div>
-
-                <!-- SẢN PHẨM 3: Lập Trình Web Toàn Diện -->
-                <div class="product-card">
-                    <div class="card-image-wrapper">
-                        <span class="badge-sku">MS003</span>
-                        <span class="badge-category">Công nghệ thông tin & Lập trình</span>
-                        <img src="images/lap-trinh-web.jpg" alt="Lập Trình Web Toàn Diện" class="book-cover">
-                    </div>
-                    <div class="card-info">
-                        <p class="author">Tác giả: Nguyễn Văn Minh & Nhóm Tác Giả SGU</p>
-                        <h3 class="book-title">Lập Trình Web Toàn Diện (HTML5, CSS...)</h3>
-                        <p class="book-desc">Giáo trình chuẩn cho sinh viên Khoa Công nghệ Thông tin, hướng dẫn từ kiến thức cơ...</p>
-                        <div class="price-row">
-                            <span class="price">Giá: 180.000 đ</span>
-                            <span class="cover-type">Bìa cứng</span>
-                        </div>
-                    </div>
-                    <div class="card-actions">
-                        <button class="btn-detail" type="button"><img src="images/seedetail.png" width="16" height="16"> Chi tiết</button>
-                        <button class="btn-buy" type="button"><img src="images/buy.png" width="16" height="16"> Chọn mua</button>
-                    </div>  
-                </div>
-
-                <!-- SẢN PHẨM 3: Lập Trình Web Toàn Diện -->
-                <div class="product-card">
-                    <div class="card-image-wrapper">
-                        <span class="badge-sku">MS003</span>
-                        <span class="badge-category">Công nghệ thông tin & Lập trình</span>
-                        <img src="images/lap-trinh-web.jpg" alt="Lập Trình Web Toàn Diện" class="book-cover">
-                    </div>
-                    <div class="card-info">
-                        <p class="author">Tác giả: Nguyễn Văn Minh & Nhóm Tác Giả SGU</p>
-                        <h3 class="book-title">Lập Trình Web Toàn Diện (HTML5, CSS...)</h3>
-                        <p class="book-desc">Giáo trình chuẩn cho sinh viên Khoa Công nghệ Thông tin, hướng dẫn từ kiến thức cơ...</p>
-                        <div class="price-row">
-                            <span class="price">Giá: 180.000 đ</span>
-                            <span class="cover-type">Bìa cứng</span>
-                        </div>
-                    </div>
-                    <div class="card-actions">
-                        <button class="btn-detail" type="button"><img src="images/seedetail.png" width="16" height="16"> Chi tiết</button>
-                        <button class="btn-buy" type="button"><img src="images/buy.png" width="16" height="16"> Chọn mua</button>
-                    </div>  
-                </div>
-
-                <!-- SẢN PHẨM 3: Lập Trình Web Toàn Diện -->
-                <div class="product-card">
-                    <div class="card-image-wrapper">
-                        <span class="badge-sku">MS003</span>
-                        <span class="badge-category">Công nghệ thông tin & Lập trình</span>
-                        <img src="images/lap-trinh-web.jpg" alt="Lập Trình Web Toàn Diện" class="book-cover">
-                    </div>
-                    <div class="card-info">
-                        <p class="author">Tác giả: Nguyễn Văn Minh & Nhóm Tác Giả SGU</p>
-                        <h3 class="book-title">Lập Trình Web Toàn Diện (HTML5, CSS...)</h3>
-                        <p class="book-desc">Giáo trình chuẩn cho sinh viên Khoa Công nghệ Thông tin, hướng dẫn từ kiến thức cơ...</p>
-                        <div class="price-row">
-                            <span class="price">Giá: 180.000 đ</span>
-                            <span class="cover-type">Bìa cứng</span>
-                        </div>
-                    </div>
-                    <div class="card-actions">
-                        <button class="btn-detail" type="button"><img src="images/seedetail.png" width="16" height="16"> Chi tiết</button>
-                        <button class="btn-buy" type="button"><img src="images/buy.png" width="16" height="16"> Chọn mua</button>
-                    </div>  
-                </div>
-
-                <!-- SẢN PHẨM 3: Lập Trình Web Toàn Diện -->
-                <div class="product-card">
-                    <div class="card-image-wrapper">
-                        <span class="badge-sku">MS003</span>
-                        <span class="badge-category">Công nghệ thông tin & Lập trình</span>
-                        <img src="images/lap-trinh-web.jpg" alt="Lập Trình Web Toàn Diện" class="book-cover">
-                    </div>
-                    <div class="card-info">
-                        <p class="author">Tác giả: Nguyễn Văn Minh & Nhóm Tác Giả SGU</p>
-                        <h3 class="book-title">Lập Trình Web Toàn Diện (HTML5, CSS...)</h3>
-                        <p class="book-desc">Giáo trình chuẩn cho sinh viên Khoa Công nghệ Thông tin, hướng dẫn từ kiến thức cơ...</p>
-                        <div class="price-row">
-                            <span class="price">Giá: 180.000 đ</span>
-                            <span class="cover-type">Bìa cứng</span>
-                        </div>
-                    </div>
-                    <div class="card-actions">
-                        <button class="btn-detail" type="button"><img src="images/seedetail.png" width="16" height="16"> Chi tiết</button>
-                        <button class="btn-buy" type="button"><img src="images/buy.png" width="16" height="16"> Chọn mua</button>
-                    </div>  
-                </div>
+                
             </div>
 
             <!-- Phân trang (Pagination) -->
