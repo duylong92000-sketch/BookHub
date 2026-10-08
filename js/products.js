@@ -1,77 +1,50 @@
 document.addEventListener('DOMContentLoaded', function() {
     
-    const searchInput = document.getElementById('searchInput');
-    const btnSearch = document.getElementById('btnSearch');
-
-    // Hàm thực hiện tìm kiếm (Giữ nguyên như cũ)
-    function searchBooks() {
-        const keyword = searchInput.value.toLowerCase().trim();
-        const productCards = document.querySelectorAll('.product-card');
-        
-        productCards.forEach(card => {
-            const titleElement = card.querySelector('.book-title');
-            const titleText = titleElement.innerText.toLowerCase();
-            
-            if (titleText.includes(keyword)) {
-                card.style.display = 'flex';
-            } else {
-                card.style.display = 'none';
-            }
-        });
-    }
-
-    // 1. TÌM KIẾM NGAY KHI GÕ (Real-time search)
-    // Bắt sự kiện 'input' để chạy hàm searchBooks liên tục mỗi khi phím được gõ
-    searchInput.addEventListener('input', searchBooks);
-
-    // 2. Giữ lại sự kiện click cho nút Kính lúp (dành cho thói quen của một số người dùng)
-    btnSearch.addEventListener('click', searchBooks);
-
-    // Bạn có thể xóa phần bắt sự kiện phím Enter đi vì sự kiện 'input' đã bao trọn việc xử lý khi gõ phím rồi.
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    
-    // 1. TẠO DỮ LIỆU MÔ PHỎNG (MOCK DATA) - 24 CUỐN SÁCH
-    // Mình dùng vòng lặp để tạo nhanh 24 cuốn sách. Sau này bạn chỉ cần sửa mảng này bằng dữ liệu thật.
+    // 1. DỮ LIỆU MÔ PHỎNG (MOCK DATA)
     const books = [];
-    const sampleCovers = ["images/mat-biec.jpg", "images/nha-gia-kim.jpg", "images/lap-trinh-web.jpg"];
-    const sampleCategories = ["Văn học & Tiểu thuyết", "Văn học & Tiểu thuyết", "Công nghệ thông tin"];
-    const sampleTitles = ["Mắt Biếc", "Nhà Giả Kim", "Lập Trình Web Toàn Diện"];
+    const sampleCovers = ["images/mat-biec.jpg", "images/nha-gia-kim.jpg", "images/lap-trinh-web.jpg", "images/nha-gia-kim.jpg"];
+    const sampleCategories = ["Văn học & Tiểu thuyết", "Kinh tế & Quản trị", "Công nghệ thông tin", "Sách thiếu nhi"];
+    const sampleTitles = ["Mắt Biếc", "Cha Giàu Cha Nghèo", "Lập Trình Web Toàn Diện", "Dế Mèn Phiêu Lưu Ký"];
 
     for (let i = 1; i <= 24; i++) {
-        let index = i % 3; // Lặp lại 3 mẫu sách ngẫu nhiên
+        let index = i % sampleCategories.length;
         books.push({
-            sku: "MS" + String(i).padStart(3, '0'), // Tạo mã MS001 -> MS024
+            sku: "MS" + String(i).padStart(3, '0'),
             category: sampleCategories[index],
             image: sampleCovers[index],
-            title: sampleTitles[index] + " - Bản đặc biệt " + i,
+            title: sampleTitles[index] + " - Bản " + i,
             author: "Tác giả số " + i,
-            desc: "Đây là mô tả tóm tắt cho cuốn sách số " + i + ". Tác phẩm mang lại nhiều giá trị sâu sắc...",
-            price: (50 + i * 10) + ".000 đ",
-            coverType: i % 2 === 0 ? "Bìa cứng" : "Bìa mềm"
-        });
-    }
+            desc: "Đây là mô tả tóm tắt cho cuốn sách số " + i + "...",
+            price: (50 + i * 10),
+            coverType: i % 2 === 0 ? "Bìa cứng" : "Bìa mềm",
+            inStock: i % 4 !== 0   // cứ 4 cuốn thì 1 cuốn hết hàng
+    });
+}   
 
-    // 2. CẤU HÌNH PHÂN TRANG
+    // Mảng này chứa sách đã được lọc. Ban đầu chưa lọc nên nó chứa toàn bộ sách.
+    let filteredBooks = [...books]; 
+
+    // 2. CẤU HÌNH PHÂN TRANG VÀ RENDER GIAO DIỆN
     let currentPage = 1;
-    const itemsPerPage = 12; // 12 cuốn 1 trang
-    const totalPages = Math.ceil(books.length / itemsPerPage); // Tự động tính ra 2 trang
+    const itemsPerPage = 12; 
+    let totalPages = Math.ceil(filteredBooks.length / itemsPerPage); 
 
     const productList = document.getElementById('productList');
     const paginationContainer = document.querySelector('.pagination');
 
-    // 3. HÀM RENDER (ĐỔ SẢN PHẨM RA MÀN HÌNH)
     function renderProducts(page) {
-        // Xóa sạch khung chứa HTML cũ (những gì bạn viết tay trong file index.html sẽ bị xóa đi để nhường chỗ cho JS)
         productList.innerHTML = '';
+        
+        // Nếu không có sách nào thỏa điều kiện lọc
+        if (filteredBooks.length === 0) {
+            productList.innerHTML = '<p style="grid-column: span 4; text-align: center; margin-top: 20px;">Không tìm thấy cuốn sách nào phù hợp.</p>';
+            return;
+        }
 
-        // Tính toán lấy từ cuốn số mấy đến số mấy
         const startIndex = (page - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
-        const booksToDisplay = books.slice(startIndex, endIndex);
+        const booksToDisplay = filteredBooks.slice(startIndex, endIndex);
 
-        // Đổ thẻ HTML cho từng cuốn sách
         booksToDisplay.forEach(book => {
             const cardHTML = `
                 <div class="product-card">
@@ -85,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <h3 class="book-title">${book.title}</h3>
                         <p class="book-desc">${book.desc}</p>
                         <div class="price-row">
-                            <span class="price">Giá: ${book.price}</span>
+                            <span class="price">Giá: ${book.price}.000 đ</span>
                             <span class="cover-type">${book.coverType}</span>
                         </div>
                     </div>
@@ -99,45 +72,29 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 4. HÀM RENDER NÚT PHÂN TRANG VÀ GẮN SỰ KIỆN CLICK
     function renderPagination() {
-        paginationContainer.innerHTML = ''; // Xóa các nút phân trang cứng trong HTML
+        paginationContainer.innerHTML = ''; 
+        if (filteredBooks.length === 0) return; // Ẩn phân trang nếu không có kết quả
 
-        // Tạo nút "Trước"
         const prevDisabled = currentPage === 1 ? 'disabled' : '';
         paginationContainer.insertAdjacentHTML('beforeend', `<button class="page-btn ${prevDisabled}" id="prevBtn" type="button">&lt; Trước</button>`);
 
-        // Tạo các nút số trang (1, 2)
         for (let i = 1; i <= totalPages; i++) {
             const activeClass = i === currentPage ? 'active' : '';
             paginationContainer.insertAdjacentHTML('beforeend', `<button class="page-btn ${activeClass}" data-page="${i}" type="button">${i}</button>`);
         }
 
-        // Tạo nút "Sau"
         const nextDisabled = currentPage === totalPages ? 'disabled' : '';
         paginationContainer.insertAdjacentHTML('beforeend', `<button class="page-btn ${nextDisabled}" id="nextBtn" type="button">Sau &gt;</button>`);
 
-        // --- Gắn sự kiện click cho các nút vừa tạo ---
-        
-        // Bấm nút "Trước"
-        document.getElementById('prevBtn').addEventListener('click', () => {
-            if (currentPage > 1) {
-                currentPage--;
-                updateView();
-            }
-        });
+        // Gắn sự kiện cho các nút phân trang
+        const btnPrev = document.getElementById('prevBtn');
+        if(btnPrev) btnPrev.addEventListener('click', () => { if (currentPage > 1) { currentPage--; updateView(); } });
 
-        // Bấm nút "Sau"
-        document.getElementById('nextBtn').addEventListener('click', () => {
-            if (currentPage < totalPages) {
-                currentPage++;
-                updateView();
-            }
-        });
+        const btnNext = document.getElementById('nextBtn');
+        if(btnNext) btnNext.addEventListener('click', () => { if (currentPage < totalPages) { currentPage++; updateView(); } });
 
-        // Bấm vào từng con số (1 hoặc 2)
-        const pageNumbers = paginationContainer.querySelectorAll('.page-btn[data-page]');
-        pageNumbers.forEach(btn => {
+        paginationContainer.querySelectorAll('.page-btn[data-page]').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 currentPage = parseInt(e.target.getAttribute('data-page'));
                 updateView();
@@ -145,27 +102,21 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 5. HÀM CẬP NHẬT TOÀN BỘ GIAO DIỆN MỖI KHI ĐỔI TRANG
     function updateView() {
         renderProducts(currentPage);
         renderPagination();
-        // Cuộn trang lên trên cùng để khách hàng xem từ đầu danh sách
-        window.scrollTo({ top: 0, behavior: 'smooth' }); 
     }
 
-    // Khởi chạy khi vừa vào trang web (hiển thị trang 1)
+    // Chạy render lần đầu tiên
     updateView();
 
-});
 
-const btnAdvancedFilter = document.getElementById('btnAdvancedFilter');
+    // 3. XỬ LÝ MENU TÌM KIẾM NÂNG CAO (ĐÓNG/MỞ)
+    const btnAdvancedFilter = document.getElementById('btnAdvancedFilter');
     const advDropdown = document.getElementById('advanced-search-dropdown');
 
-    // Mở/Đóng menu khi click vào nút chiếc phễu
     btnAdvancedFilter.addEventListener('click', function(e) {
-        e.stopPropagation(); // Ngăn sự kiện lan truyền lên body
-        
-        // Kiểm tra xem menu đang ẩn hay hiện
+        e.stopPropagation(); 
         if (advDropdown.style.display === 'block') {
             advDropdown.style.display = 'none';
         } else {
@@ -173,14 +124,61 @@ const btnAdvancedFilter = document.getElementById('btnAdvancedFilter');
         }
     });
 
-    // Ẩn menu khi nhấp chuột ra vùng bất kỳ ngoài dropdown
     document.addEventListener('click', function(e) {
         if (!advDropdown.contains(e.target) && e.target !== btnAdvancedFilter) {
             advDropdown.style.display = 'none';
         }
     });
 
-    // Ngăn việc click bên trong dropdown bị đóng menu
     advDropdown.addEventListener('click', function(e) {
         e.stopPropagation(); 
     });
+
+
+    // 4. CHỨC NĂNG LỌC SÁCH THỰC TẾ
+    // 4. CHỨC NĂNG LỌC SÁCH
+const searchInput = document.getElementById('searchInput');
+const btnSearch = document.getElementById('btnSearch');
+const btnApplyFilter = document.getElementById('btnApplyFilter');
+
+const categoryMap = {
+    vanhoc:   'Văn học & Tiểu thuyết',
+    kinhte:   'Kinh tế & Quản trị',
+    cntt:     'Công nghệ thông tin',
+    thieunhi: 'Sách thiếu nhi'
+};
+
+function executeFilter(closeMenu = false) {
+    const keyword = searchInput.value.toLowerCase().trim();
+    const selectedCategory = document.getElementById('adv-category').value;
+    const minPrice = parseInt(document.getElementById('adv-price-min').value) || 0;
+    const maxPrice = parseInt(document.getElementById('adv-price-max').value) || Infinity;
+    const onlyInStock = document.getElementById('adv-in-stock').checked;
+
+    filteredBooks = books.filter(book => {
+        const matchKeyword = book.title.toLowerCase().includes(keyword)
+                          || book.author.toLowerCase().includes(keyword);
+
+        const matchCategory = selectedCategory === 'all'
+                           || book.category === categoryMap[selectedCategory];
+
+        const price = book.price * 1000;
+        const matchPrice = price >= minPrice && price <= maxPrice;
+
+        const matchStock = !onlyInStock || book.inStock;
+
+        return matchKeyword && matchCategory && matchPrice && matchStock;
+    });
+
+    totalPages = Math.ceil(filteredBooks.length / itemsPerPage) || 1;
+    currentPage = 1;
+    updateView();
+
+    if (closeMenu) advDropdown.style.display = 'none';
+}
+
+searchInput.addEventListener('input', () => executeFilter(false));
+btnSearch.addEventListener('click', () => executeFilter(false));
+btnApplyFilter.addEventListener('click', () => executeFilter(true));
+
+});
