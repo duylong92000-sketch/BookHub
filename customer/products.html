@@ -1,44 +1,796 @@
-// Chờ cho giao diện HTML tải xong thì mới chạy JS
-document.addEventListener('DOMContentLoaded', function() {
-    
-    const searchInput = document.getElementById('searchInput');
-    const btnSearch = document.getElementById('btnSearch');
-
-    // Hàm thực hiện tìm kiếm
-    function searchBooks() {
-        // 1. Lấy từ khóa và chuyển hết về chữ thường (để tìm kiếm không phân biệt hoa/thường)
-        const keyword = searchInput.value.toLowerCase().trim();
-        
-        // 2. Lấy danh sách tất cả các khung sản phẩm trên màn hình
-        const productCards = document.querySelectorAll('.product-card');
-        
-        // 3. Duyệt qua từng sản phẩm
-        productCards.forEach(card => {
-            // Lấy tên sách bên trong khung hiện tại
-            const titleElement = card.querySelector('.book-title');
-            const titleText = titleElement.innerText.toLowerCase();
-            
-            // 4. Kiểm tra xem tên sách có chứa từ khóa không
-            if (titleText.includes(keyword)) {
-                card.style.display = 'flex'; // Hiển thị lại nếu khớp (dùng flex vì CSS ở trên set flex)
-            } else {
-                card.style.display = 'none'; // Ẩn đi nếu không khớp
-            }
-        });
-    }
-
-    // Gắn sự kiện khi click vào nút kính lúp
-    btnSearch.addEventListener('click', searchBooks);
-
-    // Mẹo nhỏ: Cho phép nhấn phím Enter trong ô input để tìm kiếm luôn
-    searchInput.addEventListener('keypress', function(event) {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-            searchBooks();
+<!DOCTYPE html>
+<html lang="vi">
+    <head> 
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>SGU - BookHub</title>
+        <style>
+        :root {
+        --brown-dark: #4A3525;
+        --brown: hsl(16, 25%, 38%);
+        --brown-focus: #5D4037;
+        --border: #D7CCC8;
+        --accent: #C65102;
+        --accent-dark: #A04000;
         }
-    });
 
-    // Tùy chọn nâng cao: Tìm kiếm real-time (gõ tới đâu lọc tới đó)
-    // Nếu muốn dùng thì bỏ comment dòng bên dưới:
-    // searchInput.addEventListener('input', searchBooks);
-});
+        /* Reset lề trang để header phủ kín mép màn hình */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        /* ========== HEADER ========== */
+        /* Bố cục header tràn toàn bộ bề ngang */
+        header.top {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 40px;
+            background-color: #F5EFEB;
+            border-bottom: 1px solid #E6DEC9;
+            font-family: sans-serif;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        /* Cụm bên trái: Gom Logo và Danh mục lại cạnh nhau */
+        .left-section {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;                
+        }
+
+        .logo-section h1 {
+            font-size: 1.5em;
+            line-height: 1.1;
+            margin: 0;
+            color: var(--brown-dark);
+        }
+
+        .logo-section p {
+            font-size: 0.85em;
+            color: var(--brown);
+            margin: 0;
+        }
+
+        /* Khối nút Danh mục */
+        .category-wrapper {
+            position: relative;
+        }
+
+        .category-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #ffffff;
+            border: 1px solid var(--border);
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--brown-dark);
+            transition: all 0.1s ease;
+        }
+
+        .category-btn:hover {
+            border-color: var(--brown-focus);
+            background-color: #FAF6F0;
+        }
+
+        /* Bảng chọn thể loại đổ xuống khi hover */
+        .category-dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+            background-color: #ffffff;
+            min-width: 220px;
+            border-radius: 6px;
+            box-shadow: 0 4px 15px rgba(74, 53, 37, 0.12);
+            padding: 8px 0;
+            list-style: none;
+        }
+
+        .category-dropdown li a {
+            display: block;
+            padding: 10px 16px;
+            color: var(--brown-dark);
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .category-dropdown li a:hover {
+            background-color: #F7F4EE;
+            color: #000;
+        }
+
+        .category-dropdown::before { /* cầu nối lấp khe 5px để không mất hover */
+            content: "";
+            position: absolute;
+            top: -5px;
+            left: 0;
+            right: 0;
+            height: 5px;
+        }
+
+        .category-wrapper:hover .category-dropdown {
+            display: block;
+        }
+
+        /* ========== THANH TÌM KIẾM ========== */
+        /* Khối bao bọc thanh tìm kiếm */
+        .search-wrapper {
+            display: flex;
+            align-items: center;
+            background-color: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            width: 550px; /* Độ rộng của thanh tìm kiếm, có thể điều chỉnh tùy ý */
+            transition: border-color 0.2s ease;
+            position: relative;
+        }
+
+        /* Hiệu ứng khi người dùng click vào ô nhập liệu */
+        .search-wrapper:focus-within {
+            border-color: var(--brown-focus); /* Đổi màu viền đậm hơn giống hiệu ứng hover của Danh mục */
+            box-shadow: 0 0 0 2px rgba(93, 64, 55, 0.1); /* Thêm quầng sáng nhẹ */
+        }
+
+        /* Ô nhập chữ (Input) */
+        .search-input {
+            flex: 1; /* Cho phép ô input chiếm hết không gian trống còn lại */
+            border: none; /* Bỏ viền mặc định của input vì wrapper đã có viền */
+            padding: 8px 14px;
+            outline: none; /* Bỏ viền đen viền xanh mặc định khi click của trình duyệt */
+            font-size: 14px;
+            color: var(--brown-dark);
+            background-color: transparent;
+        }
+
+        .search-input::placeholder {
+            color: #A1887F; /* Màu chữ mờ cho placeholder */
+        }
+
+        /* Nút kính lúp */
+        .search-btn, .filter-btn {
+            background-color: transparent;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.1s ease;
+        }
+
+        .filter-btn {
+            border-right: 1px solid var(--border); /* Ngăn cách nút lọc và nút tìm kiếm */
+        }
+
+        .search-btn {
+            border-radius: 0 5px 5px 0; /* Khớp góc bo của wrapper (đã bỏ overflow:hidden) */
+        }
+
+        .search-btn:hover {
+            background-color: #FAF6F0;
+        }
+
+        /* ========== MENU TÌM KIẾM NÂNG CAO ========== */
+        .adv-dropdown {
+            display: none; /* Ẩn mặc định, JS sẽ bật lên */
+            position: absolute;
+            top: calc(100% + 10px); /* Nằm ngay dưới thanh tìm kiếm, cách 10px */
+            right: 0; /* Căn sát mép phải thanh tìm kiếm */
+            background-color: #ffffff;
+            width: 320px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(74, 53, 37, 0.15);
+            border: 1px solid var(--border);
+            padding: 20px;
+            z-index: 1001; /* Z-index cao để đè lên các hình ảnh sản phẩm ở main */
+            font-family: sans-serif;
+        }
+
+        .adv-title {
+            margin: 0 0 15px 0;
+            color: var(--brown-dark);
+            font-size: 16px;
+            border-bottom: 1px solid #E6DEC9;
+            padding-bottom: 10px;
+        }
+
+        .adv-group {
+            margin-bottom: 15px;
+        }
+
+        .adv-group label {
+            display: block;
+            font-size: 13px;
+            color: var(--brown);
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .adv-group select, .price-inputs input {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 14px;
+            color: var(--brown-dark);
+            outline: none;
+        }
+
+        .adv-group select:focus, .price-inputs input:focus {
+            border-color: var(--brown-focus);
+        }
+
+        .price-inputs {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        .btn-apply {
+            width: 100%;
+            background-color: var(--accent); /* Đồng bộ với nút Mua hàng */
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-apply:hover {
+            background-color: var(--accent-dark);
+        }
+
+        /* ========== CỤM NÚT BÊN PHẢI ========== */
+        /* Cụm bên phải: Các nút chức năng */
+        .action-section {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .action-section a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--brown-dark);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .action-section a:hover {
+            color: #8D6E63;
+        }
+
+        /* ========== MAIN - DANH SÁCH SẢN PHẨM ========== */
+        /* Main */
+        /* Tổng quan khu vực Main */
+        .main-content {
+            padding: 20px 40px;
+            max-width: 1400px; /* Giới hạn chiều rộng để không bị loãng trên màn hình to */
+            margin: 0 auto;
+        }
+
+        .page-header {
+            margin-bottom: 20px;
+        }
+
+        .page-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+            color: var(--brown-dark);
+        }
+
+        /* Khung lưới Grid 4 cột */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        /* Định dạng từng Card sản phẩm */
+        .product-card {
+            background-color: #f2f2f2; /* Màu nền xám nhạt như trong ảnh */
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Xử lý hình ảnh và nhãn (Badge) */
+        .card-image-wrapper {
+            position: relative;
+            width: 100%;
+            height: 200px; /* Cố định chiều cao vùng ảnh */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .book-cover {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        /* Các nhãn dán góc trên */
+        .badge-sku, .badge-category {
+            position: absolute;
+            top: 0;
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            color: white;
+        }
+
+        .badge-sku {
+            left: 0;
+            background-color: #333; /* Đen cho mã sách */
+        }
+
+        .badge-category {
+            left: 0;
+            top: 25px; /* Dịch xuống dưới mã sách */
+            background-color: #D2B48C; /* Vàng nâu nhạt cho thể loại */
+            color: #333;
+        }
+
+        /* Căn chỉnh chữ bên trong Card */
+        .card-info {
+            flex: 1; /* Đẩy cụm nút bấm xuống đáy card */
+        }
+
+        .author {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .book-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .book-desc {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3; /* Cắt chuỗi nếu quá 3 dòng */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+
+        .price {
+            color: #C0392B; /* Đỏ đô cho giá tiền */
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .cover-type {
+            color: #999;
+        }
+
+        /* Cụm 2 nút bấm dưới cùng */
+        .card-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-detail, .btn-buy {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .btn-detail {
+            background-color: transparent;
+            border: 1px solid #ccc;
+            color: #555;
+        }
+
+        .btn-buy {
+            background-color: var(--accent); /* Cam cháy giống ảnh mẫu */
+            color: white;
+        }
+
+        /* ========== PHÂN TRANG ========== */
+        /* Phân trang */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .page-btn {
+            padding: 8px 12px;
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .page-btn.active {
+            background-color: var(--accent);
+            color: white;
+            border-radius: 4px;
+        }
+
+        .page-btn.disabled,
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* ========== FOOTER ========== */
+        /* Dành cho Footer */
+        /* Tổng thể Footer */
+        .site-footer {
+            background-color: #2b2825; /* Nền xám đen đặc trưng */
+            color: #c9c9c9; /* Màu chữ xám nhạt dễ đọc */
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.4;
+            margin-top: 50px;
+        }
+
+        /* Khối nội dung chính (chia 2 cột) */
+        .footer-main {
+            display: flex;
+            justify-content: space-between; /* Đẩy 2 cột ra 2 sát lề */
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 25px 40px 15px;
+        }
+
+        /* --- Cột bên trái --- */
+        .brand-info {
+            max-width: 450px;
+            margin-left: 50px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 12px;
+        }
+
+        .logo-text {
+            color: #ffffff;
+            font-family: 'Times New Roman', serif; /* Font chữ có chân cho Logo */
+            font-size: 22px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .project-desc {
+            margin-bottom: 12px;
+        }
+
+        .project-desc strong {
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .faculty-info {
+            color: #f7ca18; /* Màu vàng cho dòng chữ Khoa */
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+        }
+
+        /* --- Cột bên phải --- */
+        .contact-info {
+            max-width: 600px;
+            margin-right: 50px;
+        }
+
+        .footer-heading {
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .contact-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .contact-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .contact-list li img {
+            margin-top: 5px; /* Đẩy icon xuống một chút để cân bằng với dòng chữ có nhiều dòng */
+        }
+
+        /* --- Thanh bản quyền dưới cùng --- */
+        .footer-bottom {
+            border-top: 1px solid #43403d; /* Đường viền phân cách mỏng */
+            padding: 12px 40px;
+            display: flex;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+            font-size: 13px;
+            color: #9a9a9a;
+        }
+
+        /* ========== BỔ SUNG ========== */
+        .btn-buy:disabled {
+            background-color: #bbb;
+            cursor: not-allowed;
+        }
+
+        .empty-message {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 1100px) {
+            header.top { flex-wrap: wrap; gap: 10px; padding: 10px 20px; }
+            .left-section { flex-wrap: wrap; }
+            .search-wrapper { width: 100%; min-width: 280px; }
+            .product-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 800px) {
+            .main-content { padding: 20px; }
+            .product-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-main { flex-direction: column; gap: 20px; padding: 25px 20px 15px; }
+            .brand-info, .contact-info { margin: 0; }
+            .footer-bottom { flex-direction: column; gap: 5px; padding: 12px 20px; }
+        }
+        @media (max-width: 520px) {
+            .product-grid { grid-template-columns: 1fr; }
+        }
+
+        </style>
+
+    </head>
+
+    <body data-page="products">
+        <header class="top">
+            <!-- Logo + Danh mục sách -->
+            <div class="left-section">
+                <div class="logo-section">
+                    <img src="../images/logoweb.png" alt="Logo" width="50" height="50">
+                    <div>
+                        <h1>BOOKHUB</h1>
+                        <p>Chắp cánh tri thức</p>
+                    </div>
+                </div>
+
+                <!-- Danh mục thể loại-->
+                <div class="category-wrapper">
+                    <button class="category-btn" type="button">
+                        <img src="../images/category.png" alt="Danh mục" width="20" height="20">
+                        <span>Danh mục</span>
+                    </button>
+
+                    <!-- Bảng danh mục-->
+                    <ul class="category-dropdown">
+                        <li><a href="products.html">Tất cả sách</a></li>
+                        <li><a href="products.html?category=vanhoc">Văn học &amp; Tiểu thuyết</a></li>
+                        <li><a href="products.html?category=kinhte">Kinh tế &amp; Quản trị</a></li>
+                        <li><a href="products.html?category=cntt">Công nghệ thông tin</a></li>
+                        <li><a href="products.html?category=thieunhi">Sách thiếu nhi</a></li>
+                    </ul>
+                </div>
+
+                <!-- Thanh tìm kiếm -->
+                <div class="search-wrapper">
+                    <input type="text" id="searchInput" placeholder="Nhập tên sách hoặc tác giả" class="search-input" aria-label="Tìm kiếm sách">
+
+                    <button type="button" id="btnAdvancedFilter" class="filter-btn" title="Tìm kiếm nâng cao" aria-label="Tìm kiếm nâng cao" aria-expanded="false">
+                        <img src="../images/filter.png" alt="Lọc" width="20" height="20">
+                    </button>
+
+                    <button type="button" id="btnSearch" class="search-btn" aria-label="Tìm kiếm">
+                        <img src="../images/icon-search.png" alt="Tìm kiếm" width="20" height="20">
+                    </button>
+                    <!-- Khối Dropdown chứa Mức giá và Phân loại (Ẩn mặc định, hiển thị khi bấm nút Filter) -->
+                    <div id="advanced-search-dropdown" class="adv-dropdown">
+                        <!-- Các ô input giá và select danh mục -->
+                        <h4 class="adv-title">Tìm kiếm nâng cao</h4>
+                            <!-- Tiêu chí 1: Thể loại -->
+                            <div class="adv-group">
+                                <label for="adv-category">Thể loại sách:</label>
+                                <select id="adv-category">
+                                    <option value="all">Tất cả thể loại</option>
+                                    <option value="vanhoc">Văn học & Tiểu thuyết</option>
+                                    <option value="kinhte">Kinh tế & Quản trị</option>
+                                    <option value="cntt">Công nghệ thông tin</option>
+                                    <option value="thieunhi">Sách thiếu nhi</option>
+                                </select>
+                            </div>
+
+                            <!-- Tiêu chí 2: Mức giá -->
+                            <div class="adv-group">
+                                <label>Mức giá (VNĐ):</label>
+                                <div class="price-inputs">
+                                    <input type="number" id="adv-price-min" placeholder="Từ" min="0">
+                                    <span>-</span>
+                                    <input type="number" id="adv-price-max" placeholder="Đến" min="0">
+                                </div>
+                            </div>
+
+                            <!-- Tiêu chí 3: Tình trạng -->
+                            <div class="adv-group checkbox-group">
+                                <input type="checkbox" id="adv-in-stock">
+                                <label for="adv-in-stock">Chỉ hiện sản phẩm còn hàng</label>
+                            </div>
+
+                            <!-- Nút áp dụng -->
+                            <button type="button" id="btnApplyFilter" class="btn-apply">Áp dụng bộ lọc</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cụm phải: Chức năng -->
+            <div class="action-section">
+                <a href="cart.html" target="_self" title="Xem giỏ hàng">
+                    <img src="../images/cart.png" alt="Giỏ hàng" width="20" height="20">
+                    Giỏ hàng
+                </a>
+
+                <a href="login.html" target="_self" title="Đăng nhập">
+                    <img src="../images/login.png" alt="Đăng nhập" width="20" height="20">
+                    Đăng nhập
+                </a>
+
+                <a href="register.html" target="_self" title="Đăng ký tài khoản">
+                    <img src="../images/signup.png" alt="Đăng ký tài khoản" width="20" height="20">
+                    Đăng ký
+                </a>
+
+                <a href="../admin/login.html" target="_self" title="Đi đến khu vực admin">
+                    <img src="../images/admin.png" alt="Admin" width="20" height="20">
+                    Admin
+                </a>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- Tiêu đề trang -->
+            <div class="page-header">
+                <h2 class="page-title">
+                    <img src="../images/allbooks.png" alt="Icon" width="20" height="20">
+                    Tất cả sách
+                </h2>
+            </div>
+
+            <div class="product-grid" id="productList">
+                
+            </div>
+
+            <!-- Phân trang (Pagination) -->
+            <div class="pagination">
+                <!-- Nút phân trang do products.js tạo -->
+            </div>
+        </main>
+
+        <!-- Phần chân trang -->
+        <footer class="site-footer">
+            <div class="footer-main">
+                <!-- Cột trái: Thông tin Đồ án & Logo -->
+                <div class="footer-col brand-info">
+                    <div class="footer-logo">
+                        <!-- Icon màu cam, bạn thay src bằng ảnh thực tế -->
+                        <img src="../images/logoweb.png" alt="Nhà Sách SGU" width="40" height="40">
+                        <span class="logo-text">NHÀ SÁCH SGU</span>
+                    </div>
+                    <p class="project-desc">
+                        Hệ thống website cửa hàng bán sách trực tuyến<br>
+                        Đồ án môn <strong>Lập trình web và ứng dụng</strong>.
+                    </p>
+                    <p class="faculty-info">
+                        
+                        Khoa Công nghệ Thông tin - SGU
+                    </p>
+                </div>
+
+                <!-- Cột phải: Thông tin Liên hệ -->
+                <div class="footer-col contact-info">
+                    <h3 class="footer-heading">THÔNG TIN LIÊN HỆ</h3>
+                    <ul class="contact-list">
+                        <li>
+                            <img src="../images/location.png" alt="Location" width="16" height="16">
+                            <span>Đại học Sài Gòn (SGU), 273 An Dương Vương,<br>Q.5, TP.HCM</span>
+                        </li>
+                        <li>
+                            <img src="../images/phone.png" alt="Phone" width="16" height="16">
+                            <span>(028) 3835 4409 - Khoa CNTT</span>
+                        </li>
+                        <li>
+                            <img src="../images/mail.png" alt="Email" width="16" height="16">
+                            <span>cntt@sgu.edu.vn</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Thanh bản quyền dưới cùng -->
+            <div class="footer-bottom">
+                <div class="bottom-left">
+                    © 2025 Nhóm Sinh Viên Thực Hiện Đồ Án Lập Trình Web - Đại học Sài Gòn (SGU). All rights reserved.
+                </div>
+                <div class="bottom-right">
+                    Đại học Sài Gòn • Khoa CNTT
+                </div>
+            </div>
+        </footer>
+
+        <script src="../js/products.js"></script>
+    </body>
+
+</html>
