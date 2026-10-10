@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Chi tiết sách - BookHub</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+        <style>
+            :root {
+                --brown-dark: #4A3525;
+                --brown: hsl(16, 25%, 38%);
+                --brown-focus: #5D4037;
+                --border: #D7CCC8;
+                --accent: #C65102;
+                --accent-dark: #A04000;
+            }
+
+            /* Reset lề trang để header phủ kín mép màn hình */
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: Arial, sans-serif;
+            }
+
+            /* ========== HEADER ========== */
+            /* Bố cục header tràn toàn bộ bề ngang */
+            header.top {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px 40px;
+                background-color: #F5EFEB;
+                border-bottom: 1px solid #E6DEC9;
+                font-family: sans-serif;
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+            }
+
+            /* Cụm bên trái: Gom Logo và Danh mục lại cạnh nhau */
+            .left-section {
+                display: flex;
+                align-items: center;
+                gap: 25px;
+            }
+
+            .logo-section {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .logo-section h1 {
+                font-size: 1.5em;
+                line-height: 1.1;
+                margin: 0;
+                color: var(--brown-dark);
+            }
+
+            .logo-section p {
+                font-size: 0.85em;
+                color: var(--brown);
+                margin: 0;
+            }
+
+            /* Khối nút Danh mục */
+            .category-wrapper {
+                position: relative;
+            }
+
+            .category-btn {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                background-color: #ffffff;
+                border: 1px solid var(--border);
+                padding: 8px 14px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 14px;
+                font-weight: bold;
+                color: var(--brown-dark);
+                transition: all 0.1s ease;
+            }
+
+            .category-btn:hover {
+                border-color: var(--brown-focus);
+                background-color: #FAF6F0;
+            }
+
+            /* Bảng chọn thể loại đổ xuống khi hover */
+            .category-dropdown {
+                display: none;
+                position: absolute;
+                top: calc(100% + 5px);
+                left: 0;
+                background-color: #ffffff;
+                min-width: 220px;
+                border-radius: 6px;
+                box-shadow: 0 4px 15px rgba(74, 53, 37, 0.12);
+                padding: 8px 0;
+                list-style: none;
+            }
+
+            .category-dropdown li a {
+                display: block;
+                padding: 10px 16px;
+                color: var(--brown-dark);
+                text-decoration: none;
+                font-size: 14px;
+            }
+
+            .category-dropdown li a:hover {
+                background-color: #F7F4EE;
+                color: #000;
+            }
+
+            .category-dropdown::before { /* cầu nối lấp khe 5px để không mất hover */
+                content: "";
+                position: absolute;
+                top: -5px;
+                left: 0;
+                right: 0;
+                height: 5px;
+            }
+
+            .category-wrapper:hover .category-dropdown {
+                display: block;
+            }
+
+            /* ========== THANH TÌM KIẾM ========== */
+            /* Khối bao bọc thanh tìm kiếm */
+            .search-wrapper {
+                display: flex;
+                align-items: center;
+                background-color: #ffffff;
+                border: 1px solid var(--border);
+                border-radius: 6px;
+                width: 550px; /* Độ rộng của thanh tìm kiếm, có thể điều chỉnh tùy ý */
+                transition: border-color 0.2s ease;
+                position: relative;
+            }
+
+            /* Hiệu ứng khi người dùng click vào ô nhập liệu */
+            .search-wrapper:focus-within {
+                border-color: var(--brown-focus); /* Đổi màu viền đậm hơn giống hiệu ứng hover của Danh mục */
+                box-shadow: 0 0 0 2px rgba(93, 64, 55, 0.1); /* Thêm quầng sáng nhẹ */
+            }
+
+            /* Ô nhập chữ (Input) */
+            .search-input {
+                flex: 1; /* Cho phép ô input chiếm hết không gian trống còn lại */
+                border: none; /* Bỏ viền mặc định của input vì wrapper đã có viền */
+                padding: 8px 14px;
+                outline: none; /* Bỏ viền đen viền xanh mặc định khi click của trình duyệt */
+                font-size: 14px;
+                color: var(--brown-dark);
+                background-color: transparent;
+            }
+
+            .search-input::placeholder {
+                color: #A1887F; /* Màu chữ mờ cho placeholder */
+            }
+
+            /* Nút kính lúp */
+            .search-btn {
+                background-color: transparent;
+                border: none;
+                padding: 8px 12px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background-color 0.1s ease;
+            }
+
+            .search-btn {
+                border-radius: 0 5px 5px 0; /* Khớp góc bo của wrapper (đã bỏ overflow:hidden) */
+            }
+
+            .search-btn:hover {
+                background-color: #FAF6F0;
+            }
+
+            /* ========== CỤM NÚT BÊN PHẢI ========== */
+            /* Cụm bên phải: Các nút chức năng */
+            .action-section {
+                display: flex;
+                align-items: center;
+                gap: 25px;
+            }
+
+            .action-section a {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                text-decoration: none;
+                color: var(--brown-dark);
+                font-size: 14px;
+                font-weight: 500;
+            }
+
+            .action-section a:hover {
+                color: #8D6E63;
+            }
+
+            /* ========== TRANG CHI TIẾT SÁCH ========== */
+            a.logo-section { text-decoration: none; }
+
+            .back-link {
+                display: inline-block;
+                margin-bottom: 20px;
+                color: var(--brown);
+                text-decoration: none;
+                font-size: 14px;
+            }
+            .back-link:hover { color: var(--brown-dark); }
+            .detail-card {
+                display: grid;
+                grid-template-columns: minmax(280px, 430px) 1fr;
+                gap: 50px;
+                padding: 40px 50px;
+                background-color: #FAF6F0;
+                border: 1px solid #E6DEC9;
+                border-radius: 20px;
+            }
+
+            /* Cột trái: ảnh bìa + cam kết */
+            .detail-cover { position: relative; }
+            .detail-cover img {
+                display: block;
+                width: 100%;
+                aspect-ratio: 3 / 4;
+                object-fit: cover;
+                border-radius: 14px;
+                box-shadow: 0 10px 30px rgba(74, 53, 37, 0.18);
+            }
+            .detail-cover .badge-sku,
+            .detail-cover .badge-category { top: 14px; font-size: 13px; padding: 5px 10px; }
+            .detail-cover .badge-sku { left: 14px; }
+            .detail-cover .badge-category {
+                left: auto;
+                right: 14px;
+                background-color: #F8E7B0;
+                color: var(--brown-dark);
+            }
+
+            .trust-row {
+                display: flex;
+                justify-content: space-around;
+                gap: 10px;
+                margin-top: 20px;
+                font-size: 14px;
+                color: #666;
+            }
+            .trust-item { display: flex; align-items: center; gap: 8px; }
+            .trust-item svg {
+                width: 18px;
+                height: 18px;
+                fill: none;
+                stroke-width: 2;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+            }
+            .trust-item.green svg { stroke: #1a9a6c; }
+            .trust-item.orange svg { stroke: var(--accent); }
+
+            /* Cột phải: thông tin */
+            .detail-category {
+                color: var(--accent-dark);
+                font-size: 14px;
+                font-weight: bold;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+            }
+            .detail-title {
+                font-family: 'Playfair Display', Georgia, serif;
+                font-size: 2.6rem;
+                line-height: 1.15;
+                color: #2b1d12;
+                margin: 6px 0 8px;
+            }
+            .detail-author { color: #777; }
+            .detail-author strong { color: #222; }
+
+            .price-box {
+                margin: 22px 0;
+                padding: 16px 20px;
+                border: 1px solid #E6DEC9;
+                border-radius: 12px;
+                background-color: rgba(255, 255, 255, 0.6);
+            }
+            .price-top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 20px; }
+            .price-label { font-size: 13px; letter-spacing: 1px; text-transform: uppercase; color: #666; }
+            .price-note { font-size: 13px; color: #aaa; }
+            .price-main { margin-top: 4px; font-size: 2.2rem; font-weight: bold; color: var(--accent-dark); }
+
+            .meta-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 18px 20px;
+                margin-bottom: 28px;
+            }
+            .meta-label { display: block; font-size: 12px; color: #aaa; }
+            .meta-value { font-size: 15px; font-weight: 600; color: #222; }
+            .in-stock { color: #0f8a5f; }
+            .out-stock { color: #c0392b; }
+
+            .section-title {
+                font-family: 'Playfair Display', Georgia, serif;
+                font-size: 1.3rem;
+                color: #2b1d12;
+            }
+            .summary-box {
+                margin-top: 12px;
+                padding: 18px 20px;
+                border: 1px solid #EFE7D8;
+                border-radius: 10px;
+                background-color: rgba(255, 255, 255, 0.5);
+                color: #555;
+                line-height: 1.7;
+            }
+
+            .purchase-row { display: flex; align-items: center; gap: 15px; margin: 32px 0 16px; }
+            .qty-label { font-size: 14px; font-weight: bold; }
+            .qty-box {
+                display: flex;
+                align-items: center;
+                border: 1px solid #E6DEC9;
+                border-radius: 8px;
+                background-color: #fff;
+            }
+            .qty-box button {
+                width: 36px;
+                height: 36px;
+                border: none;
+                background: none;
+                font-size: 16px;
+                cursor: pointer;
+            }
+            .qty-box button:disabled { opacity: 0.35; cursor: not-allowed; }
+            .qty-box span { min-width: 40px; text-align: center; font-weight: bold; }
+            .qty-max { font-size: 14px; color: #aaa; }
+
+            .btn-add-cart {
+                width: 100%;
+                padding: 14px;
+                border: none;
+                border-radius: 10px;
+                background-color: var(--accent-dark);
+                color: #fff;
+                font-size: 15px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: background-color 0.2s;
+            }
+            .btn-add-cart:hover { background-color: #843300; }
+            .btn-add-cart:disabled { background-color: #bbb; cursor: not-allowed; }
+
+            /* Sách gợi ý */
+            .related { margin-top: 60px; }
+            .related-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+            .related-note { font-size: 14px; color: #999; }
+            .related-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+            .related-card {
+                display: block;
+                padding: 14px;
+                border: 1px solid #E6DEC9;
+                border-radius: 12px;
+                background-color: #FAF6F0;
+                color: inherit;
+                text-decoration: none;
+                transition: transform 0.15s;
+            }
+            .related-card:hover { transform: translateY(-3px); }
+            .related-card img {
+                display: block;
+                width: 100%;
+                aspect-ratio: 3 / 4;
+                object-fit: cover;
+                border-radius: 8px;
+                margin-bottom: 10px;
+            }
+            .related-title { font-size: 15px; font-weight: bold; color: #222; }
+            .related-author { font-size: 13px; color: #999; }
+            .related-price { margin-top: 4px; font-weight: bold; color: #222; }
+
+            @media (max-width: 1100px) {
+                .detail-card { gap: 30px; padding: 30px; }
+                .related-grid { grid-template-columns: repeat(3, 1fr); }
+            }
+            @media (max-width: 800px) {
+                .detail-card { grid-template-columns: 1fr; }
+                .detail-title { font-size: 2rem; }
+                .meta-grid { grid-template-columns: repeat(2, 1fr); }
+                .related-grid { grid-template-columns: repeat(2, 1fr); }
+            }
+            @media (max-width: 520px) {
+                .detail-card { padding: 20px; }
+                .purchase-row { flex-wrap: wrap; }
+            }
+            /* ========== MAIN - DANH SÁCH SẢN PHẨM ========== */
+            /* Main */
+            /* Tổng quan khu vực Main */
+            .main-content {
+                padding: 20px 40px;
+                max-width: 1400px; /* Giới hạn chiều rộng để không bị loãng trên màn hình to */
+                margin: 0 auto;
+            }
+
+            /* Các nhãn dán góc trên */
+            .badge-sku, .badge-category {
+                position: absolute;
+                top: 0;
+                font-size: 11px;
+                padding: 3px 8px;
+                border-radius: 4px;
+                color: white;
+            }
+
+            .badge-sku {
+                left: 0;
+                background-color: #333; /* Đen cho mã sách */
+            }
+
+            .badge-category {
+                left: 0;
+                top: 25px; /* Dịch xuống dưới mã sách */
+                background-color: #D2B48C; /* Vàng nâu nhạt cho thể loại */
+                color: #333;
+            }
+
+            /* ========== FOOTER ========== */
+            /* Dành cho Footer */
+            /* Tổng thể Footer */
+            .site-footer {
+                background-color: #2b2825; /* Nền xám đen đặc trưng */
+                color: #c9c9c9; /* Màu chữ xám nhạt dễ đọc */
+                font-family: Arial, sans-serif;
+                font-size: 14px;
+                line-height: 1.4;
+                margin-top: 50px;
+            }
+
+            /* Khối nội dung chính (chia 2 cột) */
+            .footer-main {
+                display: flex;
+                justify-content: space-between; /* Đẩy 2 cột ra 2 sát lề */
+                max-width: 1400px;
+                margin: 0 auto;
+                padding: 25px 40px 15px;
+            }
+
+            /* --- Cột bên trái --- */
+            .brand-info {
+                max-width: 450px;
+                margin-left: 50px;
+            }
+
+            .footer-logo {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                margin-bottom: 12px;
+            }
+
+            .logo-text {
+                color: #ffffff;
+                font-family: 'Times New Roman', serif; /* Font chữ có chân cho Logo */
+                font-size: 22px;
+                font-weight: bold;
+                letter-spacing: 1px;
+            }
+
+            .project-desc {
+                margin-bottom: 12px;
+            }
+
+            .project-desc strong {
+                color: #ffffff;
+                font-weight: bold;
+            }
+
+            .faculty-info {
+                color: #f7ca18; /* Màu vàng cho dòng chữ Khoa */
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-weight: bold;
+            }
+
+            /* --- Cột bên phải --- */
+            .contact-info {
+                max-width: 600px;
+                margin-right: 50px;
+            }
+
+            .footer-heading {
+                color: #ffffff;
+                font-size: 16px;
+                font-weight: bold;
+                margin-bottom: 20px;
+                text-transform: uppercase;
+            }
+
+            .contact-list {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .contact-list li {
+                display: flex;
+                align-items: flex-start;
+                gap: 12px;
+                margin-bottom: 15px;
+            }
+
+            .contact-list li img {
+                margin-top: 5px; /* Đẩy icon xuống một chút để cân bằng với dòng chữ có nhiều dòng */
+            }
+
+            /* --- Thanh bản quyền dưới cùng --- */
+            .footer-bottom {
+                border-top: 1px solid #43403d; /* Đường viền phân cách mỏng */
+                padding: 12px 40px;
+                display: flex;
+                justify-content: space-between;
+                max-width: 1400px;
+                margin: 0 auto;
+                font-size: 13px;
+                color: #9a9a9a;
+            }
+
+            /* ========== BỔ SUNG ========== */
+
+            .empty-message {
+                grid-column: 1 / -1;
+                text-align: center;
+                margin-top: 20px;
+            }
+
+            /* ========== RESPONSIVE ========== */
+            @media (max-width: 1100px) {
+                header.top { flex-wrap: wrap; gap: 10px; padding: 10px 20px; }
+                .left-section { flex-wrap: wrap; }
+                .search-wrapper { width: 100%; min-width: 280px; }
+            }
+            @media (max-width: 800px) {
+                .main-content { padding: 20px; }
+                .footer-main { flex-direction: column; gap: 20px; padding: 25px 20px 15px; }
+                .brand-info, .contact-info { margin: 0; }
+                .footer-bottom { flex-direction: column; gap: 5px; padding: 12px 20px; }
+            }
+        </style>
+    </head>
+
+    <body data-page="detail">
+        <header class="top">
+            <!-- Logo + Danh mục sách -->
+            <div class="left-section">
+                <a class="logo-section" href="../index.html" title="Về trang chủ">
+                    <img src="../images/logoweb.png" alt="Logo" width="50" height="50">
+                    <div>
+                        <h1>BOOKHUB</h1>
+                        <p>Chắp cánh tri thức</p>
+                    </div>
+                </a>
+
+                <!-- Danh mục thể loại-->
+                <div class="category-wrapper">
+                    <button class="category-btn" type="button">
+                        <img src="../images/category.png" alt="Danh mục" width="20" height="20">
+                        <span>Danh mục</span>
+                    </button>
+
+                    <!-- Bảng danh mục-->
+                    <ul class="category-dropdown">
+                        <li><a href="products.html">Tất cả sách</a></li>
+                        <li><a href="products.html?category=vanhoc">Văn học &amp; Tiểu thuyết</a></li>
+                        <li><a href="products.html?category=kinhte">Kinh tế &amp; Quản trị</a></li>
+                        <li><a href="products.html?category=cntt">Công nghệ thông tin</a></li>
+                        <li><a href="products.html?category=thieunhi">Sách thiếu nhi</a></li>
+                    </ul>
+                </div>
+
+                <!-- Thanh tìm kiếm -->
+                <div class="search-wrapper">
+                    <input type="text" id="searchInput" placeholder="Nhập tên sách hoặc tác giả" class="search-input" aria-label="Tìm kiếm sách">
+
+                    <button type="button" id="btnSearch" class="search-btn" aria-label="Tìm kiếm">
+                        <img src="../images/icon-search.png" alt="Tìm kiếm" width="20" height="20">
+                    </button>
+                    </div>
+            </div>
+
+            <!-- Cụm phải: Chức năng -->
+            <div class="action-section">
+                <a href="cart.html" target="_self" title="Xem giỏ hàng">
+                    <img src="../images/cart.png" alt="Giỏ hàng" width="20" height="20">
+                    Giỏ hàng
+                </a>
+
+                <a href="login.html" target="_self" title="Đăng nhập">
+                    <img src="../images/login.png" alt="Đăng nhập" width="20" height="20">
+                    Đăng nhập
+                </a>
+
+                <a href="register.html" target="_self" title="Đăng ký tài khoản">
+                    <img src="../images/signup.png" alt="Đăng ký tài khoản" width="20" height="20">
+                    Đăng ký
+                </a>
+
+                <a href="../admin/login.html" target="_self" title="Đi đến khu vực admin">
+                    <img src="../images/admin.png" alt="Admin" width="20" height="20">
+                    Admin
+                </a>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <a href="products.html" class="back-link">&larr; Quay lại danh sách sách</a>
+
+            <!-- Nội dung do js/product-detail.js tạo -->
+            <div id="detailContainer"></div>
+
+            <section class="related" id="relatedSection" hidden>
+                <div class="related-header">
+                    <h2 class="section-title">Sách cùng thể loại gợi ý</h2>
+                    <span class="related-note" id="relatedNote"></span>
+                </div>
+                <div class="related-grid" id="relatedList"></div>
+            </section>
+        </main>
+
+        <footer class="site-footer">
+            <div class="footer-main">
+                <!-- Cột trái: Thông tin Đồ án & Logo -->
+                <div class="footer-col brand-info">
+                    <div class="footer-logo">
+                        <!-- Icon màu cam, bạn thay src bằng ảnh thực tế -->
+                        <img src="../images/logoweb.png" alt="Nhà Sách SGU" width="40" height="40">
+                        <span class="logo-text">NHÀ SÁCH SGU</span>
+                    </div>
+                    <p class="project-desc">
+                        Hệ thống website cửa hàng bán sách trực tuyến<br>
+                        Đồ án môn <strong>Lập trình web và ứng dụng</strong>.
+                    </p>
+                    <p class="faculty-info">
+                        
+                        Khoa Công nghệ Thông tin - SGU
+                    </p>
+                </div>
+
+                <!-- Cột phải: Thông tin Liên hệ -->
+                <div class="footer-col contact-info">
+                    <h3 class="footer-heading">THÔNG TIN LIÊN HỆ</h3>
+                    <ul class="contact-list">
+                        <li>
+                            <img src="../images/location.png" alt="Location" width="16" height="16">
+                            <span>Đại học Sài Gòn (SGU), 273 An Dương Vương,<br>Q.5, TP.HCM</span>
+                        </li>
+                        <li>
+                            <img src="../images/phone.png" alt="Phone" width="16" height="16">
+                            <span>(028) 3835 4409 - Khoa CNTT</span>
+                        </li>
+                        <li>
+                            <img src="../images/mail.png" alt="Email" width="16" height="16">
+                            <span>cntt@sgu.edu.vn</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Thanh bản quyền dưới cùng -->
+            <div class="footer-bottom">
+                <div class="bottom-left">
+                    © 2025 Nhóm Sinh Viên Thực Hiện Đồ Án Lập Trình Web - Đại học Sài Gòn (SGU). All rights reserved.
+                </div>
+                <div class="bottom-right">
+                    Đại học Sài Gòn • Khoa CNTT
+                </div>
+            </div>
+        </footer>
+
+        <script src="../js/products.js"></script>
+    </body>
+
+</html>
