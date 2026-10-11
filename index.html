@@ -4,6 +4,9 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>SGU - BookHub</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@600;700&display=swap" rel="stylesheet">
         <style>
             :root {
                 --brown-dark: #4A3525;
@@ -12,6 +15,7 @@
                 --border: #D7CCC8;
                 --accent: #C65102;
                 --accent-dark: #A04000;
+                --font-heading: 'Be Vietnam Pro', 'Segoe UI', Arial, sans-serif;
             }
 
             /* Reset lề trang để header phủ kín mép màn hình */
@@ -219,9 +223,9 @@
             .hero-title {
                 max-width: 700px;
                 margin: 12px auto;
-                font-family: 'Playfair Display', Georgia, serif;
-                font-size: 2.8rem;
-                line-height: 1.2;
+                font-family: var(--font-heading);
+                font-size: 2.6rem;
+                line-height: 1.3;   /* tiếng Việt nhiều dấu chồng nên cần giãn dòng rộng hơn */
             }
             .hero-text { max-width: 560px; margin: 0 auto 28px; line-height: 1.6; opacity: 0.9; }
             .hero-btn {
@@ -257,8 +261,9 @@
                 text-decoration: none;
                 transition: transform 0.15s;
             }
+            .section-title    { font-family: var(--font-heading); }
             .category-card:hover { transform: translateY(-3px); }
-            .category-card h3 { font-family: 'Playfair Display', Georgia, serif; font-size: 1.15rem; color: #2b1d12; }
+            .category-card h3 { font-family: var(--font-heading); font-size: 1.15rem; color: #2b1d12; }
             .category-card p { margin: 6px 0 14px; font-size: 14px; color: #999; }
             .category-arrow { font-size: 14px; font-weight: bold; color: var(--accent-dark); }
 
