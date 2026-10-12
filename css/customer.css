@@ -6,6 +6,19 @@
     --accent: #C65102;
     --accent-dark: #A04000;
     --font-heading: 'Be Vietnam Pro', 'Segoe UI', Arial, sans-serif;
+
+    /* Bảng màu xanh lá cho giỏ hàng / thanh toán / đơn hàng */
+    --green: #3f6248;
+    --green-dark: #2e4d36;
+    --green-light: #e7efe8;
+    --beige: #f5f1e8;
+    --cream: #eee7d7;
+    --white: #ffffff;
+    --text: #39443d;
+    --gray: #777f79;
+    --red: #b94b4b;
+    --orange: #c68a25;
+    --shadow: 0 5px 18px rgba(47, 78, 56, 0.10);
 }
 
 /* Reset lề trang để header phủ kín mép màn hình */
@@ -780,28 +793,6 @@ a.logo-section { text-decoration: none; }
 }
 
 /* ========== FOOTER ========== */
-:root {
-    --green: #3f6248;
-    --green-dark: #2e4d36;
-    --green-light: #e7efe8;
-
-    --beige: #f5f1e8;
-    --cream: #eee7d7;
-
-    --white: #ffffff;
-
-    --text: #39443d;
-    --gray: #777f79;
-
-    --border: #ddd8cc;
-
-    --red: #b94b4b;
-    --orange: #c68a25;
-
-    --shadow: 0 5px 18px rgba(47, 78, 56, 0.10);
-}
-
-/*footer*/
 .site-footer {
     background-color: #2b2825;
     color: #c9c9c9;
@@ -931,38 +922,9 @@ a.logo-section { text-decoration: none; }
     .category-grid { grid-template-columns: 1fr; }
     .detail-card { padding: 20px; }
     .purchase-row { flex-wrap: wrap; }
-@media (max-width: 560px) {
-
-    .admin-content {
-        width: calc(100% - 24px);
-
-        margin-top: 18px;
-    }
-
-    .admin-logo h2 {
-        font-size: 23px;
-    }
-
-    .admin-user span {
-        display: none;
-    }
-
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-
-        gap: 15px;
-    }
-
-    .panel {
-        padding: 16px;
-    }
-
-    .search-input {
-        width: 100%;
-
-        min-width: 0;
-    }
 }
+
+/* ========== GIỎ HÀNG / THANH TOÁN / ĐƠN HÀNG ========== */
 .cart-page,
 .checkout-page,
 .success-order-page,
@@ -1211,6 +1173,7 @@ a.logo-section { text-decoration: none; }
 
 /* =========================================================
    CART.HTML
+========================================================= */
 
 .cart-layout {
     display: grid;
