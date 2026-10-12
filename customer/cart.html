@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookHub - Giỏ hàng</title>
+
+    <link rel="stylesheet" href="../css/customer.css">
+</head>
+
+<body class="cart-page">
+
+<header class="site-header">
+    <div class="container header-inner">
+        <a href="../index.html" class="brand">BookHub</a>
+
+        <nav class="customer-nav">
+            <a href="../index.html">Trang chủ</a>
+            <a href="products.html">Sản phẩm</a>
+            <a href="cart.html" class="active">
+                Giỏ hàng
+                <span class="cart-count" id="cartCount">0</span>
+            </a>
+            <a href="orders.html">Đơn hàng</a>
+            <a href="profile.html">Tài khoản</a>
+        </nav>
+    </div>
+</header>
+
+<main class="customer-main">
+    <div class="container">
+
+        <div class="page-heading-customer">
+            <h1>Giỏ hàng của bạn</h1>
+            <p>Kiểm tra sản phẩm trước khi tiến hành đặt hàng.</p>
+        </div>
+
+        <div class="empty-state" id="emptyCart" hidden>
+            <h2>Giỏ hàng đang trống</h2>
+            <p>Bạn chưa có sản phẩm nào trong giỏ hàng.</p>
+
+            <a href="products.html" class="action-btn action-btn-primary">
+                Tiếp tục mua sắm
+            </a>
+        </div>
+
+        <div class="cart-layout" id="cartContent">
+
+            <section class="cart-card">
+
+                <div class="cart-card-heading">
+                    <h2>Sản phẩm</h2>
+
+                    <button
+                        type="button"
+                        class="action-btn action-btn-danger"
+                        id="clearCartBtn">
+                        Xóa toàn bộ
+                    </button>
+                </div>
+
+                <div class="cart-table-wrap">
+                    <table class="cart-table">
+
+                        <thead>
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th>Đơn giá</th>
+                            <th>Số lượng</th>
+                            <th>Thành tiền</th>
+                            <th>Thao tác</th>
+                        </tr>
+                        </thead>
+
+                        <tbody id="cartTableBody"></tbody>
+
+                    </table>
+                </div>
+
+                <div class="cart-bottom-actions">
+                    <a href="products.html"
+                       class="action-btn action-btn-secondary">
+                        ← Tiếp tục mua hàng
+                    </a>
+                </div>
+
+            </section>
+
+            <aside class="cart-summary">
+
+                <h2>Tổng đơn hàng</h2>
+
+                <div class="summary-row">
+                    <span>Tạm tính</span>
+                    <strong id="cartSubtotal">0 ₫</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Phí vận chuyển</span>
+                    <strong>Miễn phí</strong>
+                </div>
+
+                <div class="summary-row summary-total">
+                    <span>Tổng cộng</span>
+                    <strong id="cartTotal">0 ₫</strong>
+                </div>
+
+                <a
+                    href="checkout.html"
+                    class="action-btn action-btn-primary action-btn-block"
+                    id="checkoutBtn">
+                    Tiến hành đặt hàng
+                </a>
+
+            </aside>
+
+        </div>
+    </div>
+</main>
+
+<footer class="site-footer">
+
+    <div class="footer-main">
+
+        <div class="brand-info">
+
+            <div class="footer-logo">
+                <span class="logo-text">BOOKHUB</span>
+            </div>
+
+            <div class="project-desc">
+                <strong>Website quản lý cửa hàng sách BookHub</strong>
+                <p>Đồ án môn Lập trình Web và Ứng dụng.</p>
+            </div>
+
+            <div class="faculty-info">
+                Khoa Công Nghệ Thông Tin - SGU
+            </div>
+
+        </div>
+
+        <div class="contact-info">
+
+            <div class="footer-heading">
+                THÔNG TIN
+            </div>
+
+            <ul class="contact-list">
+                <li>Trường Đại học Sài Gòn</li>
+                <li>Website bán và quản lý sách BookHub</li>
+            </ul>
+
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        <span>© 2026 BookHub</span>
+        <span>Nhóm đồ án Lập trình Web</span>
+    </div>
+
+</footer>
+
+<script src="../js/cart.js"></script>
+
+</body>
+</html>
