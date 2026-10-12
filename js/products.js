@@ -1,5 +1,5 @@
 /* ==========================================================
-   BOOKHUB - main.js (một file JS duy nhất cho cả website)
+   BOOKHUB - products.js (một file JS duy nhất cho cả website)
 
    Mục lục:
      A. Dữ liệu & hàm dùng chung
@@ -23,38 +23,6 @@ const escapeHtml = (str) => String(str).replace(/[&<>"']/g, (c) => (
 
 const formatPrice = (n) => n.toLocaleString('vi-VN') + ' đ';
 
-function createMockBooks(total = 24) {
-    const samples = [
-        { category: 'Văn học & Tiểu thuyết', title: 'Mắt Biếc',                image: SITE_ROOT + 'images/mat-biec.jpg' },
-        { category: 'Văn học & Tiểu thuyết', title: 'Nhà Giả Kim',             image: SITE_ROOT + 'images/nha-gia-kim.jpg' },
-        { category: 'Công nghệ thông tin',   title: 'Lập Trình Web Toàn Diện', image: SITE_ROOT + 'images/lap-trinh-web.jpg' },
-        { category: 'Kinh tế & Quản trị',    title: 'Cha Giàu Cha Nghèo',      image: SITE_ROOT + 'images/nha-gia-kim.jpg' },
-        { category: 'Sách thiếu nhi',        title: 'Dế Mèn Phiêu Lưu Ký',     image: SITE_ROOT + 'images/mat-biec.jpg' }
-    ];
-    const publishers = ['NXB Trẻ', 'NXB Kim Đồng', 'NXB Văn Học', 'NXB Giáo Dục'];
-
-    return Array.from({ length: total }, (_, k) => {
-        const i = k + 1;
-        const sample = samples[i % samples.length];
-        return {
-            sku: 'MS' + String(i).padStart(3, '0'),
-            category: sample.category,
-            image: sample.image,
-            title: `${sample.title} - Bản ${i}`,
-            author: `Tác giả số ${i}`,
-            desc: `Đây là mô tả tóm tắt cho cuốn sách số ${i}...`,
-            price: (50 + i * 10) * 1000,            // đơn vị: đồng
-            coverType: i % 2 === 0 ? 'Bìa cứng' : 'Bìa mềm',
-            publisher: publishers[i % publishers.length],
-            year: 2015 + (i % 10),
-            pages: 150 + i * 12,
-            stock: i % 4 === 0 ? 0 : 10 + i         // số cuốn trong kho (0 = hết hàng)
-        };
-    });
-}
-
-const BOOKS = createMockBooks();
-
 // value của <option> trong products.html  ->  tên thể loại trong dữ liệu
 const CATEGORY_MAP = {
     vanhoc:   'Văn học & Tiểu thuyết',
@@ -62,6 +30,73 @@ const CATEGORY_MAP = {
     cntt:     'Công nghệ thông tin',
     thieunhi: 'Sách thiếu nhi'
 };
+
+/* ----------------------------------------------------------
+   DANH SÁCH SÁCH (15 cuốn)
+   - image: chỉ ghi tên file, ảnh nằm trong images/books/
+   - sku: không được trùng nhau (trang chi tiết tìm sách theo mã này)
+   - category: dùng CATEGORY_MAP.<khóa> để luôn khớp với bộ lọc
+   - stock: số cuốn trong kho (0 = hết hàng)
+   - LƯU Ý: price, publisher, year, pages, stock, desc (trừ Mắt Biếc)
+     là dữ liệu MẪU, hãy thay bằng thông tin thật của từng cuốn
+   ---------------------------------------------------------- */
+const BOOK_LIST = [
+    // ----- Văn học & Tiểu thuyết -----
+    { sku: 'MS001', title: 'Chí Phèo', author: 'Nam Cao', category: CATEGORY_MAP.vanhoc, image: 'chi-pheo.jpg',
+      price: 55000, coverType: 'Bìa mềm', publisher: 'NXB Văn Học', year: 2018, pages: 120, stock: 30,
+      desc: 'Truyện ngắn nổi tiếng của Nam Cao về số phận bi kịch của người nông dân bị đẩy vào con đường tha hóa trong xã hội cũ.' },
+    { sku: 'MS002', title: 'Hạ Đỏ', author: 'Nguyễn Nhật Ánh', category: CATEGORY_MAP.vanhoc, image: 'ha-do.jpg',
+      price: 95000, coverType: 'Bìa mềm', publisher: 'NXB Trẻ', year: 2019, pages: 260, stock: 18,
+      desc: 'Tác phẩm của nhà văn Nguyễn Nhật Ánh với lối viết giản dị, giàu cảm xúc.' },
+    { sku: 'MS003', title: 'Đất Rừng Phương Nam', author: 'Đoàn Giỏi', category: CATEGORY_MAP.vanhoc, image: 'dat-rung-phuong-nam.jpg',
+      price: 110000, coverType: 'Bìa cứng', publisher: 'NXB Kim Đồng', year: 2020, pages: 380, stock: 0,
+      desc: 'Tiểu thuyết của Đoàn Giỏi kể về những ngày phiêu bạt của cậu bé An trên vùng sông nước Nam Bộ.' },
+    { sku: 'MS004', title: 'Mắt Biếc', author: 'Nguyễn Nhật Ánh', category: CATEGORY_MAP.vanhoc, image: 'matbiec.jpg',
+      price: 100000, coverType: 'Bìa mềm', publisher: 'NXB Trẻ', year: 2020, pages: 300, stock: 26,
+      desc: 'Tác phẩm xúc động viết về mối tình thầm lặng của chàng trai làng Đo Đo tên Ngạn dành cho cô bạn thân Hà Lan với đôi mắt biếc vương vấn cả một đời.' },
+
+    // ----- Kinh tế & Quản trị -----
+    { sku: 'MS005', title: 'Quản Trị Hiệu Suất Cao', author: 'Andrew S. Grove', category: CATEGORY_MAP.kinhte, image: 'quantri-hieusuatcao.jpg',
+      price: 140000, coverType: 'Bìa mềm', publisher: 'NXB Thế Giới', year: 2021, pages: 320, stock: 12,
+      desc: 'Cuốn sách về cách nâng cao hiệu suất làm việc của cá nhân và đội nhóm, từ kinh nghiệm quản lý của tác giả.' },
+    { sku: 'MS006', title: '12 Nguyên Tắc Quản Trị Kinh Doanh Của Inamori', author: 'Inamori Kazuo', category: CATEGORY_MAP.kinhte, image: '12-nguyentac-qtkd.jpg',
+      price: 120000, coverType: 'Bìa mềm', publisher: 'NXB Lao Động', year: 2022, pages: 280, stock: 20,
+      desc: 'Trình bày các nguyên tắc quản trị kinh doanh mà Inamori Kazuo đúc kết từ kinh nghiệm điều hành doanh nghiệp.' },
+    { sku: 'MS007', title: 'Người Giàu Nhất Thành Babylon', author: 'George S. Clason', category: CATEGORY_MAP.kinhte, image: 'nguoi-giau-nhat-thanh-babylon.jpg',
+      price: 85000, coverType: 'Bìa mềm', publisher: 'NXB Thanh Niên', year: 2019, pages: 200, stock: 35,
+      desc: 'Những câu chuyện ngụ ngôn về cách quản lý tiền bạc và xây dựng tài sản.' },
+    { sku: 'MS008', title: 'Đắc Nhân Tâm', author: 'Dale Carnegie', category: CATEGORY_MAP.kinhte, image: 'dac-nhan-tam.jpg',
+      price: 90000, coverType: 'Bìa mềm', publisher: 'NXB Tổng Hợp', year: 2020, pages: 320, stock: 40,
+      desc: 'Cuốn sách kinh điển về nghệ thuật giao tiếp, ứng xử và xây dựng các mối quan hệ.' },
+
+    // ----- Công nghệ thông tin -----
+    { sku: 'MS009', title: 'Lập Trình Python Cho Người Mới Bắt Đầu', author: 'Nguyễn Ngọc Tân', category: CATEGORY_MAP.cntt, image: 'laptrinh-python-cho-nguoi-moi-bat-dau.jpg',
+      price: 150000, coverType: 'Bìa mềm', publisher: 'NXB Thanh Niên', year: 2023, pages: 340, stock: 15,
+      desc: 'Giáo trình nhập môn lập trình Python dành cho người mới bắt đầu.' },
+    { sku: 'MS010', title: 'Sổ Tay "Dân IT" Lập Trình Web & Lập Trình Ứng Dụng', author: 'Đào Xuân Hiệp', category: CATEGORY_MAP.cntt, image: 'lap-trinh-web.jpg',
+      price: 180000, coverType: 'Bìa mềm', publisher: 'NXB Thanh Niên', year: 2022, pages: 400, stock: 10,
+      desc: 'Sổ tay tổng hợp kiến thức và kỹ năng lập trình web và lập trình ứng dụng.' },
+    { sku: 'MS011', title: 'Database Management System', author: 'Sotirios Zygiaris', category: CATEGORY_MAP.cntt, image: 'database-management-system.jpg',
+      price: 220000, coverType: 'Bìa cứng', publisher: 'NXB Khoa Học Kỹ Thuật', year: 2021, pages: 450, stock: 8,
+      desc: 'Tài liệu về các khái niệm và nguyên lý của hệ quản trị cơ sở dữ liệu.' },
+
+    // ----- Sách thiếu nhi -----
+    { sku: 'MS012', title: 'Dế Mèn Phiêu Lưu Ký', author: 'Tô Hoài', category: CATEGORY_MAP.thieunhi, image: 'de-men-phieu-luu-ky.jpg',
+      price: 75000, coverType: 'Bìa cứng', publisher: 'NXB Kim Đồng', year: 2019, pages: 160, stock: 22,
+      desc: 'Tác phẩm kinh điển của Tô Hoài kể về cuộc phiêu lưu của chú Dế Mèn.' },
+    { sku: 'MS013', title: 'Doraemon: Nobita Và Cuộc Phiêu Lưu Vào Thế Giới Trong Tranh', author: 'Fujiko F. Fujio', category: CATEGORY_MAP.thieunhi, image: 'doraemon.jpg',
+      price: 25000, coverType: 'Bìa mềm', publisher: 'NXB Kim Đồng', year: 2020, pages: 190, stock: 50,
+      desc: 'Cuộc phiêu lưu của Nobita, Doraemon và các bạn trong thế giới trong tranh.' },
+    { sku: 'MS014', title: 'Hoàng Tử Rơm', author: 'Nhiều tác giả', category: CATEGORY_MAP.thieunhi, image: 'hoang-tu-rom.jpg',
+      price: 45000, coverType: 'Bìa mềm', publisher: 'NXB Kim Đồng', year: 2021, pages: 48, stock: 14,
+      desc: 'Truyện thiếu nhi dành cho các bạn nhỏ.' },
+    { sku: 'MS015', title: 'Trí Khôn Của Ta Đây', author: 'Truyện cổ tích Việt Nam', category: CATEGORY_MAP.thieunhi, image: 'tri-khon-cua-ta-day.jpg',
+      price: 30000, coverType: 'Bìa mềm', publisher: 'NXB Kim Đồng', year: 2018, pages: 32, stock: 25,
+      desc: 'Truyện cổ tích Việt Nam về trí khôn và sự thông minh.' }
+];
+
+// Thêm đường dẫn đầy đủ cho ảnh: images/books/<tên file>
+const BOOKS = BOOK_LIST.map((b) => ({ ...b, image: SITE_ROOT + 'images/books/' + b.image }));
 
 function createCardHTML(book) {
     const buyButton = (book.stock > 0)
@@ -121,7 +156,7 @@ function initHome() {
     }).join('');
 
     // Sản phẩm nổi bật: tạm lấy các cuốn còn hàng đầu tiên
-    // (khi có dữ liệu thật, có thể thêm trường featured: true để chọn thủ công)
+    // (có thể thêm trường featured: true vào BOOK_LIST để chọn thủ công)
     const featured = BOOKS.filter((b) => b.stock > 0).slice(0, FEATURED_COUNT);
     document.getElementById('featuredList').innerHTML = featured.map(createCardHTML).join('');
 }
