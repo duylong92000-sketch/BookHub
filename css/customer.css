@@ -662,6 +662,8 @@ a.logo-section { text-decoration: none; }
 /* Chữ bên trong Card */
 .card-info {
     flex: 1; /* Đẩy cụm nút bấm xuống đáy card */
+    display: flex;
+    flex-direction: column;
 }
 
 .author {
@@ -690,6 +692,7 @@ a.logo-section { text-decoration: none; }
 }
 
 .price-row {
+    margin-top: auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
