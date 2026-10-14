@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BookHub - Đơn hàng của tôi</title>
+
+    <link rel="stylesheet" href="../css/customer.css">
+</head>
+
+<body class="customer-orders-page">
+
+<header class="site-header">
+
+    <div class="container header-inner">
+
+        <a href="../index.html" class="brand">
+            BookHub
+        </a>
+
+        <nav class="customer-nav">
+
+            <a href="../index.html">
+                Trang chủ
+            </a>
+
+            <a href="products.html">
+                Sản phẩm
+            </a>
+
+            <a href="cart.html">
+                Giỏ hàng
+            </a>
+
+            <a href="orders.html" class="active">
+                Đơn hàng
+            </a>
+
+            <a href="profile.html">
+                Tài khoản
+            </a>
+
+        </nav>
+
+    </div>
+
+</header>
+
+<main class="customer-main">
+
+    <div class="container">
+
+        <div class="page-heading-customer">
+
+            <h1>Đơn hàng của tôi</h1>
+
+            <p>
+                Theo dõi lịch sử và trạng thái các đơn hàng.
+            </p>
+
+        </div>
+
+        <div
+            class="empty-state"
+            id="emptyOrders"
+            hidden>
+
+            <h2>Chưa có đơn hàng</h2>
+
+            <p>
+                Bạn chưa thực hiện đơn hàng nào.
+            </p>
+
+            <a
+                href="products.html"
+                class="action-btn action-btn-primary">
+                Mua sắm ngay
+            </a>
+
+        </div>
+
+        <div
+            class="order-list"
+            id="customerOrderList">
+        </div>
+
+    </div>
+
+</main>
+
+<div
+    class="order-modal"
+    id="customerOrderModal">
+
+    <div class="order-modal-content">
+
+        <div class="order-modal-header">
+
+            <h2>
+                Chi tiết đơn hàng
+            </h2>
+
+            <button
+                type="button"
+                class="order-modal-close"
+                id="closeCustomerOrderModal">
+                ×
+            </button>
+
+        </div>
+
+        <div id="customerOrderDetail"></div>
+
+    </div>
+
+</div>
+
+<footer class="site-footer">
+
+    <div class="footer-main">
+
+        <div class="brand-info">
+
+            <div class="footer-logo">
+                <span class="logo-text">
+                    BOOKHUB
+                </span>
+            </div>
+
+            <div class="project-desc">
+                <strong>
+                    Website quản lý cửa hàng sách BookHub
+                </strong>
+            </div>
+
+            <div class="faculty-info">
+                Khoa Công Nghệ Thông Tin - SGU
+            </div>
+
+        </div>
+
+        <div class="contact-info">
+
+            <div class="footer-heading">
+                THÔNG TIN
+            </div>
+
+            <ul class="contact-list">
+                <li>
+                    Trường Đại học Sài Gòn
+                </li>
+
+                <li>
+                    BookHub - Bookstore Management System
+                </li>
+            </ul>
+
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        <span>Nhóm 10: Nguyễn Bá Khang - Huỳnh Minh Khánh - Lê Hoàng Duy Long - Cao Hoàng Nam - Lê Văn Tiến</span>
+        <span>Giảng viên giảng dạy: Nguyễn Thanh Sang</span>
+    </div>
+
+</footer>
+
+<script src="../js/order.js"></script>
+
+</body>
+</html>

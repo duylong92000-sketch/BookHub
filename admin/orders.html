@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        BookHub Admin - Đơn hàng
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="../css/admin.css">
+
+    <link
+        rel="stylesheet"
+        href="../css/customer.css">
+</head>
+
+<body class="admin-orders-page">
+
+<header class="admin-header">
+
+    <div class="admin-logo">
+        <h2>BookHub Admin</h2>
+    </div>
+
+    <nav class="admin-nav">
+
+        <a href="dashboard.html">
+            Dashboard
+        </a>
+
+        <a href="product.html">
+            Sản phẩm
+        </a>
+
+        <a href="categories.html">
+            Danh mục
+        </a>
+
+        <a href="customers.html">
+            Khách hàng
+        </a>
+
+        <a
+            href="orders.html"
+            class="active">
+            Đơn hàng
+        </a>
+
+        <a href="import.html">
+            Nhập hàng
+        </a>
+
+        <a href="inventory.html">
+            Tồn kho
+        </a>
+
+        <a href="prices.html">
+            Giá bán
+        </a>
+
+    </nav>
+
+    <div class="admin-user">
+
+        <span>
+            Admin
+        </span>
+
+        <a
+            href="login.html"
+            class="logout-link">
+            Đăng xuất
+        </a>
+
+    </div>
+
+</header>
+
+<main class="admin-content">
+
+    <section class="page-heading">
+
+        <div>
+
+            <h1>
+                Quản lý đơn hàng
+            </h1>
+
+            <p>
+                Tra cứu và cập nhật trạng thái đơn đặt hàng.
+            </p>
+
+        </div>
+
+    </section>
+
+    <section class="panel">
+
+        <div class="panel-header">
+
+            <h2>
+                Tra cứu đơn hàng
+            </h2>
+
+        </div>
+
+        <div class="admin-order-filter">
+
+            <div class="admin-order-filter-group">
+
+                <label for="adminOrderSearch">
+                    Mã đơn
+                </label>
+
+                <input
+                    type="text"
+                    id="adminOrderSearch"
+                    placeholder="Ví dụ: DH001">
+
+            </div>
+
+            <div class="admin-order-filter-group">
+
+                <label for="adminDateFrom">
+                    Từ ngày
+                </label>
+
+                <input
+                    type="date"
+                    id="adminDateFrom">
+
+            </div>
+
+            <div class="admin-order-filter-group">
+
+                <label for="adminDateTo">
+                    Đến ngày
+                </label>
+
+                <input
+                    type="date"
+                    id="adminDateTo">
+
+            </div>
+
+            <div class="admin-order-filter-group">
+
+                <label for="adminStatusFilter">
+                    Trạng thái
+                </label>
+
+                <select id="adminStatusFilter">
+
+                    <option value="">
+                        Tất cả
+                    </option>
+
+                    <option value="pending">
+                        Mới đặt
+                    </option>
+
+                    <option value="processing">
+                        Đã xử lý
+                    </option>
+
+                    <option value="delivered">
+                        Đã giao
+                    </option>
+
+                    <option value="cancelled">
+                        Đã hủy
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+        <div class="admin-filter-actions">
+
+            <button
+                type="button"
+                class="btn btn-primary"
+                id="adminFilterBtn">
+                Tìm kiếm
+            </button>
+
+            <button
+                type="button"
+                class="btn"
+                id="adminResetFilterBtn">
+                Làm mới
+            </button>
+
+        </div>
+
+    </section>
+
+    <section class="panel">
+
+        <div class="panel-header">
+
+            <h2>
+                Danh sách đơn hàng
+            </h2>
+
+            <span id="adminOrderCount">
+                0 đơn hàng
+            </span>
+
+        </div>
+
+        <div class="table-wrap">
+
+            <table class="data-table admin-order-table">
+
+                <thead>
+
+                <tr>
+
+                    <th>Mã đơn</th>
+                    <th>Khách hàng</th>
+                    <th>Ngày đặt</th>
+                    <th>Tổng tiền</th>
+                    <th>Thanh toán</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
+
+                </tr>
+
+                </thead>
+
+                <tbody id="adminOrderTableBody"></tbody>
+
+            </table>
+
+        </div>
+
+        <div
+            class="empty"
+            id="adminEmptyOrders"
+            hidden>
+            Không tìm thấy đơn hàng phù hợp.
+        </div>
+
+    </section>
+
+</main>
+
+<div
+    class="modal"
+    id="adminOrderModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2>
+                Chi tiết đơn hàng
+            </h2>
+
+            <button
+                type="button"
+                class="close-btn"
+                id="closeAdminOrderModal">
+                ×
+            </button>
+
+        </div>
+
+        <div id="adminOrderDetail"></div>
+
+    </div>
+
+</div>
+
+<footer class="site-footer">
+
+    <div class="footer-main">
+
+        <div class="brand-info">
+
+            <div class="footer-logo">
+
+                <span class="logo-text">
+                    BOOKHUB ADMIN
+                </span>
+
+            </div>
+
+            <div class="project-desc">
+
+                <strong>
+                    Hệ thống quản lý cửa hàng sách
+                </strong>
+
+            </div>
+
+            <div class="faculty-info">
+                Khoa Công Nghệ Thông Tin - SGU
+            </div>
+
+        </div>
+
+        <div class="contact-info">
+
+            <div class="footer-heading">
+                QUẢN TRỊ
+            </div>
+
+            <ul class="contact-list">
+
+                <li>
+                    Quản lý đơn đặt hàng khách hàng
+                </li>
+
+                <li>
+                    BookHub Admin System
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+
+        <span>
+            © 2025 Nhóm Sinh Viên Thực Hiện Đồ Án Lập Trình Web - Đại học Sài Gòn (SGU). All rights reserved.
+        </span>
+
+        <span>
+            Đại học Sài Gòn • Khoa CNTT
+        </span>
+
+    </div>
+
+</footer>
+
+<script src="../js/order.js"></script>
+
+</body>
+</html>
