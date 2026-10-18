@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookHub - Thanh toán</title>
+
+    <link rel="stylesheet" href="../css/customer.css">
+</head>
+
+<body class="checkout-page">
+
+<header class="site-header">
+    <div class="container header-inner">
+        <a href="../index.html" class="brand">BookHub</a>
+
+        <nav class="customer-nav">
+            <a href="../index.html">Trang chủ</a>
+            <a href="products.html">Sản phẩm</a>
+
+            <a href="cart.html">
+                Giỏ hàng
+                <span class="cart-count" id="cartCount">0</span>
+            </a>
+
+            <a href="orders.html">Đơn hàng</a>
+            <a href="profile.html">Tài khoản</a>
+        </nav>
+    </div>
+</header>
+
+<main class="customer-main">
+    <div class="container">
+
+        <div class="page-heading-customer">
+            <h1>Thanh toán</h1>
+            <p>Kiểm tra thông tin và hoàn tất đơn hàng.</p>
+        </div>
+
+        <div class="checkout-layout">
+
+            <div class="checkout-left">
+
+                <section class="checkout-card" id="customerInfoCard">
+
+                    <h2>1. Thông tin khách hàng</h2>
+
+                    <div class="checkout-form-grid">
+
+                        <div class="checkout-form-group">
+                            <label for="checkoutFullName">
+                                Họ và tên
+                            </label>
+
+                            <input
+                                type="text"
+                                id="checkoutFullName"
+                                readonly>
+                        </div>
+
+                        <div class="checkout-form-group">
+                            <label for="checkoutPhone">
+                                Số điện thoại
+                            </label>
+
+                            <input
+                                type="text"
+                                id="checkoutPhone"
+                                readonly>
+                        </div>
+
+                        <div class="checkout-form-group checkout-full">
+                            <label for="checkoutEmail">
+                                Email
+                            </label>
+
+                            <input
+                                type="email"
+                                id="checkoutEmail"
+                                readonly>
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="checkout-card">
+
+                    <h2>2. Địa chỉ nhận hàng</h2>
+
+                    <div class="address-option">
+
+                        <input
+                            type="radio"
+                            name="shippingAddressType"
+                            id="accountAddressOption"
+                            value="account"
+                            checked>
+
+                        <label for="accountAddressOption">
+                            <strong>
+                                Sử dụng địa chỉ trong tài khoản
+                            </strong>
+
+                            <span id="accountAddressText">
+                                Chưa có địa chỉ
+                            </span>
+                        </label>
+
+                    </div>
+
+                    <div class="address-option">
+
+                        <input
+                            type="radio"
+                            name="shippingAddressType"
+                            id="newAddressOption"
+                            value="new">
+
+                        <label for="newAddressOption">
+                            <strong>
+                                Nhập địa chỉ giao hàng mới
+                            </strong>
+
+                            <span>
+                                Sử dụng địa chỉ khác cho đơn hàng này.
+                            </span>
+                        </label>
+
+                    </div>
+
+                    <div class="new-address-box" id="newAddressBox">
+
+                        <div class="checkout-form-grid">
+
+                            <div class="checkout-form-group">
+
+                                <label for="newReceiverName">
+                                    Người nhận
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="newReceiverName"
+                                    placeholder="Nhập tên người nhận">
+
+                            </div>
+
+                            <div class="checkout-form-group">
+
+                                <label for="newReceiverPhone">
+                                    Số điện thoại
+                                </label>
+
+                                <input
+                                    type="tel"
+                                    id="newReceiverPhone"
+                                    placeholder="Ví dụ: 0901234567">
+
+                            </div>
+
+                            <div class="checkout-form-group">
+
+                                <label for="newProvince">
+                                    Tỉnh / Thành phố
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="newProvince"
+                                    placeholder="TP. Hồ Chí Minh">
+
+                            </div>
+
+                            <div class="checkout-form-group">
+
+                                <label for="newDistrict">
+                                    Quận / Huyện
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="newDistrict"
+                                    placeholder="Quận / Huyện">
+
+                            </div>
+
+                            <div class="checkout-form-group checkout-full">
+
+                                <label for="newStreet">
+                                    Địa chỉ chi tiết
+                                </label>
+
+                                <textarea
+                                    id="newStreet"
+                                    placeholder="Số nhà, tên đường, phường/xã..."></textarea>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="checkout-card">
+
+                    <h2>3. Phương thức thanh toán</h2>
+
+                    <div class="payment-option">
+
+                        <input
+                            type="radio"
+                            name="paymentMethod"
+                            id="paymentCash"
+                            value="cash"
+                            checked>
+
+                        <label for="paymentCash">
+
+                            <strong>
+                                Thanh toán tiền mặt
+                            </strong>
+
+                            <span>
+                                Thanh toán khi nhận hàng.
+                            </span>
+
+                        </label>
+
+                    </div>
+
+                    <div class="payment-option">
+
+                        <input
+                            type="radio"
+                            name="paymentMethod"
+                            id="paymentVisa"
+                            value="visa">
+
+                        <label for="paymentVisa">
+
+                            <strong>
+                                Visa
+                            </strong>
+
+                            <span>
+                                Thanh toán trực tuyến bằng thẻ Visa.
+                            </span>
+
+                        </label>
+
+                    </div>
+
+                    <div class="payment-option">
+
+                        <input
+                            type="radio"
+                            name="paymentMethod"
+                            id="paymentMastercard"
+                            value="mastercard">
+
+                        <label for="paymentMastercard">
+
+                            <strong>
+                                Mastercard
+                            </strong>
+
+                            <span>
+                                Thanh toán trực tuyến bằng Mastercard.
+                            </span>
+
+                        </label>
+
+                    </div>
+
+                    <div class="payment-option">
+
+                        <input
+                            type="radio"
+                            name="paymentMethod"
+                            id="paymentGiftcard"
+                            value="giftcard">
+
+                        <label for="paymentGiftcard">
+
+                            <strong>
+                                Giftcard
+                            </strong>
+
+                            <span>
+                                Thanh toán bằng mã thẻ quà tặng.
+                            </span>
+
+                        </label>
+
+                    </div>
+
+                    <div
+                        class="payment-detail"
+                        id="cardPaymentDetail">
+
+                        <div class="checkout-form-grid">
+
+                            <div class="checkout-form-group checkout-full">
+
+                                <label for="cardNumber">
+                                    Số thẻ
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="cardNumber"
+                                    maxlength="19"
+                                    placeholder="1234 5678 9012 3456">
+
+                            </div>
+
+                            <div class="checkout-form-group checkout-full">
+
+                                <label for="cardHolder">
+                                    Tên chủ thẻ
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="cardHolder"
+                                    placeholder="NGUYEN VAN A">
+
+                            </div>
+
+                            <div class="checkout-form-group">
+
+                                <label for="cardExpiry">
+                                    Ngày hết hạn
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="cardExpiry"
+                                    maxlength="5"
+                                    placeholder="MM/YY">
+
+                            </div>
+
+                            <div class="checkout-form-group">
+
+                                <label for="cardCVV">
+                                    CVV
+                                </label>
+
+                                <input
+                                    type="password"
+                                    id="cardCVV"
+                                    maxlength="4"
+                                    placeholder="***">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div
+                        class="payment-detail"
+                        id="giftcardPaymentDetail">
+
+                        <div class="checkout-form-group">
+
+                            <label for="giftcardCode">
+                                Mã Giftcard
+                            </label>
+
+                            <input
+                                type="text"
+                                id="giftcardCode"
+                                placeholder="Nhập mã Giftcard">
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+            <aside class="checkout-summary-card">
+
+                <h2>Đơn hàng của bạn</h2>
+
+                <div id="checkoutItems"></div>
+
+                <div class="summary-row">
+                    <span>Tạm tính</span>
+                    <strong id="checkoutSubtotal">
+                        0 ₫
+                    </strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Vận chuyển</span>
+                    <strong>Miễn phí</strong>
+                </div>
+
+                <div class="summary-row summary-total">
+                    <span>Tổng cộng</span>
+
+                    <strong id="checkoutTotal">
+                        0 ₫
+                    </strong>
+                </div>
+
+                <div
+                    class="checkout-message"
+                    id="checkoutMessage">
+                </div>
+
+                <button
+                    type="button"
+                    class="action-btn action-btn-primary action-btn-block"
+                    id="placeOrderBtn">
+                    Đặt hàng
+                </button>
+
+                <a
+                    href="cart.html"
+                    class="back-cart-link">
+                    ← Quay lại giỏ hàng
+                </a>
+
+            </aside>
+
+        </div>
+
+    </div>
+</main>
+
+<footer class="site-footer">
+
+    <div class="footer-main">
+
+        <div class="brand-info">
+
+            <div class="footer-logo">
+                <span class="logo-text">
+                    BOOKHUB
+                </span>
+            </div>
+
+            <div class="project-desc">
+                <strong>
+                    Website quản lý cửa hàng sách BookHub
+                </strong>
+            </div>
+
+            <div class="faculty-info">
+                Khoa Công Nghệ Thông Tin - SGU
+            </div>
+
+        </div>
+
+        <div class="contact-info">
+
+            <div class="footer-heading">
+                THÔNG TIN
+            </div>
+
+            <ul class="contact-list">
+                <li>Trường Đại học Sài Gòn</li>
+                <li>BookHub - Bookstore Management System</li>
+            </ul>
+
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        <span>Nhóm 10: Nguyễn Bá Khang - Huỳnh Minh Khánh - Lê Hoàng Duy Long - Cao Hoàng Nam - Lê Văn Tiến </span>
+        <span>Giảng viên giảng dạy: Nguyễn Thanh Sang</span>
+    </div>
+
+</footer>
+
+<script src="../js/cart.js"></script>
+<script src="../js/checkout.js"></script>
+
+</body>
+</html>
