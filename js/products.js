@@ -23,7 +23,6 @@ const escapeHtml = (str) => String(str).replace(/[&<>"']/g, (c) => (
 
 const formatPrice = (n) => n.toLocaleString('vi-VN') + ' đ';
 
-
 // value của <option> trong products.html  ->  tên thể loại trong dữ liệu
 const CATEGORY_MAP = {
     vanhoc:   'Văn học & Tiểu thuyết',
