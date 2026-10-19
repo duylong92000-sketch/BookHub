@@ -23,36 +23,32 @@ const escapeHtml = (str) => String(str).replace(/[&<>"']/g, (c) => (
 
 const formatPrice = (n) => n.toLocaleString('vi-VN') + ' đ';
 
-/* Đọc dữ liệu từ localStorage (do admin quản lý, khởi tạo trong data.js) */
-const _categories = getData('categories').filter((c) => c.status === 'active');
+      price: 150000, coverType: 'Bìa mềm', publisher: 'NXB Thanh Niên', year: 2023, pages: 340, stock: 15,
+      desc: 'Giáo trình nhập môn lập trình Python dành cho người mới bắt đầu.' },
+    { sku: 'MS010', title: 'Sổ Tay "Dân IT" Lập Trình Web & Lập Trình Ứng Dụng', author: 'Đào Xuân Hiệp', category: CATEGORY_MAP.cntt, image: 'lap-trinh-web.jpg',
+      price: 180000, coverType: 'Bìa mềm', publisher: 'NXB Thanh Niên', year: 2022, pages: 400, stock: 10,
+      desc: 'Sổ tay tổng hợp kiến thức và kỹ năng lập trình web và lập trình ứng dụng.' },
+    { sku: 'MS011', title: 'Database Management System', author: 'Sotirios Zygiaris', category: CATEGORY_MAP.cntt, image: 'database-management-system.jpg',
+      price: 220000, coverType: 'Bìa cứng', publisher: 'NXB Khoa Học Kỹ Thuật', year: 2021, pages: 450, stock: 8,
+      desc: 'Tài liệu về các khái niệm và nguyên lý của hệ quản trị cơ sở dữ liệu.' },
 
-// key trên URL / <option>  ->  tên thể loại
-// (danh mục admin thêm mới không có "key" nên dùng categoryId làm key)
-const CATEGORY_MAP = {};
-_categories.forEach((c) => { CATEGORY_MAP[c.key || c.categoryId] = c.categoryName; });
+    // ----- Sách thiếu nhi -----
+    { sku: 'MS012', title: 'Dế Mèn Phiêu Lưu Ký', author: 'Tô Hoài', category: CATEGORY_MAP.thieunhi, image: 'de-men-phieu-luu-ky.jpg',
+      price: 75000, coverType: 'Bìa cứng', publisher: 'NXB Kim Đồng', year: 2019, pages: 160, stock: 22,
+      desc: 'Tác phẩm kinh điển của Tô Hoài kể về cuộc phiêu lưu của chú Dế Mèn.' },
+    { sku: 'MS013', title: 'Doraemon: Nobita Và Cuộc Phiêu Lưu Vào Thế Giới Trong Tranh', author: 'Fujiko F. Fujio', category: CATEGORY_MAP.thieunhi, image: 'doraemon.jpg',
+      price: 25000, coverType: 'Bìa mềm', publisher: 'NXB Kim Đồng', year: 2020, pages: 190, stock: 50,
+      desc: 'Cuộc phiêu lưu của Nobita, Doraemon và các bạn trong thế giới trong tranh.' },
+    { sku: 'MS014', title: 'Hoàng Tử Rơm', author: 'Nhiều tác giả', category: CATEGORY_MAP.thieunhi, image: 'hoang-tu-rom.jpg',
+      price: 45000, coverType: 'Bìa mềm', publisher: 'NXB Kim Đồng', year: 2021, pages: 48, stock: 14,
+      desc: 'Truyện thiếu nhi dành cho các bạn nhỏ.' },
+    { sku: 'MS015', title: 'Trí Khôn Của Ta Đây', author: 'Truyện cổ tích Việt Nam', category: CATEGORY_MAP.thieunhi, image: 'tri-khon-cua-ta-day.jpg',
+      price: 30000, coverType: 'Bìa mềm', publisher: 'NXB Kim Đồng', year: 2018, pages: 32, stock: 25,
+      desc: 'Truyện cổ tích Việt Nam về trí khôn và sự thông minh.' }
+];
 
-// Chuyển sản phẩm của admin sang định dạng mà giao diện khách đang dùng
-const BOOKS = getData('products')
-    .filter((p) => p.status !== 'hidden')
-    .map((p) => {
-        const cat = _categories.find((c) => c.categoryId === p.categoryId);
-        if (!cat) return null;                        // danh mục bị ẩn/xóa -> không hiển thị sách
-        return {
-            sku: p.productId,
-            title: p.productName,
-            author: p.author || 'Đang cập nhật',
-            category: cat.categoryName,
-            image: SITE_ROOT + 'images/books/' + (p.image || 'default.jpg'),
-            price: Number(p.salePrice) || 0,          // giá do admin quyết định
-            stock: Number(p.stockQuantity) || 0,      // tồn kho do admin quản lý
-            coverType: p.coverType || 'Bìa mềm',
-            publisher: p.publisher || 'Đang cập nhật',
-            year: p.year || '—',
-            pages: p.pages || '—',
-            desc: p.description || 'Chưa có mô tả.'
-        };
-    })
-    .filter(Boolean);
+// Thêm đường dẫn đầy đủ cho ảnh: images/books/<tên file>
+const BOOKS = BOOK_LIST.map((b) => ({ ...b, image: SITE_ROOT + 'images/books/' + b.image }));
 
 function createCardHTML(book) {
     const buyButton = (book.stock > 0)
