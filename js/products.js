@@ -23,6 +23,55 @@ const escapeHtml = (str) => String(str).replace(/[&<>"']/g, (c) => (
 
 const formatPrice = (n) => n.toLocaleString('vi-VN') + ' đ';
 
+
+// value của <option> trong products.html  ->  tên thể loại trong dữ liệu
+const CATEGORY_MAP = {
+    vanhoc:   'Văn học & Tiểu thuyết',
+    kinhte:   'Kinh tế & Quản trị',
+    cntt:     'Công nghệ thông tin',
+    thieunhi: 'Sách thiếu nhi'
+};
+
+/* ----------------------------------------------------------
+   DANH SÁCH SÁCH (15 cuốn)
+   - image: chỉ ghi tên file, ảnh nằm trong images/books/
+   - sku: không được trùng nhau (trang chi tiết tìm sách theo mã này)
+   - category: dùng CATEGORY_MAP.<khóa> để luôn khớp với bộ lọc
+   - stock: số cuốn trong kho (0 = hết hàng)
+   - LƯU Ý: price, publisher, year, pages, stock, desc (trừ Mắt Biếc)
+     là dữ liệu MẪU, hãy thay bằng thông tin thật của từng cuốn
+   ---------------------------------------------------------- */
+const BOOK_LIST = [
+    // ----- Văn học & Tiểu thuyết -----
+    { sku: 'MS001', title: 'Chí Phèo', author: 'Nam Cao', category: CATEGORY_MAP.vanhoc, image: 'chi-pheo.jpg',
+      price: 55000, coverType: 'Bìa mềm', publisher: 'NXB Văn Học', year: 2018, pages: 120, stock: 30,
+      desc: 'Truyện ngắn nổi tiếng của Nam Cao về số phận bi kịch của người nông dân bị đẩy vào con đường tha hóa trong xã hội cũ.' },
+    { sku: 'MS002', title: 'Hạ Đỏ', author: 'Nguyễn Nhật Ánh', category: CATEGORY_MAP.vanhoc, image: 'ha-do.jpg',
+      price: 95000, coverType: 'Bìa mềm', publisher: 'NXB Trẻ', year: 2019, pages: 260, stock: 18,
+      desc: 'Tác phẩm của nhà văn Nguyễn Nhật Ánh với lối viết giản dị, giàu cảm xúc.' },
+    { sku: 'MS003', title: 'Đất Rừng Phương Nam', author: 'Đoàn Giỏi', category: CATEGORY_MAP.vanhoc, image: 'dat-rung-phuong-nam.jpg',
+      price: 110000, coverType: 'Bìa cứng', publisher: 'NXB Kim Đồng', year: 2020, pages: 380, stock: 0,
+      desc: 'Tiểu thuyết của Đoàn Giỏi kể về những ngày phiêu bạt của cậu bé An trên vùng sông nước Nam Bộ.' },
+    { sku: 'MS004', title: 'Mắt Biếc', author: 'Nguyễn Nhật Ánh', category: CATEGORY_MAP.vanhoc, image: 'matbiec.jpg',
+      price: 100000, coverType: 'Bìa mềm', publisher: 'NXB Trẻ', year: 2020, pages: 300, stock: 26,
+      desc: 'Tác phẩm xúc động viết về mối tình thầm lặng của chàng trai làng Đo Đo tên Ngạn dành cho cô bạn thân Hà Lan với đôi mắt biếc vương vấn cả một đời.' },
+
+    // ----- Kinh tế & Quản trị -----
+    { sku: 'MS005', title: 'Quản Trị Hiệu Suất Cao', author: 'Andrew S. Grove', category: CATEGORY_MAP.kinhte, image: 'quantri-hieusuatcao.jpg',
+      price: 140000, coverType: 'Bìa mềm', publisher: 'NXB Thế Giới', year: 2021, pages: 320, stock: 12,
+      desc: 'Cuốn sách về cách nâng cao hiệu suất làm việc của cá nhân và đội nhóm, từ kinh nghiệm quản lý của tác giả.' },
+    { sku: 'MS006', title: '12 Nguyên Tắc Quản Trị Kinh Doanh Của Inamori', author: 'Inamori Kazuo', category: CATEGORY_MAP.kinhte, image: '12-nguyentac-qtkd.jpg',
+      price: 120000, coverType: 'Bìa mềm', publisher: 'NXB Lao Động', year: 2022, pages: 280, stock: 20,
+      desc: 'Trình bày các nguyên tắc quản trị kinh doanh mà Inamori Kazuo đúc kết từ kinh nghiệm điều hành doanh nghiệp.' },
+    { sku: 'MS007', title: 'Người Giàu Nhất Thành Babylon', author: 'George S. Clason', category: CATEGORY_MAP.kinhte, image: 'nguoi-giau-nhat-thanh-babylon.jpg',
+      price: 85000, coverType: 'Bìa mềm', publisher: 'NXB Thanh Niên', year: 2019, pages: 200, stock: 35,
+      desc: 'Những câu chuyện ngụ ngôn về cách quản lý tiền bạc và xây dựng tài sản.' },
+    { sku: 'MS008', title: 'Đắc Nhân Tâm', author: 'Dale Carnegie', category: CATEGORY_MAP.kinhte, image: 'dac-nhan-tam.jpg',
+      price: 90000, coverType: 'Bìa mềm', publisher: 'NXB Tổng Hợp', year: 2020, pages: 320, stock: 40,
+      desc: 'Cuốn sách kinh điển về nghệ thuật giao tiếp, ứng xử và xây dựng các mối quan hệ.' },
+
+    // ----- Công nghệ thông tin -----
+    { sku: 'MS009', title: 'Lập Trình Python Cho Người Mới Bắt Đầu', author: 'Nguyễn Ngọc Tân', category: CATEGORY_MAP.cntt, image: 'laptrinh-python-cho-nguoi-moi-bat-dau.jpg',
       price: 150000, coverType: 'Bìa mềm', publisher: 'NXB Thanh Niên', year: 2023, pages: 340, stock: 15,
       desc: 'Giáo trình nhập môn lập trình Python dành cho người mới bắt đầu.' },
     { sku: 'MS010', title: 'Sổ Tay "Dân IT" Lập Trình Web & Lập Trình Ứng Dụng', author: 'Đào Xuân Hiệp', category: CATEGORY_MAP.cntt, image: 'lap-trinh-web.jpg',
