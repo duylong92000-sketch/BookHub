@@ -18,7 +18,7 @@ const addressError = document.getElementById("addressError")
 form.addEventListener("submit", function(e){
     e.preventDefault();
 
-    if (!nameError.value){
+    if (!fullName.value){
         // Hiển thị lỗi
         nameError.style.display="block";
     }
@@ -76,8 +76,8 @@ form.addEventListener("submit", function(e){
     }
 
     //Kiểm tra lại mật khẩu
-    if (password.value !== repassword.value){
+    if (password.value != repassword.value){
         repasswordError.style.display="block";
-        repasswordError.innerHTML = "mật khẩu không khớp";
+        repasswordError.innerHTML = "Mật khẩu không khớp";
     }
 })
