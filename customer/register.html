@@ -69,28 +69,34 @@
         <main class="top">
             <div class="register-form">
                 <h2>Đăng ký tài khoản</h2>
-                <form>
+                <form id="formRegister">
                     <label for="fullName">Họ và tên</label>
                     <input type="text" id="fullName" placeholder="Nhập họ và tên">
+                    <div id="nameError" style="color:red; display:none">Tên không được để trống</div>
 
-                    <label for="username">Tên hiển thị</label>
-                    <input type="text" id="username" placeholder="Tên hiển thị">
+                    <label for="usernameID">Tên hiển thị</label>
+                    <input type="text" id="usernameID" placeholder="Tên hiển thị">
+                    <div id="usernameError" style="color:red; display:none">Tên không được để trống</div>
 
                     <label for="email">Email</label>
                     <input type="email" id="email" placeholder="Nhập email">
+                    <div id="emailError" style="color:red; display:none">Email không được để trống</div>
 
                     <label for="phone">Số điện thoại</label>
                     <input type="tel" id="phone" placeholder="Số điện thoại">
+                    <div id="phoneError" style="color:red; display:none">Số điện thoại không được để trống</div>
                     
                     <label for="password">Mật khẩu</label>
                     <input type="password" id="password" min="8" placeholder="Nhập mật khẩu">
+                    <div id="passwordError" style="color:red; display:none">Mật khẩu không được để trống</div>
 
-                    <label for="confirm-password">Xác nhận mật khẩu</label>
-                    <input type="password" id="confirm-password"
-                        placeholder="Nhập lại mật khẩu">
+                    <label for="repassword">Xác nhận mật khẩu</label>
+                    <input type="password" id="repassword" placeholder="Nhập lại mật khẩu">
+                    <div id="nameError" style="color:red; display:none">Mật khẩu không được để trống</div>
 
                     <label for="address">Địa chỉ</label>
-                    <input type="textarea" id="address" placeholder="Địa chỉ">
+                    <input type="text" id="address" placeholder="Địa chỉ">
+                    <div id="addressError" style="color:red; display:none">Địa chỉ không được để trống</div>
 
                     <button type="submit">Đăng ký</button>
                 </form>
@@ -151,5 +157,6 @@
         </footer>
 
         <script src="js/products.js"></script>
+        <script src="/js/register.js"></script>
     </body>
 </html>

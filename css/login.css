@@ -144,7 +144,7 @@ a.logo-section { text-decoration: none; }
 
 main.top{
     margin: 50px 20px;
-    min-height: 100vh;
+    min-height: 50vh;
     display: flex;
     justify-content: center;
     align-items: center;
