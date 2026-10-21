@@ -1,8 +1,4 @@
 
-/* =========================================================
-   BOOKHUB - FILE: js/checkout.js
-========================================================= */
-
 const ORDER_KEY = "orders";
 const LAST_ORDER_KEY = "lastOrderId";
 
