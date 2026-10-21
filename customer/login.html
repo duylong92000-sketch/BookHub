@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head> 
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>SGU - BookHub</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@600;700&display=swap" rel="stylesheet">
+        <!-- <link rel="stylesheet" href="/css/customer.css"> -->
+        <link rel="stylesheet" href="../css/login.css">
+        <style></style>
+    </head>
+
+    <body data-page="home">
+        <header class="top">
+            <!-- Logo + Danh mục sách -->
+            <div class="left-section">
+                <div class="logo-section">
+                    <img src="../images/logoweb.png" alt="Logo" width="50" height="50">
+                    <div>
+                        <h1>BOOKHUB</h1>
+                        <p>Chắp cánh tri thức</p>
+                    </div>
+                </div>
+                <!-- Danh mục thể loại-->
+                <div class="category-wrapper">
+                    <button class="category-btn" type="button">
+                        <img src="../images/category.png" alt="Danh mục" width="20" height="20">
+                        <span>Danh mục</span>
+                    </button>
+
+                    <!-- Bảng danh mục-->
+                    <ul class="category-dropdown">
+                        <li><a href="products.html">Tất cả sách</a></li>
+                        <li><a href="products.html?category=vanhoc">Văn học &amp; Tiểu thuyết</a></li>
+                        <li><a href="products.html?category=kinhte">Kinh tế &amp; Quản trị</a></li>
+                        <li><a href="products.html?category=cntt">Công nghệ thông tin</a></li>
+                        <li><a href="products.html?category=thieunhi">Sách thiếu nhi</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Cụm phải: Chức năng -->
+            <div class="action-section">
+                <a href="cart.html" target="_self" title="Xem giỏ hàng">
+                    <img src="../images/cart.png" alt="Giỏ hàng" width="20" height="20">
+                    Giỏ hàng
+                </a>
+
+                <a href="login.html" target="_self" title="Đăng nhập">
+                    <img src="../images/login.png" alt="Đăng nhập" width="20" height="20">
+                    Đăng nhập
+                </a>
+
+                <a href="register.html" target="_self" title="Đăng ký tài khoản">
+                    <img src="../images/signup.png" alt="Đăng ký tài khoản" width="20" height="20">
+                    Đăng ký
+                </a>
+
+                <a href="../admin/login.html" target="_self" title="Đi đến khu vực admin">
+                    <img src="../images/admin.png" alt="Admin" width="20" height="20">
+                    Admin
+                </a>
+            </div>
+        </header>
+
+        <main class="top">
+            <!--Bảng đăng nhập-->
+            <div class="register-form">
+                <h2>Đăng nhập tài khoản</h2>
+                <form>
+                    <label for="usernameID">Tên hiển thị</label>
+                    <input type="text" id="usernameID" placeholder="Tên hiển thị">
+
+                    <label for="password">Mật khẩu</label>
+                    <input type="password" id="password" min="8" placeholder="Nhập mật khẩu">
+
+                    
+                    <button type="submit">Đăng nhập</button>
+                </form>
+
+                <p class="login-link">
+                    Chưa có tài khoản? <a href="register.html">Đăng ký</a>
+                </p>
+            </div>
+        </main>
+        <footer class="site-footer">
+            <div class="footer-main">
+                <!-- Cột trái: Thông tin Đồ án & Logo -->
+                <div class="footer-col brand-info">
+                    <div class="footer-logo">
+                        <!-- Icon màu cam, bạn thay src bằng ảnh thực tế -->
+                        <img src="../images/logoweb.png" alt="Nhà Sách SGU" width="40" height="40">
+                        <span class="logo-text">NHÀ SÁCH SGU</span>
+                    </div>
+                    <p class="project-desc">
+                        Hệ thống website cửa hàng bán sách trực tuyến<br>
+                        Đồ án môn <strong>Lập trình web và ứng dụng</strong>.
+                    </p>
+                    <p class="faculty-info">
+                        
+                        Khoa Công nghệ Thông tin - SGU
+                    </p>
+                </div>
+
+                <!-- Cột phải: Thông tin Liên hệ -->
+                <div class="footer-col contact-info">
+                    <h3 class="footer-heading">THÔNG TIN LIÊN HỆ</h3>
+                    <ul class="contact-list">
+                        <li>
+                            <img src="../images/location.png" alt="Location" width="16" height="16">
+                            <span>Đại học Sài Gòn (SGU), 273 An Dương Vương,<br>Q.5, TP.HCM</span>
+                        </li>
+                        <li>
+                            <img src="../images/phone.png" alt="Phone" width="16" height="16">
+                            <span>(028) 3835 4409 - Khoa CNTT</span>
+                        </li>
+                        <li>
+                            <img src="../images/mail.png" alt="Email" width="16" height="16">
+                            <span>cntt@sgu.edu.vn</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Thanh bản quyền dưới cùng -->
+            <div class="footer-bottom">
+                <div class="bottom-left">
+                    Nhóm 10: Nguyễn Bá Khang - Huỳnh Minh Khánh - Lê Hoàng Duy Long - Cao Hoàng Nam - Lê Văn Tiến
+                </div>
+                <div class="bottom-right">
+                    Giảng viên giảng dạy: Nguyễn Thanh Sang
+                </div>
+            </div>
+        </footer>
+
+        <script src="../js/products.js"></script>
+        <script src="../js/login.js"></script>
+    </body>
+</html>
