@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hồ sơ cá nhân | SGU - BookHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/customer.css">
+</head>
+<body data-page="profile">
+<header class="top">
+        <div class="left-section">
+            <div class="logo-section">
+                <img src="../images/logoweb.png" alt="Logo BookHub" width="50" height="50">
+                <div><h1>BOOKHUB</h1><p>Chắp cánh tri thức</p></div>
+            </div>
+            <div class="category-wrapper">
+                <button class="category-btn" type="button">
+                    <img src="../images/category.png" alt="Danh mục" width="20" height="20">
+                    <span>Danh mục</span>
+                </button>
+                <ul class="category-dropdown">
+                    <li><a href="../customer/products.html">Tất cả sách</a></li>
+                    <li><a href="../customer/products.html?category=vanhoc">Văn học &amp; Tiểu thuyết</a></li>
+                    <li><a href="../customer/products.html?category=kinhte">Kinh tế &amp; Quản trị</a></li>
+                    <li><a href="../customer/products.html?category=cntt">Công nghệ thông tin</a></li>
+                    <li><a href="../customer/products.html?category=thieunhi">Sách thiếu nhi</a></li>
+                </ul>
+            </div>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" placeholder="Nhập tên sách hoặc tác giả" class="search-input" aria-label="Tìm kiếm sách">
+                <button type="button" id="btnSearch" class="search-btn" aria-label="Tìm kiếm">
+                    <img src="../images/icon-search.png" alt="Tìm kiếm" width="20" height="20">
+                </button>
+            </div>
+        </div>
+        <div class="action-section">
+            <a href="../customer/cart.html" target="_self" title="Xem giỏ hàng">
+                <img src="../images/cart.png" alt="Giỏ hàng" width="20" height="20">Giỏ hàng
+            </a>
+            <a href="../customer/login.html" target="_self" title="Đăng nhập">
+                <img src="../images/login.png" alt="Đăng nhập" width="20" height="20">Đăng nhập
+            </a>
+            <a href="../customer/register.html" target="_self" title="Đăng ký tài khoản">
+                <img src="../images/signup.png" alt="Đăng ký tài khoản" width="20" height="20">Đăng ký
+            </a>
+            <a href="../admin/login.html" target="_self" title="Đi đến khu vực admin">
+                <img src="../images/admin.png" alt="Admin" width="20" height="20">Admin
+            </a>
+        </div>
+    </header>
+
+
+    <main class="bhp-page">
+        <div class="bhp-layout">
+            <aside class="bhp-sidebar">
+                <div class="bhp-user">
+                    <div class="bhp-avatar" id="profileAvatar">BH</div>
+                    <h2 id="sidebarFullName">Đang tải...</h2>
+                    <p id="sidebarUsername"></p>
+                    <span class="bhp-member">★ Thành viên BookHub</span>
+                </div>
+                <nav class="bhp-menu">
+                    <a href="profile.html" class="bhp-menu-active" aria-current="page"><span>◉</span> Hồ sơ cá nhân</a>
+                    <a href="orders.html"><span>▤</span> Đơn hàng của tôi</a>
+                    <a href="../index.html"><span>⌂</span> Về trang chủ</a>
+                </nav>
+                <p class="bhp-sidebar-bottom">Thông tin tài khoản giúp bạn đặt hàng và nhận sách thuận tiện hơn.</p>
+            </aside>
+            <section class="bhp-content">
+                <div class="bhp-heading">
+                    <div><h2>Thông tin cá nhân</h2><p>Cập nhật các thông tin cần thiết cho tài khoản BookHub.</p></div>
+                    <button type="button" class="bhp-edit-btn" id="editProfileBtn" hidden>✎ &nbsp; Chỉnh sửa</button>
+                </div>
+                <hr class="bhp-divider">
+                <form id="profileForm">
+                    <div class="bhp-form-grid">
+                        <div class="bhp-field"><label for="customerId">Mã khách hàng</label><input id="customerId" readonly><small>Mã định danh của tài khoản</small></div>
+                        <div class="bhp-field"><label for="username">Tên đăng nhập</label><input id="username" readonly><small>Tên đăng nhập không thể chỉnh sửa tại đây</small></div>
+                        <div class="bhp-field"><label for="fullName">Họ và tên <span>*</span></label><input id="fullName" name="fullName" minlength="2" maxlength="80" required readonly></div>
+                        <div class="bhp-field"><label for="email">Email <span>*</span></label><input id="email" name="email" type="email" required readonly></div>
+                        <div class="bhp-field"><label for="phone">Số điện thoại <span>*</span></label><input id="phone" name="phone" type="tel" maxlength="11" required readonly></div>
+                        <div class="bhp-field"><label for="address">Địa chỉ</label><input id="address" name="address" maxlength="200" placeholder="Chưa cập nhật địa chỉ" readonly></div>
+                    </div>
+                    <p id="profileMessage" class="bhp-message" role="status" aria-live="polite"></p>
+                    <div id="profileActions" class="bhp-actions" hidden>
+                        <button type="button" id="cancelProfileBtn" class="bhp-cancel-btn">Hủy</button>
+                        <button type="submit" class="bhp-save-btn">Lưu thay đổi →</button>
+                    </div>
+                </form>
+                <div class="bhp-security"><div class="bhp-security-icon">🔒</div><div><strong>Bảo mật tài khoản</strong><p>Không chia sẻ mật khẩu hoặc thông tin đăng nhập của bạn với người khác.</p></div></div>
+            </section>
+        </div>
+    </main>
+    <!-- FOOTER: giữ theo nhóm -->
+    <footer class="site-footer">
+        <div class="footer-main">
+            <div class="footer-col brand-info">
+                <div class="footer-logo">
+                    <img src="../images/logoweb.png" alt="Nhà Sách SGU" width="40" height="40">
+                    <span class="logo-text">NHÀ SÁCH SGU</span>
+                </div>
+                <p class="project-desc">Hệ thống website cửa hàng bán sách trực tuyến<br>Đồ án môn <strong>Lập trình web và ứng dụng</strong>.</p>
+                <p class="faculty-info">Khoa Công nghệ Thông tin - SGU</p>
+            </div>
+            <div class="footer-col contact-info">
+                <h3 class="footer-heading">THÔNG TIN LIÊN HỆ</h3>
+                <ul class="contact-list">
+                    <li><img src="../images/location.png" alt="Location" width="16" height="16"><span>Đại học Sài Gòn (SGU), 273 An Dương Vương,<br>Q.5, TP.HCM</span></li>
+                    <li><img src="../images/phone.png" alt="Phone" width="16" height="16"><span>(028) 3835 4409 - Khoa CNTT</span></li>
+                    <li><img src="../images/mail.png" alt="Email" width="16" height="16"><span>cntt@sgu.edu.vn</span></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="bottom-left">Nhóm 10: Nguyễn Bá Khang - Huỳnh Minh Khánh - Lê Hoàng Duy Long - Cao Hoàng Nam - Lê Văn Tiến</div>
+            <div class="bottom-right">Giảng viên giảng dạy: Nguyễn Thanh Sang</div>
+        </div>
+    </footer>
+
+
+    <!-- JS Header chung nếu nhóm đang dùng tìm kiếm -->
+    <script src="../js/products.js"></script>
+    <!-- JS Profile viết trong HTML: KHÔNG cần js/profile.js -->
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Cần thống nhất các key này với phần login/register của Khang.
+        const keys = { customers: 'bookhubCustomers', session: 'bookhubCurrentCustomerId', demo: 'bookhubDemoProfile' };
+        const enableDemo = true; // Đổi false sau khi tích hợp login.
+        const demo = { customerId: 'KH001', username: 'nguyenvana', fullName: 'Nguyễn Văn A', email: 'nguyenvana@gmail.com', phone: '0900000001', address: 'TP. Hồ Chí Minh' };
+        const editFields = ['fullName', 'email', 'phone', 'address'];
+        const fieldIds = ['customerId', 'username', ...editFields];
+        const el = id => document.getElementById(id);
+        const form = el('profileForm'), editBtn = el('editProfileBtn'), cancelBtn = el('cancelProfileBtn');
+        const actions = el('profileActions'), message = el('profileMessage');
+        let profile = null, mode = 'guest', editing = false;
+        function readJson(key, fallback = null) {
+            try { const raw = localStorage.getItem(key); return raw === null ? fallback : JSON.parse(raw); }
+            catch (error) { console.error('Lỗi đọc dữ liệu:', error); return fallback; }
+        }
+        function loadProfile() {
+            const currentId = localStorage.getItem(keys.session);
+            if (currentId) {
+                const customers = readJson(keys.customers, []);
+                const found = Array.isArray(customers) ? customers.find(c => c && c.customerId === currentId) : null;
+                if (!found || found.status !== 'active') { mode = 'invalid'; profile = null; return; }
+                mode = 'shared'; profile = { ...found }; return;
+            }
+            if (!enableDemo) { mode = 'guest'; profile = null; return; }
+            mode = 'demo'; profile = { ...demo };
+            const saved = readJson(keys.demo);
+            if (saved && typeof saved === 'object' && !Array.isArray(saved)) {
+                for (const field of editFields) if (typeof saved[field] === 'string') profile[field] = saved[field];
+            }
+        }
+        function showMessage(text, error = false) { message.textContent = text; message.classList.toggle('bhp-error', error); }
+        function renderProfile() {
+            for (const field of fieldIds) el(field).value = profile ? String(profile[field] ?? '') : '';
+            const name = profile ? String(profile.fullName || 'Khách hàng').trim() : 'Chưa đăng nhập';
+            el('sidebarFullName').textContent = name;
+            el('sidebarUsername').textContent = profile ? '@' + profile.username : 'Vui lòng đăng nhập';
+            const words = name.split(/\s+/).filter(Boolean);
+            const avatar = profile ? (words.length > 1 ? words[0][0] + words[words.length-1][0] : (words[0] || 'BH').slice(0,2)) : 'BH';
+            el('profileAvatar').textContent = avatar.toLocaleUpperCase('vi-VN');
+        }
+        function setEditing(next) {
+            editing = Boolean(next && profile && ['shared','demo'].includes(mode));
+            for (const field of editFields) el(field).readOnly = !editing;
+            editBtn.hidden = editing || !profile; actions.hidden = !editing;
+            if (editing) el('fullName').focus();
+        }
+        editBtn.addEventListener('click', () => { showMessage(''); setEditing(true); });
+        cancelBtn.addEventListener('click', () => { renderProfile(); setEditing(false); showMessage('Đã hủy thay đổi.'); });
+        form.addEventListener('submit', event => {
+            event.preventDefault(); if (!editing || !profile || !form.reportValidity()) return;
+            const changes = Object.fromEntries(editFields.map(field => [field, el(field).value.trim()]));
+            changes.phone = changes.phone.replace(/\s/g, '');
+            if (changes.fullName.length < 2) return showMessage('Họ tên phải có ít nhất 2 ký tự.', true);
+            if (!/^\d{9,11}$/.test(changes.phone)) return showMessage('Số điện thoại phải có từ 9 đến 11 chữ số.', true);
+            try {
+                if (mode === 'shared') {
+                    const currentId = localStorage.getItem(keys.session);
+                    if (currentId !== profile.customerId) throw new Error('Phiên đăng nhập đã thay đổi');
+                    const customers = readJson(keys.customers);
+                    if (!Array.isArray(customers)) throw new Error('Dữ liệu khách hàng không hợp lệ');
+                    const index = customers.findIndex(c => c && c.customerId === currentId && c.status === 'active');
+                    if (index === -1) throw new Error('Không tìm thấy khách hàng hoạt động');
+                    const duplicated = customers.some(c => c && c.customerId !== currentId && String(c.email || '').toLowerCase() === changes.email.toLowerCase());
+                    if (duplicated) return showMessage('Email này đã được tài khoản khác sử dụng.', true);
+                    customers[index] = { ...customers[index], ...changes };
+                    localStorage.setItem(keys.customers, JSON.stringify(customers));
+                    profile = customers[index];
+                } else if (mode === 'demo') {
+                    profile = { ...profile, ...changes };
+                    localStorage.setItem(keys.demo, JSON.stringify(profile));
+                } else return;
+                renderProfile(); setEditing(false);
+                showMessage(mode === 'demo' ? 'Đã lưu thông tin hồ sơ mẫu!' : 'Cập nhật thông tin thành công!');
+            } catch (error) { console.error(error); showMessage('Không thể lưu thông tin. Vui lòng thử lại.', true); }
+        });
+        loadProfile(); renderProfile(); setEditing(false);
+        if (mode === 'demo') showMessage('Đang xem dữ liệu mẫu, chưa đăng nhập.');
+        else if (mode === 'guest') showMessage('Vui lòng đăng nhập để xem hồ sơ.', true);
+        else if (mode === 'invalid') showMessage('Tài khoản không hợp lệ hoặc đã bị khóa.', true);
+    });
+    </script>
+</body>
+</html>
