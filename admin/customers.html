@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BookHub - Khách hàng</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/admin.css"></head><body>
+    <header class="admin-header">
+        <div class="admin-logo"><h2>BookHub Admin</h2></div>
+        <nav class="admin-nav">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="products.html">Sản phẩm</a>
+            <a href="categories.html" class="active">Danh mục</a>
+            <a href="customers.html">Khách hàng</a>
+            <a href="orders.html">Đơn hàng</a>
+            <a href="import.html">Nhập hàng</a>
+            <a href="inventory.html">Tồn kho</a>
+            <a href="prices.html">Giá bán</a>
+        </nav>
+        <div class="admin-user"><span>Admin</span><a href="login.html" class="logout-link">Đăng xuất</a></div>
+    </header>
+    <main class="cm-page" id="customerManagement">
+        <div class="cm-container">
+            <div class="cm-heading"><div><span class="cm-eyebrow">BOOKHUB MANAGEMENT</span><h1>Quản lý khách hàng</h1><p>Quản lý thông tin và trạng thái tài khoản khách hàng.</p></div><button type="button" class="cm-btn cm-btn-light" id="cmRefresh">↻ Làm mới</button></div>
+            <section class="cm-stats" aria-label="Thống kê khách hàng">
+                <article class="cm-stat"><span class="cm-stat-label">Tổng khách hàng</span><strong id="cmTotal">0</strong><small>Tổng số tài khoản</small><span class="cm-stat-icon">♙</span></article>
+                <article class="cm-stat"><span class="cm-stat-label">Đang hoạt động</span><strong id="cmActive">0</strong><small>Tài khoản đang mở</small><span class="cm-stat-icon cm-green">✓</span></article>
+                <article class="cm-stat"><span class="cm-stat-label">Đã khóa</span><strong id="cmLocked">0</strong><small>Tài khoản bị khóa</small><span class="cm-stat-icon cm-red">⊘</span></article>
+            </section>
+            <section class="cm-panel">
+                <div class="cm-panel-heading"><h2>Danh sách khách hàng</h2><p>Tra cứu và cập nhật thông tin tài khoản.</p></div>
+                <div class="cm-toolbar">
+                    <input type="search" id="cmSearch" placeholder="⌕  Tìm tên, mã KH, email, số điện thoại..." aria-label="Tìm kiếm khách hàng">
+                    <select id="cmFilter" aria-label="Lọc trạng thái"><option value="all">Tất cả trạng thái</option><option value="active">Hoạt động</option><option value="inactive">Đã khóa</option></select>
+                    <button type="button" class="cm-btn cm-btn-light" id="cmClear">Xóa lọc</button>
+                </div>
+                <p id="cmNotice" class="cm-notice" role="status" aria-live="polite"></p>
+                <div class="cm-table-scroll"><table class="cm-table"><thead><tr><th>Mã KH</th><th>Khách hàng</th><th>Email</th><th>Số điện thoại</th><th>Trạng thái</th><th>Thao tác</th></tr></thead><tbody id="cmRows"></tbody></table></div>
+                <div class="cm-pagination"><span id="cmCount">0 khách hàng</span><div class="cm-page-buttons"><button type="button" id="cmPrev">← Trước</button><span id="cmPage">1 / 1</span><button type="button" id="cmNext">Sau →</button></div></div>
+            </section>
+        </div>
+        <dialog class="cm-dialog" id="cmDialog">
+            <form id="cmForm">
+                <div class="cm-dialog-heading"><div><h2 id="cmDialogTitle">Thông tin khách hàng</h2><p>Xem và cập nhật hồ sơ khách hàng</p></div><button type="button" class="cm-close" id="cmClose" aria-label="Đóng">×</button></div>
+                <div class="cm-form-grid">
+                    <div class="cm-field"><label for="cmCustomerId">Mã khách hàng</label><input id="cmCustomerId" readonly></div>
+                    <div class="cm-field"><label for="cmUsername">Tên đăng nhập</label><input id="cmUsername" readonly></div>
+                    <div class="cm-field"><label for="cmFullName">Họ và tên *</label><input id="cmFullName" minlength="2" maxlength="80" required></div>
+                    <div class="cm-field"><label for="cmEmail">Email *</label><input id="cmEmail" type="email" required></div>
+                    <div class="cm-field"><label for="cmPhone">Số điện thoại *</label><input id="cmPhone" type="tel" maxlength="11" required></div>
+                    <div class="cm-field"><label for="cmStatus">Trạng thái</label><input id="cmStatus" readonly></div>
+                    <div class="cm-field cm-field-full"><label for="cmAddress">Địa chỉ</label><input id="cmAddress" maxlength="200"></div>
+                </div>
+                <p id="cmDialogNotice" class="cm-notice" role="status"></p>
+                <div class="cm-dialog-actions"><button type="button" class="cm-btn cm-btn-light" id="cmCancel">Đóng</button><button type="button" class="cm-btn cm-btn-light" id="cmEdit">Chỉnh sửa</button><button type="submit" class="cm-btn cm-btn-primary" id="cmSave" hidden>Lưu thay đổi</button></div>
+            </form>
+        </dialog>
+    </main>
+    <!-- FOOTER: giữ theo nhóm -->
+    <footer class="site-footer">
+        <div class="footer-main">
+            <div class="footer-col brand-info">
+                <div class="footer-logo">
+                    <img src="../images/logoweb.png" alt="Nhà Sách SGU" width="40" height="40">
+                    <span class="logo-text">NHÀ SÁCH SGU</span>
+                </div>
+                <p class="project-desc">Hệ thống website cửa hàng bán sách trực tuyến<br>Đồ án môn <strong>Lập trình web và ứng dụng</strong>.</p>
+                <p class="faculty-info">Khoa Công nghệ Thông tin - SGU</p>
+            </div>
+            <div class="footer-col contact-info">
+                <h3 class="footer-heading">THÔNG TIN LIÊN HỆ</h3>
+                <ul class="contact-list">
+                    <li><img src="../images/location.png" alt="Location" width="16" height="16"><span>Đại học Sài Gòn (SGU), 273 An Dương Vương,<br>Q.5, TP.HCM</span></li>
+                    <li><img src="../images/phone.png" alt="Phone" width="16" height="16"><span>(028) 3835 4409 - Khoa CNTT</span></li>
+                    <li><img src="../images/mail.png" alt="Email" width="16" height="16"><span>cntt@sgu.edu.vn</span></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="bottom-left">Nhóm 10: Nguyễn Bá Khang - Huỳnh Minh Khánh - Lê Hoàng Duy Long - Cao Hoàng Nam - Lê Văn Tiến</div>
+            <div class="bottom-right">Giảng viên giảng dạy: Nguyễn Thanh Sang</div>
+        </div>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const key = 'bookhubCustomers';
+        const get = id => document.getElementById(id);
+        const pageSize = 7;
+        let currentPage = 1, editing = false, currentId = null;
+        const dialog = get('cmDialog');
+        const fields = { customerId: get('cmCustomerId'), username: get('cmUsername'), fullName: get('cmFullName'), email: get('cmEmail'), phone: get('cmPhone'), address: get('cmAddress') };
+        const editable = ['fullName','email','phone','address'];
+        const rows = get('cmRows');
+        function readCustomers() {
+            try { const value = JSON.parse(localStorage.getItem(key) || '[]'); return Array.isArray(value) ? value : []; }
+            catch (error) { console.error('Lỗi đọc khách hàng:', error); return []; }
+        }
+        function saveCustomers(list) { localStorage.setItem(key, JSON.stringify(list)); }
+        function showNotice(text, error = false, target = get('cmNotice')) {
+            target.textContent = text; target.classList.toggle('cm-error', error);
+        }
+        function txt(tag, content, cls) { const e = document.createElement(tag); if (cls) e.className = cls; e.textContent = String(content ?? ''); return e; }
+        function initials(fullName) {
+            const words = String(fullName || 'KH').trim().split(/\s+/).filter(Boolean);
+            return (words.length > 1 ? words[0][0] + words[words.length - 1][0] : (words[0] || 'KH').slice(0, 2)).toLocaleUpperCase('vi-VN');
+        }
+        function matchFilters(c) {
+            const q = get('cmSearch').value.trim().toLowerCase();
+            const f = get('cmFilter').value;
+            const hay = [c.customerId,c.username,c.fullName,c.email,c.phone].map(v => String(v || '').toLowerCase()).join(' ');
+            return (f === 'all' || c.status === f) && hay.includes(q);
+        }
+        function renderCustomers() {
+            const list = readCustomers();
+            get('cmTotal').textContent = list.length;
+            get('cmActive').textContent = list.filter(c => c.status === 'active').length;
+            get('cmLocked').textContent = list.filter(c => c.status === 'inactive').length;
+            const filtered = list.filter(c => c && matchFilters(c));
+            const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+            currentPage = Math.min(Math.max(currentPage, 1), totalPages);
+            rows.replaceChildren();
+            filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize).forEach(customer => {
+                const tr = document.createElement('tr');
+                tr.appendChild(txt('td', customer.customerId));
+                const person = document.createElement('td'), p = document.createElement('div'); p.className = 'cm-person';
+                p.appendChild(txt('span', initials(customer.fullName), 'cm-avatar'));
+                const description = document.createElement('div'); description.appendChild(txt('strong', customer.fullName || 'Chưa cập nhật'));
+                description.appendChild(txt('small', '@' + (customer.username || ''))); p.appendChild(description); person.appendChild(p); tr.appendChild(person);
+                tr.appendChild(txt('td', customer.email || '—')); tr.appendChild(txt('td', customer.phone || '—'));
+                const state = document.createElement('td');
+                state.appendChild(txt('span', customer.status === 'active' ? 'Hoạt động' : 'Đã khóa', customer.status === 'active' ? 'cm-status cm-status-active' : 'cm-status cm-status-inactive'));
+                tr.appendChild(state);
+                const cell = document.createElement('td'), actions = document.createElement('div'); actions.className = 'cm-actions';
+                const addBtn = (label, cls, callback) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; b.className = 'cm-action ' + cls; b.addEventListener('click', callback); actions.appendChild(b); };
+                addBtn('Xem', 'cm-view', () => openCustomer(customer.customerId, false));
+                addBtn('Sửa', 'cm-edit', () => openCustomer(customer.customerId, true));
+                addBtn(customer.status === 'active' ? 'Khóa' : 'Mở khóa', customer.status === 'active' ? 'cm-lock' : 'cm-unlock', () => toggleCustomer(customer.customerId));
+                cell.appendChild(actions); tr.appendChild(cell); rows.appendChild(tr);
+            });
+            if (!filtered.length) { const tr = document.createElement('tr'), td = txt('td', 'Không có khách hàng phù hợp.'); td.colSpan = 6; tr.appendChild(td); rows.appendChild(tr); }
+            get('cmCount').textContent = filtered.length + ' khách hàng';
+            get('cmPage').textContent = currentPage + ' / ' + totalPages;
+            get('cmPrev').disabled = currentPage <= 1;
+            get('cmNext').disabled = currentPage >= totalPages;
+        }
+        function setEditing(state) {
+            editing = state;
+            editable.forEach(field => { fields[field].readOnly = !state; });
+            get('cmEdit').hidden = state;
+            get('cmSave').hidden = !state;
+        }
+        function openCustomer(id, edit) {
+            const c = readCustomers().find(x => x.customerId === id); if (!c) return;
+            currentId = id;
+            Object.entries(fields).forEach(([k,e]) => { e.value = c[k] || ''; });
+            get('cmStatus').value = c.status === 'active' ? 'Hoạt động' : 'Đã khóa';
+            showNotice('', false, get('cmDialogNotice'));
+            get('cmDialogTitle').textContent = edit ? 'Chỉnh sửa khách hàng' : 'Thông tin khách hàng';
+            setEditing(edit);
+            dialog.showModal();
+        }
+        function toggleCustomer(id) {
+            const list = readCustomers(), idx = list.findIndex(c => c.customerId === id); if (idx < 0) return;
+            const next = list[idx].status === 'active' ? 'inactive' : 'active';
+            if (!confirm(next === 'inactive' ? 'Khóa tài khoản này?' : 'Mở khóa tài khoản này?')) return;
+            list[idx].status = next;
+            try { saveCustomers(list); showNotice('Đã cập nhật trạng thái khách hàng.'); renderCustomers(); }
+            catch (error) { showNotice('Không thể lưu trạng thái khách hàng.', true); }
+        }
+        get('cmForm').addEventListener('submit', event => {
+            event.preventDefault(); if (!editing || !get('cmForm').reportValidity()) return;
+            const fullName = fields.fullName.value.trim(), email = fields.email.value.trim();
+            const phone = fields.phone.value.trim().replace(/\s/g, ''), address = fields.address.value.trim();
+            if (fullName.length < 2) return showNotice('Họ tên phải có ít nhất 2 ký tự.', true, get('cmDialogNotice'));
+            if (!/^\d{9,11}$/.test(phone)) return showNotice('Số điện thoại phải có 9 đến 11 chữ số.', true, get('cmDialogNotice'));
+            const list = readCustomers(), idx = list.findIndex(c => c.customerId === currentId);
+            if (idx < 0) return showNotice('Không tìm thấy khách hàng.', true, get('cmDialogNotice'));
+            if (list.some(c => c.customerId !== currentId && String(c.email || '').toLowerCase() === email.toLowerCase())) return showNotice('Email đã được dùng bởi khách hàng khác.', true, get('cmDialogNotice'));
+            list[idx] = { ...list[idx], fullName, email, phone, address };
+            try { saveCustomers(list); dialog.close(); showNotice('Cập nhật thông tin thành công!'); renderCustomers(); }
+            catch (error) { showNotice('Lỗi lưu khách hàng.', true, get('cmDialogNotice')); }
+        });
+        for (const id of ['cmClose','cmCancel']) get(id).addEventListener('click', () => dialog.close());
+        get('cmEdit').addEventListener('click', () => { setEditing(true); fields.fullName.focus(); });
+        get('cmSearch').addEventListener('input', () => { currentPage = 1; renderCustomers(); });
+        get('cmFilter').addEventListener('change', () => { currentPage = 1; renderCustomers(); });
+        get('cmClear').addEventListener('click', () => { get('cmSearch').value = ''; get('cmFilter').value = 'all'; currentPage = 1; renderCustomers(); });
+        get('cmPrev').addEventListener('click', () => { currentPage--; renderCustomers(); });
+        get('cmNext').addEventListener('click', () => { currentPage++; renderCustomers(); });
+        get('cmRefresh').addEventListener('click', () => { renderCustomers(); showNotice('Đã làm mới danh sách.'); });
+        window.addEventListener('storage', event => { if (event.key === key) renderCustomers(); });
+        renderCustomers();
+    });
+    </script>
+</body></html>
