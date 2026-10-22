@@ -2274,3 +2274,180 @@ a.logo-section { text-decoration: none; }
     }
 
 }
+
+/*Customers Profile*/
+.bhp-page {
+    min-height: 75vh;
+    padding: 35px 24px 65px;
+    background: #f7f8fb;
+    color: #253047;
+    font-family: "Be Vietnam Pro", Arial, sans-serif;
+}
+.bhp-page [hidden] { display: none !important; }
+
+.bhp-layout {
+    max-width: 1200px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 290px minmax(0, 1fr);
+    gap: 25px;
+    align-items: start;
+}
+
+.bhp-sidebar, .bhp-content {
+    background: white;
+    border: 1px solid #e8eaf0;
+    border-radius: 14px;
+    box-shadow: 0 5px 20px rgba(31,45,70,.04);
+}
+
+.bhp-user { padding: 32px 20px; text-align: center; }
+.bhp-avatar {
+    width: 85px;
+    height: 85px;
+    margin: 0 auto 17px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #ffede0;
+    color: #c76a2d;
+    font-size: 29px;
+    font-weight: bold;
+}
+.bhp-user h2 { margin-bottom: 7px; font-size: 19px; }
+.bhp-user p { color: #8a94a7; font-size: 13px; }
+
+.bhp-member {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 8px 12px;
+    border-radius: 20px;
+    background: #fff3e7;
+    color: #d27935;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.bhp-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 20px 15px;
+    border-top: 1px solid #edf0f4;
+}
+.bhp-menu a {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 15px;
+    border-radius: 9px;
+    color: #566179;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+.bhp-menu a span { font-size: 19px; }
+.bhp-menu a:hover, .bhp-menu .bhp-menu-active {
+    background: #fff0e4;
+    color: #e57427;
+}
+.bhp-sidebar-bottom {
+    margin: 10px 25px 25px;
+    padding-top: 20px;
+    border-top: 1px solid #edf0f4;
+    color: #97a0af;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.bhp-content { padding: 35px; }
+.bhp-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+.bhp-heading h2 { font-size: 24px; margin-bottom: 9px; }
+.bhp-heading p { color: #8a94a7; font-size: 13px; line-height: 1.6; }
+.bhp-divider { margin: 25px 0; border: 0; border-top: 1px solid #eceef3; }
+
+.bhp-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 25px 20px;
+}
+.bhp-field { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.bhp-field label { font-size: 13px; font-weight: bold; }
+.bhp-field label span { color: #d85b50; }
+.bhp-field small { color: #9aa3b1; font-size: 11px; }
+
+.bhp-field input {
+    width: 100%;
+    min-height: 46px;
+    padding: 11px 14px;
+    border: 1px solid #e2e6ed;
+    border-radius: 9px;
+    outline: none;
+    background: white;
+    color: #344158;
+    font-size: 13px;
+}
+.bhp-field input[readonly] { background: #f6f7fa; color: #6c778b; }
+.bhp-field input:not([readonly]):focus {
+    border-color: #db782f;
+    box-shadow: 0 0 0 3px rgba(219,120,47,.1);
+}
+
+.bhp-edit-btn, .bhp-save-btn, .bhp-cancel-btn {
+    padding: 12px 20px;
+    border-radius: 9px;
+    font-weight: bold;
+    font-size: 13px;
+    cursor: pointer;
+}
+.bhp-edit-btn, .bhp-save-btn {
+    background: #df762e;
+    color: white;
+    border: 1px solid #df762e;
+}
+.bhp-cancel-btn { background: white; color: #667085; border: 1px solid #ddd; }
+.bhp-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 25px; }
+
+.bhp-message { margin-top: 22px; color: #218b60; font-size: 13px; }
+.bhp-message.bhp-error { color: #c94040; }
+
+.bhp-security {
+    display: flex;
+    align-items: center;
+    gap: 17px;
+    margin-top: 32px;
+    padding: 22px;
+    background: #f8f9fc;
+    border: 1px solid #e9ecf1;
+    border-radius: 12px;
+}
+.bhp-security-icon {
+    width: 45px;
+    height: 45px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    background: #fff0e4;
+    border-radius: 10px;
+    font-size: 21px;
+}
+.bhp-security strong { color: #334155; font-size: 13px; }
+.bhp-security p { margin-top: 7px; color: #9ba3b5; font-size: 12px; line-height: 1.6; }
+
+@media (max-width: 1000px) {
+    .bhp-layout { grid-template-columns: 250px minmax(0, 1fr); }
+}
+@media (max-width: 800px) {
+    .bhp-layout { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+    .bhp-page { padding: 20px 12px 40px; }
+    .bhp-content { padding: 23px 18px; }
+    .bhp-heading { flex-direction: column; align-items: flex-start; }
+    .bhp-form-grid { grid-template-columns: 1fr; }
+}
