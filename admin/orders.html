@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        BookHub Admin - Đơn hàng
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="../css/admin.css">
+
+    <link
+        rel="stylesheet"
+        href="../css/customer.css">
+</head>
+
+<body class="admin-orders-page">
+
+    <header class="admin-header">
+
+        <div class="admin-logo">
+            <h2>BookHub Admin</h2>
+        </div>
+
+        <nav class="admin-nav">
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="product.html">
+                Sản phẩm
+            </a>
+
+            <a href="categories.html">
+                Danh mục
+            </a>
+
+            <a href="customers.html">
+                Khách hàng
+            </a>
+
+            <a
+                href="orders.html"
+                class="active">
+                Đơn hàng
+            </a>
+
+            <a href="import.html">
+                Nhập hàng
+            </a>
+
+            <a href="inventory.html">
+                Tồn kho
+            </a>
+
+            <a href="prices.html">
+                Giá bán
+            </a>
+
+        </nav>
+
+        <div class="admin-user">
+
+            <span>
+                Admin
+            </span>
+
+            <a
+                href="login.html"
+                class="logout-link">
+                Đăng xuất
+            </a>
+
+        </div>
+
+    </header>
+
+    <main class="admin-content">
+
+        <section class="page-heading">
+
+            <div>
+
+                <h1>
+                    Quản lý đơn hàng
+                </h1>
+
+                <p>
+                    Tra cứu và cập nhật trạng thái đơn đặt hàng.
+                </p>
+
+            </div>
+
+        </section>
+
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <h2>
+                    Tra cứu đơn hàng
+                </h2>
+
+            </div>
+
+            <div class="admin-order-filter">
+
+                <div class="admin-order-filter-group">
+
+                    <label for="adminOrderSearch">
+                        Mã đơn
+                    </label>
+
+                    <input
+                        type="text"
+                        id="adminOrderSearch"
+                        placeholder="Ví dụ: DH001">
+
+                </div>
+
+                <div class="admin-order-filter-group">
+
+                    <label for="adminDateFrom">
+                        Từ ngày
+                    </label>
+
+                    <input
+                        type="date"
+                        id="adminDateFrom">
+
+                </div>
+
+                <div class="admin-order-filter-group">
+
+                    <label for="adminDateTo">
+                        Đến ngày
+                    </label>
+
+                    <input
+                        type="date"
+                        id="adminDateTo">
+
+                </div>
+
+                <div class="admin-order-filter-group">
+
+                    <label for="adminStatusFilter">
+                        Trạng thái
+                    </label>
+
+                    <select id="adminStatusFilter">
+
+                        <option value="">
+                            Tất cả
+                        </option>
+
+                        <option value="pending">
+                            Mới đặt
+                        </option>
+
+                        <option value="processing">
+                            Đã xử lý
+                        </option>
+
+                        <option value="delivered">
+                            Đã giao
+                        </option>
+
+                        <option value="cancelled">
+                            Đã hủy
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <div class="admin-filter-actions">
+
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    id="adminFilterBtn">
+                    Tìm kiếm
+                </button>
+
+                <button
+                    type="button"
+                    class="btn"
+                    id="adminResetFilterBtn">
+                    Làm mới
+                </button>
+
+            </div>
+
+        </section>
+
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <h2>
+                    Danh sách đơn hàng
+                </h2>
+
+                <span id="adminOrderCount">
+                    0 đơn hàng
+                </span>
+
+            </div>
+
+            <div class="table-wrap">
+
+                <table class="data-table admin-order-table">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>Mã đơn</th>
+                        <th>Khách hàng</th>
+                        <th>Ngày đặt</th>
+                        <th>Tổng tiền</th>
+                        <th>Thanh toán</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody id="adminOrderTableBody"></tbody>
+
+                </table>
+
+            </div>
+
+            <div
+                class="empty"
+                id="adminEmptyOrders"
+                hidden>
+                Không tìm thấy đơn hàng phù hợp.
+            </div>
+
+        </section>
+
+    </main>
+
+    <div
+        class="modal"
+        id="adminOrderModal">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h2>
+                    Chi tiết đơn hàng
+                </h2>
+
+                <button
+                    type="button"
+                    class="close-btn"
+                    id="closeAdminOrderModal">
+                    ×
+                </button>
+
+            </div>
+
+            <div id="adminOrderDetail"></div>
+
+        </div>
+
+    </div>
+
+    <!-- Phần chân trang -->
+    <footer class="site-footer">
+        <div class="footer-main">
+                <!-- Cột trái: Thông tin Đồ án & Logo -->
+            <div class="footer-col brand-info">
+                <div class="footer-logo">
+                    <!-- Icon màu cam, bạn thay src bằng ảnh thực tế -->
+                    <img src="../images/logoweb.png" alt="Nhà Sách SGU" width="40" height="40">
+                    <span class="logo-text">NHÀ SÁCH SGU</span>
+                </div>
+                <p class="project-desc">
+                    Hệ thống website cửa hàng bán sách trực tuyến<br>
+                    Đồ án môn <strong>Lập trình web và ứng dụng</strong>.
+                </p>
+                <p class="faculty-info">        
+                    Khoa Công nghệ Thông tin - SGU
+                </p>
+            </div>
+
+            <!-- Cột phải: Thông tin Liên hệ -->
+            <div class="footer-col contact-info">
+                <h3 class="footer-heading">THÔNG TIN LIÊN HỆ</h3>
+                <ul class="contact-list">
+                    <li>
+                        <img src="../images/location.png" alt="Location" width="16" height="16">
+                        <span>Đại học Sài Gòn (SGU), 273 An Dương Vương,<br>Q.5, TP.HCM</span>
+                    </li>
+                    <li>
+                        <img src="../images/phone.png" alt="Phone" width="16" height="16">
+                        <span>(028) 3835 4409 - Khoa CNTT</span>
+                    </li>
+                    <li>
+                        <img src="../images/mail.png" alt="Email" width="16" height="16">
+                        <span>cntt@sgu.edu.vn</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Thanh bản quyền dưới cùng -->
+        <div class="footer-bottom">
+            <div class="bottom-left">
+                Nhóm 10: Nguyễn Bá Khang - Huỳnh Minh Khánh - Lê Hoàng Duy Long - Cao Hoàng Nam - Lê Văn Tiến
+            </div>
+            <div class="bottom-right">
+                Giảng viên giảng dạy: Nguyễn Thanh Sang
+            </div>
+    </footer>
+
+    <script src="../js/data.js"></script>
+    <script src="../js/order.js"></script>
+
+</body>
+</html>

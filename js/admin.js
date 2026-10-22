@@ -1,8 +1,11 @@
-/* ==================== DATA ==================== */
+/* ==========================================================
+   BOOKHUB - admin.js
+   Yêu cầu: nạp data.js TRƯỚC file này (getData / setData nằm ở data.js).
+   Mọi thay đổi về giá bán và tồn kho ghi vào localStorage "products",
+   trang khách (products.js) đọc đúng nguồn này nên luôn đồng bộ.
+   ========================================================== */
 
-const getData = key => JSON.parse(localStorage.getItem(key)) || [];
-const setData = (key, data) =>
-    localStorage.setItem(key, JSON.stringify(data));
+/* ==================== DATA ==================== */
 
 const money = v => Number(v || 0).toLocaleString("vi-VN") + " VNĐ";
 
@@ -37,13 +40,17 @@ function renderDashboard() {
         .filter(o => o.orderStatus !== "cancelled")
         .reduce((s, o) => s + Number(o.totalAmount || 0), 0);
 
-    document.getElementById("productCount").textContent = products.length;
-    document.getElementById("categoryCount").textContent = categories.length;
-    document.getElementById("customerCount").textContent = customers.length;
-    document.getElementById("orderCount").textContent = orders.length;
-    document.getElementById("revenue").textContent = money(revenue);
-    document.getElementById("pendingCount").textContent =
-        orders.filter(o => o.orderStatus === "pending").length;
+    const set = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+    };
+
+    set("productCount", products.length);
+    set("categoryCount", categories.length);
+    set("customerCount", customers.length);
+    set("orderCount", orders.length);
+    set("revenue", money(revenue));
+    set("pendingCount", orders.filter(o => o.orderStatus === "pending").length);
 
     renderRecentOrders(orders);
 }
@@ -145,6 +152,7 @@ function saveCategory(e) {
     if (!name) return alert("Vui lòng nhập tên danh mục");
 
     if (id) {
+        // Object.assign giữ nguyên trường "key" mà trang khách dùng để lọc
         const c = data.find(x => x.categoryId === id);
         if (c) Object.assign(c, { categoryName: name, status });
     } else {
@@ -235,13 +243,14 @@ function openProductForm(id = "") {
         productDescription: p?.description || ""
     };
 
+    // Phải đổ danh sách <option> trước khi gán value cho select
     document.getElementById("productCategory").innerHTML =
         categories.map(c =>
             `<option value="${c.categoryId}">${c.categoryName}</option>`
         ).join("");
 
-    Object.entries(fields).forEach(([id, value]) =>
-        document.getElementById(id).value = value
+    Object.entries(fields).forEach(([fieldId, value]) =>
+        document.getElementById(fieldId).value = value
     );
 
     document.getElementById("productModalTitle").textContent =
@@ -261,7 +270,8 @@ function saveProduct(e) {
     const id = document.getElementById("productId").value;
 
     const p = {
-        productId: id || generateId("SP", products, "productId"),
+        // Tiền tố "MS" để đồng nhất với mã sách mẫu (MS001...)
+        productId: id || generateId("MS", products, "productId"),
         productName: document.getElementById("productName").value.trim(),
         categoryId: document.getElementById("productCategory").value,
         author: document.getElementById("productAuthor").value.trim(),
@@ -276,6 +286,9 @@ function saveProduct(e) {
     if (!p.productName)
         return alert("Vui lòng nhập tên sản phẩm");
 
+    if (p.importPrice < 0 || p.profitRate < 0 || p.stockQuantity < 0)
+        return alert("Giá nhập, lợi nhuận và tồn kho không được âm");
+
     p.salePrice = Math.round(
         p.importPrice * (1 + p.profitRate / 100)
     );
@@ -283,6 +296,7 @@ function saveProduct(e) {
     const index = products.findIndex(x => x.productId === id);
 
     if (index >= 0)
+        // Giữ lại image, coverType, year, pages... của sản phẩm cũ
         products[index] = { ...products[index], ...p };
     else
         products.push({ ...p, image: "" });
@@ -314,20 +328,20 @@ function renderCustomers() {
     const key = document.getElementById("customerSearch")?.value.toLowerCase() || "";
 
     const result = getData("customers").filter(c =>
-        c.customerId.toLowerCase().includes(key) ||
-        c.username.toLowerCase().includes(key) ||
-        c.fullName.toLowerCase().includes(key) ||
-        c.email.toLowerCase().includes(key)
+        (c.customerId || "").toLowerCase().includes(key) ||
+        (c.username || "").toLowerCase().includes(key) ||
+        (c.fullName || "").toLowerCase().includes(key) ||
+        (c.email || "").toLowerCase().includes(key)
     );
 
     tbody.innerHTML = result.length ? result.map(c => `
         <tr>
             <td>${c.customerId}</td>
-            <td>${c.username}</td>
-            <td>${c.fullName}</td>
-            <td>${c.email}</td>
-            <td>${c.phone}</td>
-            <td>${c.address}</td>
+            <td>${c.username || ""}</td>
+            <td>${c.fullName || ""}</td>
+            <td>${c.email || ""}</td>
+            <td>${c.phone || ""}</td>
+            <td>${c.address || ""}</td>
             <td><span class="badge badge-${c.status}">
                 ${c.status === "active" ? "Hoạt động" : "Khóa"}
             </span></td>
@@ -373,14 +387,55 @@ function renderOrders() {
     `;
 }
 
+/*
+ * Đồng bộ tồn kho theo trạng thái đơn:
+ *  - Hủy đơn (từ trạng thái khác)  -> cộng lại tồn kho
+ *  - Mở lại đơn đã hủy             -> trừ lại tồn kho (không đủ hàng thì từ chối)
+ * Giả định: khi khách đặt hàng, trang checkout đã trừ tồn kho.
+ */
 function changeOrderStatus(id, status) {
     const orders = getData("orders");
     const order = orders.find(o => o.orderId === id);
+    if (!order) return;
 
-    if (order) order.orderStatus = status;
+    const wasCancelled = order.orderStatus === "cancelled";
+    const willCancel = status === "cancelled";
 
+    if (wasCancelled !== willCancel) {
+        const products = getData("products");
+        const items = order.items || [];
+
+        if (wasCancelled) {
+            // mở lại đơn: kiểm tra đủ hàng trước khi trừ
+            const lacking = items.find(it => {
+                const p = products.find(x => x.productId === it.productId);
+                return !p || Number(p.stockQuantity || 0) < Number(it.quantity || 0);
+            });
+
+            if (lacking) {
+                alert("Không đủ tồn kho để mở lại đơn hàng này");
+                renderOrders();
+                return;
+            }
+        }
+
+        items.forEach(it => {
+            const p = products.find(x => x.productId === it.productId);
+            if (!p) return;
+
+            const qty = Number(it.quantity || 0);
+            const stock = Number(p.stockQuantity || 0);
+            p.stockQuantity = willCancel ? stock + qty : stock - qty;
+        });
+
+        setData("products", products);
+    }
+
+    order.orderStatus = status;
     setData("orders", orders);
+
     renderOrders();
+    renderDashboard();
 }
 
 
@@ -450,6 +505,7 @@ function saveImport(e) {
     if (!product || quantity <= 0 || price <= 0)
         return alert("Dữ liệu phiếu nhập không hợp lệ");
 
+    // Nhập hàng: tăng tồn kho, cập nhật giá nhập và tính lại giá bán
     product.stockQuantity = Number(product.stockQuantity || 0) + quantity;
     product.importPrice = price;
     product.salePrice = Math.round(
@@ -479,11 +535,27 @@ function saveImport(e) {
 }
 
 function deleteImport(id) {
-    if (!confirm("Xóa phiếu nhập này?")) return;
+    if (!confirm("Xóa phiếu nhập này? Tồn kho sẽ bị trừ lại tương ứng.")) return;
 
-    setData("imports",
-        getData("imports").filter(i => i.importId !== id)
-    );
+    const imports = getData("imports");
+    const imp = imports.find(i => i.importId === id);
+
+    if (imp) {
+        const products = getData("products");
+
+        (imp.items || []).forEach(it => {
+            const p = products.find(x => x.productId === it.productId);
+            if (p)
+                p.stockQuantity = Math.max(
+                    0,
+                    Number(p.stockQuantity || 0) - Number(it.quantity || 0)
+                );
+        });
+
+        setData("products", products);
+    }
+
+    setData("imports", imports.filter(i => i.importId !== id));
 
     renderImports();
 }
@@ -507,7 +579,7 @@ function renderInventory() {
     );
 
     if (filter === "low")
-        result = result.filter(p => p.stockQuantity > 0 && p.stockQuantity <= 5);
+        result = result.filter(p => Number(p.stockQuantity) > 0 && Number(p.stockQuantity) <= 5);
 
     if (filter === "out")
         result = result.filter(p => Number(p.stockQuantity) === 0);
@@ -591,11 +663,13 @@ function closePriceForm() {
 }
 
 function calculatePrice() {
+    const out = document.getElementById("calculatedPrice");
+    if (!out) return;
+
     const price = Number(document.getElementById("priceImport")?.value || 0);
     const profit = Number(document.getElementById("priceProfit")?.value || 0);
 
-    document.getElementById("calculatedPrice").textContent =
-        money(Math.round(price * (1 + profit / 100)));
+    out.textContent = money(Math.round(price * (1 + profit / 100)));
 }
 
 function savePrice(e) {
@@ -608,8 +682,14 @@ function savePrice(e) {
 
     if (!p) return;
 
-    p.importPrice = Number(document.getElementById("priceImport").value);
-    p.profitRate = Number(document.getElementById("priceProfit").value);
+    const importPrice = Number(document.getElementById("priceImport").value);
+    const profitRate = Number(document.getElementById("priceProfit").value);
+
+    if (importPrice < 0 || profitRate < 0)
+        return alert("Giá nhập và tỷ lệ lợi nhuận không được âm");
+
+    p.importPrice = importPrice;
+    p.profitRate = profitRate;
     p.salePrice = Math.round(p.importPrice * (1 + p.profitRate / 100));
 
     setData("products", products);
