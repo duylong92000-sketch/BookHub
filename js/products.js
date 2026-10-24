@@ -98,9 +98,27 @@ const BOOK_LIST = [
 // Thêm đường dẫn đầy đủ cho ảnh: images/books/<tên file>
 const BOOKS = BOOK_LIST.map((b) => ({ ...b, image: SITE_ROOT + 'images/books/' + b.image }));
 
+// ----- Giỏ hàng dùng chung: nút "Chọn mua" (thẻ sách) và nút "Thêm vào giỏ hàng" (trang chi tiết) -----
+// Lưu trong localStorage (khóa "cart") dạng { "MS001": 2, "MS005": 1 }: mã sách -> số lượng
+function getCart() {
+    try { return JSON.parse(localStorage.getItem('cart')) || {}; } catch (e) { return {}; }
+}
+
+// Thêm sách vào giỏ, không vượt quá số cuốn trong kho.
+// Trả về số lượng thực sự đã thêm (0 nếu hết hàng hoặc giỏ đã đạt mức tối đa).
+function addToCart(sku, qty = 1) {
+    const book = BOOKS.find((b) => b.sku === sku);
+    if (!book || book.stock <= 0) return 0;
+    const cart = getCart();
+    const before = cart[sku] || 0;
+    cart[sku] = Math.min(before + qty, book.stock);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    return cart[sku] - before;
+}
+
 function createCardHTML(book) {
     const buyButton = (book.stock > 0)
-        ? `<button class="btn-buy" type="button"><img src="${SITE_ROOT}images/buy.png" alt="" width="16" height="16"> Chọn mua</button>`
+        ? `<button class="btn-buy" type="button" data-sku="${escapeHtml(book.sku)}"><img src="${SITE_ROOT}images/buy.png" alt="" width="16" height="16"> Chọn mua</button>`
         : `<button class="btn-buy" type="button" disabled>Hết hàng</button>`;
 
     return `
@@ -124,6 +142,20 @@ function createCardHTML(book) {
                 ${buyButton}
             </div>
         </div>`;
+}
+
+// Nút "Chọn mua" trên thẻ sách: thêm 1 cuốn vào giỏ và báo kết quả trên chính nút đó
+function initBuyButtons() {
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.btn-buy');
+        if (!btn || btn.disabled || btn.dataset.busy) return;
+
+        const added = addToCart(btn.dataset.sku, 1);
+        const oldHTML = btn.innerHTML;
+        btn.dataset.busy = '1';                        // tránh bấm dồn trong lúc đang hiện thông báo
+        btn.textContent = added ? 'Đã thêm ✓' : 'Đã đủ số lượng';
+        setTimeout(() => { btn.innerHTML = oldHTML; delete btn.dataset.busy; }, 1200);
+    });
 }
 
 // Ô tìm kiếm trên header của các trang không có danh sách: chuyển sang products.html?q=...
@@ -425,14 +457,6 @@ function initDetail() {
         });
     }
 
-    // Giỏ hàng lưu trong localStorage dạng { "MS001": 2, "MS005": 1 }
-    function addToCart(itemSku, qty) {
-        let cart = {};
-        try { cart = JSON.parse(localStorage.getItem('cart')) || {}; } catch (e) { cart = {}; }
-        cart[itemSku] = Math.min((cart[itemSku] || 0) + qty, book.stock);
-        localStorage.setItem('cart', JSON.stringify(cart));
-    }
-
     /* ---------- Sách cùng thể loại ---------- */
     function renderRelated() {
         const related = BOOKS.filter((b) => b.category === book.category && b.sku !== book.sku).slice(0, 4);
@@ -512,6 +536,7 @@ function initCategoryMenu() {
 
 document.addEventListener('DOMContentLoaded', () => {
     initCategoryMenu();
+    initBuyButtons();
     const initPage = { home: initHome, products: initProducts, detail: initDetail }[document.body.dataset.page];
     if (initPage) initPage();
 });
