@@ -10,7 +10,7 @@ document
 
         event.preventDefault();
 
-        if (username.value.trim() === "admin" && password.value === "123456") {
+        if (usernameAdmin.value.trim() === "admin" && passwordAdmin.value === "123456") {
 
             localStorage.setItem(
                 "adminLoggedIn",
@@ -22,7 +22,7 @@ document
             return;
         }
 
-        if(username.value.trim() !== "admin") {
+        if(usernameAdmin.value.trim() !== "admin") {
             usernameError.style.display = "block";
             usernameError.innerHTML = "Tên tài khoản sai"
         }
@@ -30,7 +30,7 @@ document
             usernameError.style.display = "none"
         }
 
-        if(password.value !== "123456") {
+        if(passwordAdmin.value !== "123456") {
             passwordError.style.display = "block";
             passwordError.innerHTML = "Mật khẩu sai"
         }
@@ -41,6 +41,6 @@ document
 
 /* CUstomer login */
 
-
+const usernameCustomer = document.getElementById("username")
 
     
