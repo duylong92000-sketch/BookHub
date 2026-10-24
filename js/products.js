@@ -451,10 +451,67 @@ function initDetail() {
 }
 
 /* ==========================================================
-   E. KHỞI CHẠY
+   E. MENU DANH MỤC TRÊN MÀN HÌNH NHỎ (≤ 1100px)
+   - Máy tính: rê chuột là mở (CSS lo)
+   - ≤ 1100px: bấm dấu 3 gạch (nút "Danh mục") để mở, menu trượt ra từ bên trái
+   ========================================================== */
+
+function initCategoryMenu() {
+    const wrapper = document.querySelector('.category-wrapper');
+    if (!wrapper) return;   // trang không có menu danh mục thì bỏ qua
+
+    const btn  = wrapper.querySelector('.category-btn');
+    const back = wrapper.querySelector('.category-back');
+    const list = wrapper.querySelector('.category-dropdown');
+    if (!btn || !list) return;
+
+    const isMobile = window.matchMedia('(max-width: 1100px)');   // phải trùng với mốc @media (max-width: 1100px) trong CSS
+
+    // Ở ≤ 1100px nút chỉ còn dấu 3 gạch (chữ bị ẩn), nên cần nhãn cho trình đọc màn hình
+    btn.setAttribute('aria-label', 'Danh mục sách');
+    btn.setAttribute('aria-expanded', 'false');
+
+    const setOpen = (open) => {
+        wrapper.classList.toggle('open', open);           // CSS dựa vào class này để trượt menu
+        document.body.classList.toggle('category-open', open); // khóa cuộn trang
+        btn.setAttribute('aria-expanded', String(open));
+    };
+
+    // Bấm nút Danh mục: chỉ có tác dụng ở màn hình nhỏ
+    btn.addEventListener('click', () => {
+        if (isMobile.matches) setOpen(!wrapper.classList.contains('open'));
+    });
+
+    // Nút "← Quay lại"
+    if (back) back.addEventListener('click', () => setOpen(false));
+
+    // Bấm vào nền tối thì đóng (nền là pseudo-element của wrapper nên e.target chính là wrapper)
+    wrapper.addEventListener('click', (e) => {
+        if (e.target === wrapper) setOpen(false);
+    });
+
+    // Chọn 1 thể loại thì đóng menu
+    list.addEventListener('click', (e) => {
+        if (e.target.closest('a')) setOpen(false);
+    });
+
+    // Nhấn Esc để đóng
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') setOpen(false);
+    });
+
+    // Phóng to cửa sổ quá 1100px thì tự đóng, tránh bị kẹt khóa cuộn
+    isMobile.addEventListener('change', (e) => {
+        if (!e.matches) setOpen(false);
+    });
+}
+
+/* ==========================================================
+   F. KHỞI CHẠY
    ========================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
+    initCategoryMenu();
     const initPage = { home: initHome, products: initProducts, detail: initDetail }[document.body.dataset.page];
     if (initPage) initPage();
 });
