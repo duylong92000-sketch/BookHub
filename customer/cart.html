@@ -11,22 +11,67 @@
 
 <body class="cart-page">
 
-<header class="site-header">
-    <div class="container header-inner">
-        <a href="../index.html" class="brand">BookHub</a>
+<header class="top">
+            <!-- Logo + Danh mục sách -->
+            <div class="left-section">
+                <a class="logo-section" href="../index.html" title="Về trang chủ">
+                    <img src="../images/logoweb.png" alt="Logo" width="50" height="50">
+                    <div>
+                        <h1>BOOKHUB</h1>
+                        <p>Chắp cánh tri thức</p>
+                    </div>
+                </a>
 
-        <nav class="customer-nav">
-            <a href="../index.html">Trang chủ</a>
-            <a href="products.html">Sản phẩm</a>
-            <a href="cart.html" class="active">
-                Giỏ hàng
-                <span class="cart-count" id="cartCount">0</span>
-            </a>
-            <a href="orders.html">Đơn hàng</a>
-            <a href="profile.html">Tài khoản</a>
-        </nav>
-    </div>
-</header>
+                <!-- Danh mục thể loại-->
+                <div class="category-wrapper">
+                    <button class="category-btn" type="button">
+                        <img src="../images/category.png" alt="Danh mục" width="20" height="20">
+                        <span>Danh mục</span>
+                    </button>
+
+                    <!-- Bảng danh mục-->
+                    <ul class="category-dropdown">
+                        <li><a href="products.html">Tất cả sách</a></li>
+                        <li><a href="products.html?category=vanhoc">Văn học &amp; Tiểu thuyết</a></li>
+                        <li><a href="products.html?category=kinhte">Kinh tế &amp; Quản trị</a></li>
+                        <li><a href="products.html?category=cntt">Công nghệ thông tin</a></li>
+                        <li><a href="products.html?category=thieunhi">Sách thiếu nhi</a></li>
+                    </ul>
+                </div>
+
+                <!-- Thanh tìm kiếm -->
+                <div class="search-wrapper">
+                    <input type="text" id="searchInput" placeholder="Nhập tên sách hoặc tác giả" class="search-input" aria-label="Tìm kiếm sách">
+
+                    <button type="button" id="btnSearch" class="search-btn" aria-label="Tìm kiếm">
+                        <img src="../images/icon-search.png" alt="Tìm kiếm" width="20" height="20">
+                    </button>
+                    </div>
+            </div>
+
+            <!-- Cụm phải: Chức năng -->
+            <div class="action-section">
+                <a href="cart.html" target="_self" title="Xem giỏ hàng">
+                    <img src="../images/cart.png" alt="Giỏ hàng" width="20" height="20">
+                    Giỏ hàng
+                </a>
+
+                <a href="login.html" target="_self" title="Đăng nhập">
+                    <img src="../images/login.png" alt="Đăng nhập" width="20" height="20">
+                    Đăng nhập
+                </a>
+
+                <a href="register.html" target="_self" title="Đăng ký tài khoản">
+                    <img src="../images/signup.png" alt="Đăng ký tài khoản" width="20" height="20">
+                    Đăng ký
+                </a>
+
+                <a href="../admin/login.html" target="_self" title="Đi đến khu vực admin">
+                    <img src="../images/admin.png" alt="Admin" width="20" height="20">
+                    Admin
+                </a>
+            </div>
+        </header>
 
 <main class="customer-main">
     <div class="container">
@@ -120,47 +165,54 @@
 </main>
 
 <footer class="site-footer">
+            <div class="footer-main">
+                <!-- Cột trái: Thông tin Đồ án & Logo -->
+                <div class="footer-col brand-info">
+                    <div class="footer-logo">
+                        <!-- Icon màu cam, bạn thay src bằng ảnh thực tế -->
+                        <img src="../images/logoweb.png" alt="Nhà Sách SGU" width="40" height="40">
+                        <span class="logo-text">NHÀ SÁCH SGU</span>
+                    </div>
+                    <p class="project-desc">
+                        Hệ thống website cửa hàng bán sách trực tuyến<br>
+                        Đồ án môn <strong>Lập trình web và ứng dụng</strong>.
+                    </p>
+                    <p class="faculty-info">
+                        
+                        Khoa Công nghệ Thông tin - SGU
+                    </p>
+                </div>
 
-    <div class="footer-main">
-
-        <div class="brand-info">
-
-            <div class="footer-logo">
-                <span class="logo-text">BOOKHUB</span>
+                <!-- Cột phải: Thông tin Liên hệ -->
+                <div class="footer-col contact-info">
+                    <h3 class="footer-heading">THÔNG TIN LIÊN HỆ</h3>
+                    <ul class="contact-list">
+                        <li>
+                            <img src="../images/location.png" alt="Location" width="16" height="16">
+                            <span>Số 273 An Dương Vương, Phường Chợ Quán, TP.HCM</span>
+                        </li>
+                        <li>
+                            <img src="../images/phone.png" alt="Phone" width="16" height="16">
+                            <span>(028) 3838 2664 (Văn phòng Khoa CNTT)</span>
+                        </li>
+                        <li>
+                            <img src="../images/mail.png" alt="Email" width="16" height="16">
+                            <a class="mail" href="mailto:vpkcntt@sgu.edu.vn">vpkcntt@sgu.edu.vn</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
-            <div class="project-desc">
-                <strong>Website quản lý cửa hàng sách BookHub</strong>
-                <p>Đồ án môn Lập trình Web và Ứng dụng.</p>
+            <!-- Thanh bản quyền dưới cùng -->
+            <div class="footer-bottom">
+                <div class="bottom-left">
+                    Nhóm 10: Nguyễn Bá Khang - Huỳnh Minh Khánh - Lê Hoàng Duy Long - Cao Hoàng Nam - Lê Văn Tiến
+                </div>
+                <div class="bottom-right">
+                    Giảng viên giảng dạy: Nguyễn Thanh Sang
+                </div>
             </div>
-
-            <div class="faculty-info">
-                Khoa Công Nghệ Thông Tin - SGU
-            </div>
-
-        </div>
-
-        <div class="contact-info">
-
-            <div class="footer-heading">
-                THÔNG TIN
-            </div>
-
-            <ul class="contact-list">
-                <li>Trường Đại học Sài Gòn</li>
-                <li>Website bán và quản lý sách BookHub</li>
-            </ul>
-
-        </div>
-
-    </div>
-
-    <div class="footer-bottom">
-        <span>Nhóm 10: Nguyễn Bá Khang - Huỳnh Minh Khánh - Lê Hoàng Duy Long - Cao Hoàng Nam - Lê Văn Tiến</span>
-        <span>Giảng viên giảng dạy: Nguyễn Thanh Sang</span>
-    </div>
-
-</footer>
+        </footer>
 
 <script src="../js/cart.js"></script>
 
