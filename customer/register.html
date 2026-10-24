@@ -3,12 +3,12 @@
     <head> 
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>SGU - BookHub</title>
+        <title>Đăng ký</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@600;700&display=swap" rel="stylesheet">
-        <!-- <link rel="stylesheet" href="/css/customer.css"> -->
-        <link rel="stylesheet" href="/css/login.css">
+        <link rel="stylesheet" href="../css/login.css">
+        <link rel="stylesheet" href="../css/customer.css">
         <style></style>
     </head>
 
@@ -16,13 +16,13 @@
         <header class="top">
             <!-- Logo + Danh mục sách -->
             <div class="left-section">
-                <div class="logo-section">
+                <a class="logo-section" href="../index.html" title="Về trang chủ">
                     <img src="/images/logoweb.png" alt="Logo" width="50" height="50">
-                    <div>
+                    <div>1
                         <h1>BOOKHUB</h1>
                         <p>Chắp cánh tri thức</p>
                     </div>
-                </div>
+                </a>
                 <!-- Danh mục thể loại-->
                 <div class="category-wrapper">
                     <button class="category-btn" type="button">
@@ -67,36 +67,36 @@
         </header>
 
         <main class="top">
-            <div class="register-form">
+            <div class="form">
                 <h2>Đăng ký tài khoản</h2>
                 <form id="formRegister">
                     <label for="fullName">Họ và tên</label>
-                    <input type="text" id="fullName" placeholder="Nhập họ và tên">
-                    <div id="nameError" style="color:red; display:none">Tên không được để trống</div>
+                    <input type="text" id="fullName" placeholder="Nguyễn Văn A">
+                    <div id="nameError" class="error"></div>
 
-                    <label for="usernameID">Tên hiển thị</label>
-                    <input type="text" id="usernameID" placeholder="Tên hiển thị">
-                    <div id="usernameError" style="color:red; display:none">Tên không được để trống</div>
+                    <label for="username">Tên hiển thị</label>
+                    <input type="text" id="username" placeholder="Tên tài khoản" >
+                    <div id="usernameError" class="error"></div>
 
                     <label for="email">Email</label>
-                    <input type="email" id="email" placeholder="Nhập email">
-                    <div id="emailError" style="color:red; display:none">Email không được để trống</div>
+                    <input type="email" id="email" placeholder="Nhập email" >
+                    <div id="emailError" class="error" "></div>
 
                     <label for="phone">Số điện thoại</label>
                     <input type="tel" id="phone" placeholder="Số điện thoại">
-                    <div id="phoneError" style="color:red; display:none">Số điện thoại không được để trống</div>
+                    <div id="phoneError" class="error"></div>
                     
                     <label for="password">Mật khẩu</label>
-                    <input type="password" id="password" min="8" placeholder="Nhập mật khẩu">
-                    <div id="passwordError" style="color:red; display:none">Mật khẩu không được để trống</div>
+                    <input type="password" id="password" minlength="8" placeholder="Nhập mật khẩu">
+                    <div id="passwordError" class="error"></div>
 
                     <label for="repassword">Xác nhận mật khẩu</label>
                     <input type="password" id="repassword" placeholder="Nhập lại mật khẩu">
-                    <div id="nameError" style="color:red; display:none">Mật khẩu không được để trống</div>
+                    <div id="repasswordError" class="error"></div>
 
                     <label for="address">Địa chỉ</label>
-                    <input type="text" id="address" placeholder="Địa chỉ">
-                    <div id="addressError" style="color:red; display:none">Địa chỉ không được để trống</div>
+                    <input type="text" id="address" placeholder="Số nhà + tên đường, phường, thành phố">
+                    <!-- <div id="addressError" style="color:red; display:none">Địa chỉ không được để trống</div> -->
 
                     <button type="submit">Đăng ký</button>
                 </form>
@@ -156,7 +156,7 @@
             </div>
         </footer>
 
-        <script src="js/products.js"></script>
+        <script src="/js/products.js"></script>
         <script src="/js/register.js"></script>
     </body>
 </html>

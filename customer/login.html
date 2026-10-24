@@ -7,22 +7,22 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@600;700&display=swap" rel="stylesheet">
-        <!-- <link rel="stylesheet" href="/css/customer.css"> -->
-        <link rel="stylesheet" href="/css/login.css">
-        <style></style>
+        <link rel="stylesheet" href="../css/login.css">
+        <link rel="stylesheet" href="../css/customer.css">
+        
     </head>
 
     <body data-page="home">
         <header class="top">
             <!-- Logo + Danh mục sách -->
             <div class="left-section">
-                <div class="logo-section">
+                <a class="logo-section" href="../index.html" title="Về trang chủ">
                     <img src="/images/logoweb.png" alt="Logo" width="50" height="50">
                     <div>
                         <h1>BOOKHUB</h1>
                         <p>Chắp cánh tri thức</p>
                     </div>
-                </div>
+                </a>
                 <!-- Danh mục thể loại-->
                 <div class="category-wrapper">
                     <button class="category-btn" type="button">
@@ -68,14 +68,14 @@
 
         <main class="top">
             <!--Bảng đăng nhập-->
-            <div class="register-form">
+            <div class="form">
                 <h2>Đăng nhập tài khoản</h2>
-                <form>
-                    <label for="usernameID">Tên hiển thị</label>
-                    <input type="text" id="usernameID" placeholder="Tên hiển thị">
+                <form id="customerLoginForm">
+                    <label for="username">Tên tài khoản</label>
+                    <input type="text" id="username" placeholder="Tên tài khoản">
 
                     <label for="password">Mật khẩu</label>
-                    <input type="password" id="password" min="8" placeholder="Nhập mật khẩu">
+                    <input type="password" id="password" placeholder="Nhập mật khẩu">
 
                     
                     <button type="submit">Đăng nhập</button>
@@ -136,7 +136,7 @@
             </div>
         </footer>
 
-        <script src="/js/products.js"></script>
-        <script src="/js/login.js"></script>
+        <script src="../js/products.js"></script>
+        <script src="../js/login.js"></script>
     </body>
 </html>
