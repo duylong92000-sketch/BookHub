@@ -1,3 +1,24 @@
+:root {
+    --brown-dark: #4A3525;
+    --brown: hsl(16, 25%, 38%);
+    --brown-focus: #5D4037;
+    --border: #D7CCC8;
+    --accent: #C65102;
+    --accent-dark: #A04000;
+    --font-heading: 'Be Vietnam Pro', 'Segoe UI', Arial, sans-serif;
+
+    --green: var(--accent-dark);
+    --green-dark: #843300;
+    --green-light: #F5EFEB;
+    --beige: #fff;
+    --cream: #F5EFEB;
+    --white: #ffffff;
+    --text: #333;
+    --gray: #777;
+    --red: #C0392B;
+    --orange: var(--accent);
+    --shadow: 0 5px 18px rgba(74, 53, 37, 0.10);
+}
 
 /* Cài đặt chung */
 * {
@@ -6,8 +27,6 @@
     box-sizing: border-box;
 }
 
-
-/* Căn giữa form */
 body {
     font-family: Arial, sans-serif;
 }
@@ -19,6 +38,7 @@ header.top {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 24px;          /* khe hở giữa nhóm bên trái và cụm nút bên phải */
     padding: 10px 40px;
     background-color: #F5EFEB;
     border-bottom: 1px solid #E6DEC9;
@@ -33,12 +53,16 @@ header.top {
     display: flex;
     align-items: center;
     gap: 25px;
+    flex: 1 1 auto;     /* chiếm phần còn lại, nhường chỗ cho cụm nút bên phải */
+    min-width: 0;       /* cho phép co lại thay vì làm header bị tràn */
 }
+
 
 .logo-section {
     display: flex;
     align-items: center;
     gap: 10px;
+    flex-shrink: 0;
 }
 
 a.logo-section { text-decoration: none; }
@@ -59,6 +83,7 @@ a.logo-section { text-decoration: none; }
 /* Khối nút Danh mục */
 .category-wrapper {
     position: relative;
+    flex-shrink: 0;
 }
 
 .category-btn {
@@ -121,11 +146,14 @@ a.logo-section { text-decoration: none; }
     display: block;
 }
 
+.category-back { display: none; }
+
 /* ========== CỤM NÚT BÊN PHẢI ========== */
 .action-section {
     display: flex;
     align-items: center;
     gap: 25px;
+    flex-shrink: 0;     /* luôn giữ đủ chỗ cho 4 nút, không bị lẹm */
 }
 
 .action-section a {
@@ -136,6 +164,7 @@ a.logo-section { text-decoration: none; }
     color: var(--brown-dark);
     font-size: 14px;
     font-weight: 500;
+    white-space: nowrap; /* không cho "Giỏ hàng" xuống 2 dòng */
 }
 
 .action-section a:hover {
@@ -345,7 +374,112 @@ form button:hover {
 }
 
 /* ========== RESPONSIVE ========== */
+@media (max-width: 1280px) {
+    header.top { padding: 10px 24px; gap: 16px; }
+    .left-section { gap: 16px; }
+    .action-section { gap: 16px; }
+}
+@media (max-width: 1100px) {
+    /* ===== Header 2 hàng: [☰ logo ......... nút chức năng] / [thanh tìm kiếm] ===== */
+    header.top { flex-wrap: wrap; justify-content: flex-start; gap: 10px 12px; padding: 10px 20px; }
+    .left-section { display: contents; }   /* gỡ khung nhóm trái: nút ☰, logo, ô tìm kiếm tự xếp theo header */
+    .category-wrapper { order: 1; }
+    .logo-section { order: 2; }
+    .action-section { order: 3; margin-left: auto; gap: 18px; }
+    .search-wrapper { order: 4; flex: 1 1 100%; max-width: none; min-width: 0; }
+
+    /* ===== Nút "Danh mục" đổi thành dấu 3 gạch ===== */
+    .category-btn { width: 42px; height: 42px; padding: 0; justify-content: center; gap: 0; }
+    .category-btn > * { display: none; }   /* ẩn icon lưới và chữ "Danh mục" */
+    .category-btn::before {
+        content: "";
+        width: 20px;
+        height: 14px;
+        background:
+            linear-gradient(var(--brown-dark), var(--brown-dark)) 0 0 / 100% 2px no-repeat,
+            linear-gradient(var(--brown-dark), var(--brown-dark)) 0 50% / 100% 2px no-repeat,
+            linear-gradient(var(--brown-dark), var(--brown-dark)) 0 100% / 100% 2px no-repeat;
+    }
+
+    /* ===== Menu danh mục: bấm dấu 3 gạch mới mở, trượt ra từ mép trái ===== */
+    .category-dropdown {
+        display: block;                 /* luôn tồn tại để chạy được animation */
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: min(320px, 85vw);
+        min-width: 0;
+        padding: 56px 0 20px;           /* chừa chỗ cho nút Quay lại ở trên */
+        border-radius: 0;
+        overflow-y: auto;
+        z-index: 1003;
+        transform: translateX(-100%);   /* giấu ra ngoài mép trái */
+        visibility: hidden;
+        transition: transform 0.3s ease, visibility 0s linear 0.3s;
+    }
+    .category-dropdown::before { display: none; } /* bỏ cầu nối hover, không cần nữa */
+    .category-dropdown li a { padding: 14px 20px; font-size: 15px; }
+    /* Nút Quay lại: dính ở đầu menu, trượt cùng menu */
+    .category-back {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: min(320px, 85vw);
+        height: 56px;
+        padding: 0 20px;
+        border: none;
+        border-bottom: 1px solid #E6DEC9;
+        background-color: #F5EFEB;
+        color: var(--brown-dark);
+        font-size: 15px;
+        font-weight: bold;
+        cursor: pointer;
+        z-index: 1004;
+        transform: translateX(-100%);
+        visibility: hidden;
+        transition: transform 0.3s ease, visibility 0s linear 0.3s;
+    }
+    /* Khi mở (JS thêm class "open"): menu và nút trượt vào */
+    .category-wrapper.open .category-dropdown,
+    .category-wrapper.open .category-back {
+        transform: translateX(0);
+        visibility: visible;
+        transition: transform 0.3s ease, visibility 0s;
+    }
+    /* Nền tối phía sau menu, bấm vào để đóng */
+    .category-wrapper::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-color: rgba(43, 29, 18, 0.45);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        z-index: 1002;
+    }
+    .category-wrapper.open::after { opacity: 1; pointer-events: auto; }
+    body.category-open { overflow: hidden; } /* khóa cuộn trang khi menu đang mở */
+
+    .adv-dropdown { width: min(320px, 100%); } /* menu lọc không tràn ra ngoài màn hình */
+    .product-grid { grid-template-columns: repeat(3, 1fr); }
+    .detail-card { gap: 30px; padding: 30px; }
+    .related-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
 @media (max-width: 800px) {
+    /* --- Header gọn hơn: nút chức năng chỉ còn icon ---
+       (chữ vẫn nằm trong HTML, chỉ thu về cỡ 0 để trình đọc màn hình vẫn đọc được) */
+    header.top { padding: 8px 15px; gap: 8px 10px; }
+    .logo-section h1 { font-size: 1.25em; }
+    .action-section { gap: 4px; }
+    .action-section a { gap: 0; padding: 8px; font-size: 0; }
+    .action-section a img { width: 22px; height: 22px; }
+
+    /* --- Các rule cũ giữ nguyên --- */
     .main-content { padding: 20px; }
     .product-grid { grid-template-columns: repeat(2, 1fr); }
     .footer-main { flex-direction: column; gap: 20px; padding: 25px 20px 15px; }
@@ -360,10 +494,27 @@ form button:hover {
     .related-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* Hiển thị tốt trên điện thoại */
-@media (max-width: 450px) {
-    .register-form {
-        width: 90%;
-        padding: 22px;
-    }
+@media (max-width: 520px) {
+    .logo-section p { display: none; }         /* ẩn dòng phụ dưới logo cho đỡ chật */
+    .logo-section img { width: 40px; height: 40px; }
+    .logo-section h1 { font-size: 1.1em; }
+    .category-btn { width: 40px; height: 40px; }
+    .action-section a { padding: 6px; }
+    .action-section a img { width: 20px; height: 20px; }
+    .product-grid { grid-template-columns: 1fr; }
+    .category-grid { grid-template-columns: 1fr; }
+    .detail-card { padding: 20px; }
+    .purchase-row { flex-wrap: wrap; }
 }
+@media (max-width: 400px) {
+    /* Điện thoại nhỏ: thu hẹp thêm để 4 nút chức năng vẫn nằm cùng hàng với logo */
+    header.top { padding: 8px 10px; gap: 8px 6px; }
+    .logo-section { gap: 6px; }
+    .logo-section h1 { font-size: 1em; }
+    .action-section { gap: 0; }
+    .action-section a { padding: 5px; }
+}
+@media (max-width: 340px) {
+    .logo-section > div { display: none; }   /* màn hình rất hẹp: chỉ giữ logo hình */
+}
+

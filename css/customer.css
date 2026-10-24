@@ -1439,6 +1439,126 @@ a.logo-section { text-decoration: none; }
     }
 }
 
+/* =========== FORM CHUNG CỦA REGISTER/LOGIN =========== */
+main.top{
+    margin: 50px 20px;
+    min-height: 50vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Khung đăng ký */
+.form {
+    background-color: rgba(255, 255, 255, 0.645);
+    width: 600px;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Tiêu đề */
+.form h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.form > p {
+    text-align: center;
+    color: #777;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+/* Nhãn */
+form label {
+    display: block;
+    margin-bottom: 7px;
+    margin-top: 18px;
+    color: #333;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* Ô nhập liệu */
+form input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    font-size: 14px;
+    outline: none;
+    transition: 0.3s;
+}
+
+/* Khi nhấn vào ô nhập */
+form input:focus {
+    border-color: #6c63ff;
+    box-shadow: 0 0 5px rgba(108, 99, 255, 0.3);
+}
+
+/* Nút đăng ký */
+form button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 18px;
+    background-color: #6c63ff;
+    color: white;
+    border: none;
+    border-radius: 7px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+/* Lỗi */
+.error {
+    color: #dc2626;
+    font-size: 13px;
+    display: block;
+    margin-top: 5px;
+}
+/* Hiệu ứng khi rê chuột */
+form button:hover {
+    background-color: #000000;
+}
+
+/* Liên kết đăng nhập */
+.form .login-link {
+    margin-top: 20px;
+    margin-bottom: 0;
+    font-size: 14px;
+}
+
+.login-link a {
+    color: #6c63ff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+
+@media (max-width: 800px) {
+    .form {width: 90%;  padding: 30px;}
+}
+
+@media (max-width: 600px) {
+    main.top {margin: 20px 10px;}
+    .form {padding: 20px;}
+    .form h2 {font-size: 22px; }
+}
+
+@media (max-width: 360px) {
+    .form {padding: 20px 15px;}
+    .form h2 {font-size: 20px;}
+    form input {padding: 9px;}
+    form button {font-size: 14px;}
+}
+
 /* =========================================================
    orders.HTML
 
