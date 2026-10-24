@@ -451,9 +451,9 @@ function initDetail() {
 }
 
 /* ==========================================================
-   E. MENU DANH MỤC TRÊN MÀN HÌNH NHỎ (≤ 800px)
+   E. MENU DANH MỤC TRÊN MÀN HÌNH NHỎ (≤ 1100px)
    - Máy tính: rê chuột là mở (CSS lo)
-   - ≤ 800px: bấm nút "Danh mục" để mở, menu trượt ra từ bên trái
+   - ≤ 1100px: bấm dấu 3 gạch (nút "Danh mục") để mở, menu trượt ra từ bên trái
    ========================================================== */
 
 function initCategoryMenu() {
@@ -465,7 +465,11 @@ function initCategoryMenu() {
     const list = wrapper.querySelector('.category-dropdown');
     if (!btn || !list) return;
 
-    const isMobile = window.matchMedia('(max-width: 800px)');
+    const isMobile = window.matchMedia('(max-width: 1100px)');   // phải trùng với mốc @media (max-width: 1100px) trong CSS
+
+    // Ở ≤ 1100px nút chỉ còn dấu 3 gạch (chữ bị ẩn), nên cần nhãn cho trình đọc màn hình
+    btn.setAttribute('aria-label', 'Danh mục sách');
+    btn.setAttribute('aria-expanded', 'false');
 
     const setOpen = (open) => {
         wrapper.classList.toggle('open', open);           // CSS dựa vào class này để trượt menu
@@ -496,7 +500,7 @@ function initCategoryMenu() {
         if (e.key === 'Escape') setOpen(false);
     });
 
-    // Phóng to cửa sổ quá 800px thì tự đóng, tránh bị kẹt khóa cuộn
+    // Phóng to cửa sổ quá 1100px thì tự đóng, tránh bị kẹt khóa cuộn
     isMobile.addEventListener('change', (e) => {
         if (!e.matches) setOpen(false);
     });
