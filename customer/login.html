@@ -7,22 +7,20 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@600;700&display=swap" rel="stylesheet">
-        <!-- <link rel="stylesheet" href="/css/customer.css"> -->
-        <link rel="stylesheet" href="../css/login.css">
-        <style></style>
+        <link rel="stylesheet" href="/css/customer.css">
     </head>
 
     <body data-page="home">
         <header class="top">
             <!-- Logo + Danh mục sách -->
             <div class="left-section">
-                <div class="logo-section">
+                <a class="logo-section" href="../index.html" title="Về trang chủ">
                     <img src="../images/logoweb.png" alt="Logo" width="50" height="50">
                     <div>
                         <h1>BOOKHUB</h1>
                         <p>Chắp cánh tri thức</p>
                     </div>
-                </div>
+                </a>
                 <!-- Danh mục thể loại-->
                 <div class="category-wrapper">
                     <button class="category-btn" type="button">
@@ -30,13 +28,13 @@
                         <span>Danh mục</span>
                     </button>
 
-                    <!-- Bảng danh mục-->
+                    <!-- Bảng danh mục -->
                     <ul class="category-dropdown">
-                        <li><a href="products.html">Tất cả sách</a></li>
-                        <li><a href="products.html?category=vanhoc">Văn học &amp; Tiểu thuyết</a></li>
-                        <li><a href="products.html?category=kinhte">Kinh tế &amp; Quản trị</a></li>
-                        <li><a href="products.html?category=cntt">Công nghệ thông tin</a></li>
-                        <li><a href="products.html?category=thieunhi">Sách thiếu nhi</a></li>
+                        <li><a href="../customer/products.html">Tất cả sách</a></li>
+                        <li><a href="../customer/products.html?category=vanhoc">Văn học &amp; Tiểu thuyết</a></li>
+                        <li><a href="../customer/products.html?category=kinhte">Kinh tế &amp; Quản trị</a></li>
+                        <li><a href="../customer/products.html?category=cntt">Công nghệ thông tin</a></li>
+                        <li><a href="../customer/products.html?category=thieunhi">Sách thiếu nhi</a></li>
                     </ul>
                 </div>
 
@@ -44,17 +42,17 @@
 
             <!-- Cụm phải: Chức năng -->
             <div class="action-section">
-                <a href="cart.html" target="_self" title="Xem giỏ hàng">
+                <a href="../customer/cart.html" target="_self" title="Xem giỏ hàng">
                     <img src="../images/cart.png" alt="Giỏ hàng" width="20" height="20">
                     Giỏ hàng
                 </a>
 
-                <a href="login.html" target="_self" title="Đăng nhập">
+                <a href="../customer/login.html" target="_self" title="Đăng nhập">
                     <img src="../images/login.png" alt="Đăng nhập" width="20" height="20">
                     Đăng nhập
                 </a>
 
-                <a href="register.html" target="_self" title="Đăng ký tài khoản">
+                <a href="../customer/register.html" target="_self" title="Đăng ký tài khoản">
                     <img src="../images/signup.png" alt="Đăng ký tài khoản" width="20" height="20">
                     Đăng ký
                 </a>
@@ -68,15 +66,16 @@
 
         <main class="top">
             <!--Bảng đăng nhập-->
-            <div class="register-form">
+            <div class="form">
                 <h2>Đăng nhập tài khoản</h2>
-                <form>
-                    <label for="usernameID">Tên hiển thị</label>
-                    <input type="text" id="usernameID" placeholder="Tên hiển thị">
+                <form id="customersLoginForm">
+                    <label for="username">Tên hiển thị</label>
+                    <input type="text" id="userName" maxlength="30" placeholder="Tên tài khoản" >
+                    <div id="userError" class="error"></div>
 
                     <label for="password">Mật khẩu</label>
-                    <input type="password" id="password" min="8" placeholder="Nhập mật khẩu">
-
+                    <input type="password" id="password" minlength="8" placeholder="Nhập mật khẩu">
+                    <div id="passwordError" class="error" ></div>
                     
                     <button type="submit">Đăng nhập</button>
                 </form>
@@ -86,6 +85,7 @@
                 </p>
             </div>
         </main>
+
         <footer class="site-footer">
             <div class="footer-main">
                 <!-- Cột trái: Thông tin Đồ án & Logo -->
@@ -111,15 +111,15 @@
                     <ul class="contact-list">
                         <li>
                             <img src="../images/location.png" alt="Location" width="16" height="16">
-                            <span>Đại học Sài Gòn (SGU), 273 An Dương Vương,<br>Q.5, TP.HCM</span>
+                            <span>Số 273 An Dương Vương, Phường Chợ Quán, TP.HCM</span>
                         </li>
                         <li>
                             <img src="../images/phone.png" alt="Phone" width="16" height="16">
-                            <span>(028) 3835 4409 - Khoa CNTT</span>
+                            <span>(028) 3838 2664 (Văn phòng Khoa CNTT)</span>
                         </li>
                         <li>
                             <img src="../images/mail.png" alt="Email" width="16" height="16">
-                            <span>cntt@sgu.edu.vn</span>
+                            <a class="mail" href="mailto:vpkcntt@sgu.edu.vn">vpkcntt@sgu.edu.vn</a>
                         </li>
                     </ul>
                 </div>
