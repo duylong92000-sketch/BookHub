@@ -1,0 +1,57 @@
+const currentUser = JSON.parse(localStorage.getItem("currentUser")) 
+
+document.addEventListener("DOMContentLoaded", function () {
+    const userView = document.querySelector(".user-view");
+    const userLogin = document.getElementById("user");
+    const usernameDisplay = document.getElementById("usernameDisplay");
+    const userDropdown = document.getElementById("userDropdown");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    const loginLink = document.querySelector(
+        '.action-section a[title="Đăng nhập"]'
+    );
+
+    const registerLink = document.querySelector(
+        '.action-section a[title="Đăng ký tài khoản"]'
+    );
+
+
+    if(currentUser) {
+        userLogin.innerHTML = currentUser.userName;
+        userView.style.display = "block";
+
+        loginLink.style.display = "none";
+        registerLink.style.display = "none";
+    } else {
+        userView.style.display = "none";
+
+        loginLink.style.display = "";
+        registerLink.style.display = "";
+    }
+
+    // Bấm tên tài khoản để mở hoặc đóng menu
+    userLogin.addEventListener("click", function (event) {
+        event.stopPropagation();
+        userDropdown.classList.toggle("show");
+    });
+
+    // Bấm ra ngoài menu để đóng
+    document.addEventListener("click", function (event) {
+        if (!userView.contains(event.target)) {
+            userDropdown.classList.remove("show");
+        }
+    });
+
+    // Đóng menu khi nhấn phím Escape
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+            userDropdown.classList.remove("show");
+        }
+    });
+
+    // Đăng xuất
+    logoutBtn.addEventListener("click", function () {
+        localStorage.removeItem("currentUser");
+        window.location.href = "../index.html";
+    });
+});
