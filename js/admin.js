@@ -156,11 +156,13 @@ function saveCategory(e) {
         const c = data.find(x => x.categoryId === id);
         if (c) Object.assign(c, { categoryName: name, status });
     } else {
-        data.push({
-            categoryId: generateId("DM", data, "categoryId"),
-            categoryName: name,
-            status
-        });
+        const categoryId = generateId("DM", data, "categoryId");
+        const keyBase = name.normalize("NFD").replace(/[\\u0300-\\u036f]/g, "")
+            .replace(/đ/g, "d").replace(/Đ/g, "D")
+            .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        let key = keyBase || categoryId.toLowerCase();
+        if (data.some(c => c.key === key)) key = `${key}-${categoryId.toLowerCase()}`;
+        data.push({ categoryId, key, categoryName: name, status });
     }
 
     setData("categories", data);
