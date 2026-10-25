@@ -80,7 +80,7 @@
         <!-- Cột trái: Nội dung -->
         <div class="hero-content">
             <span class="hero-tag">BOOKHUB - NHÓM 10</span>
-            <h2 class="hero-title">Khám phá thế giới qua từng trang sách</h2>
+            <h2 class="hero-title">Nơi tri thức hội tụ</h2>
             <p class="hero-text">Nhiều thể loại sách, giao hàng toàn quốc, cam kết chính hãng 100%.</p>
             
             <div class="hero-actions">
@@ -104,10 +104,14 @@
             </div>
         </div>
 
-        <!-- Cột phải: Hình ảnh minh họa -->
-        <div class="hero-image">
-            <!-- Thay bằng ảnh bìa sách/vector đọc sách trong thư mục images của bạn -->
-            <img src="images/hero-books.png" alt="Sách nổi bật" onerror="this.src='https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=800&auto=format&fit=crop&q=80'">
+        <!-- Cột phải: banner trượt giữa các cuốn sách -->
+        <div class="hero-slider" id="heroSlider" role="region" aria-roledescription="carousel" aria-label="Sách nổi bật">
+            <div class="hero-slides" id="heroSlides"></div>
+            <div class="hero-controls">
+                <button type="button" class="hero-nav" id="heroPrev" aria-label="Sách trước">&#8249;</button>
+                <div class="hero-dots" id="heroDots"></div>
+                <button type="button" class="hero-nav" id="heroNext" aria-label="Sách tiếp theo">&#8250;</button>
+            </div>
         </div>
     </div>
 </section>
@@ -139,7 +143,7 @@
                     <div class="footer-logo">
                         <!-- Icon màu cam, bạn thay src bằng ảnh thực tế -->
                         <img src="images/logoweb.png" alt="Nhà Sách SGU" width="40" height="40">
-                        <span class="logo-text">BOOKHUB</span>
+                        <span class="logo-text">NHÀ SÁCH SGU</span>
                     </div>
                     <p class="project-desc">
                         Hệ thống website cửa hàng bán sách trực tuyến<br>
