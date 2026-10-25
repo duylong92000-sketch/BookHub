@@ -23,39 +23,84 @@ const escapeHtml = (str) => String(str).replace(/[&<>"']/g, (c) => (
 
 const formatPrice = (n) => n.toLocaleString('vi-VN') + ' đ';
 
-// Danh mục và sách luôn được đọc từ nguồn localStorage do data.js khởi tạo.
-const getCategoriesForSite = () => getData('categories').filter(c => c.status !== 'inactive');
+// Đọc dữ liệu an toàn từ localStorage.
+const readData = (key) => {
+    try {
+        if (typeof getData === 'function') {
+            const value = getData(key);
+            return Array.isArray(value) ? value : [];
+        }
+        const value = JSON.parse(localStorage.getItem(key) || '[]');
+        return Array.isArray(value) ? value : [];
+    } catch (error) {
+        console.error('Không đọc được dữ liệu:', key, error);
+        return [];
+    }
+};
+
+const getCategoriesForSite = () =>
+    readData('categories').filter(c => c && c.status !== 'inactive');
+
 const makeCategoryMap = () => Object.fromEntries(
-    getCategoriesForSite().map(c => [c.key || c.categoryId, c.categoryName])
+    getCategoriesForSite().map(c => [c.key || c.categoryId, c.categoryName || 'Danh mục'])
 );
 let CATEGORY_MAP = makeCategoryMap();
 
 const toSiteBook = (p) => {
-    const category = getData('categories').find(c => c.categoryId === p.categoryId);
-    const imageName = p.image || '';
+    const categories = getCategoriesForSite();
+    const category = categories.find(c => c.categoryId === p.categoryId);
+    const imageName = String(p.image || '');
     return {
-        sku: p.productId,
-        title: p.productName || '',
+        sku: p.productId || p.sku || '',
+        title: p.productName || p.title || '',
         author: p.author || '',
-        category: category?.categoryName || '',
-        categoryKey: category?.key || category?.categoryId || '',
+        category: category?.categoryName || p.categoryName || p.category || '',
+        categoryKey: category?.key || category?.categoryId || p.categoryKey || p.category || '',
         image: /^https?:\/\//i.test(imageName) || imageName.startsWith('/')
             ? imageName
             : SITE_ROOT + 'images/books/' + imageName,
-        price: Number(p.salePrice || 0),
+        price: Number(p.salePrice ?? p.price ?? 0),
         coverType: p.coverType || 'Bìa mềm',
         publisher: p.publisher || '',
         year: p.year || '',
         pages: p.pages || '',
-        stock: Number(p.stockQuantity || 0),
-        desc: p.description || '',
+        stock: Number(p.stockQuantity ?? p.stock ?? 0),
+        desc: p.description || p.desc || '',
         status: p.status || 'active'
     };
 };
 
-const loadSiteBooks = () => getData('products')
-    .filter(p => p.status !== 'inactive')
-    .map(toSiteBook);
+const loadSiteBooks = () => {
+    const saved = readData('products').filter(p => p && p.status !== 'inactive');
+    if (saved.length) return saved.map(toSiteBook);
+
+    // Dự phòng để trang vẫn hiển thị sách mẫu nếu localStorage đang rỗng.
+    if (typeof SEED_BOOKS !== 'undefined' && Array.isArray(SEED_BOOKS)) {
+        const categories = getCategoriesForSite();
+        return SEED_BOOKS.map(b => {
+            const category = categories.find(c => c.key === b.category);
+            return {
+                sku: b.sku || b.productId || '',
+                title: b.title || b.productName || '',
+                author: b.author || '',
+                category: category?.categoryName || b.category || '',
+                categoryKey: category?.key || b.category || '',
+                image: /^https?:\/\//i.test(String(b.image || '')) || String(b.image || '').startsWith('/')
+                    ? b.image
+                    : SITE_ROOT + 'images/books/' + (b.image || ''),
+                price: Number(b.price ?? b.salePrice ?? 0),
+                coverType: b.coverType || 'Bìa mềm',
+                publisher: b.publisher || '',
+                year: b.year || '',
+                pages: b.pages || '',
+                stock: Number(b.stock ?? b.stockQuantity ?? 0),
+                desc: b.desc || b.description || '',
+                status: 'active'
+            };
+        });
+    }
+    return [];
+};
 let BOOKS = loadSiteBooks();
 
 // Cập nhật trang khách khi admin thay đổi dữ liệu ở tab khác.
@@ -233,6 +278,8 @@ function initHome() {
    ========================================================== */
 
 function initProducts() {
+    CATEGORY_MAP = makeCategoryMap();
+    BOOKS = loadSiteBooks();
 
     /* ---------- 1. CẤU HÌNH (dữ liệu sách nằm ở phần A) ---------- */
     const ITEMS_PER_PAGE = 12;
@@ -273,7 +320,7 @@ function initProducts() {
 
     /* ---------- 3. HÀM TIỆN ÍCH ---------- */
     // Bỏ dấu tiếng Việt để tìm "mat biec" vẫn ra "Mắt Biếc"
-    const normalizeText = (str) => str
+    const normalizeText = (str) => String(str ?? '')
         .toLowerCase()
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '')
