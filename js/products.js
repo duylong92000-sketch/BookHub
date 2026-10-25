@@ -23,84 +23,39 @@ const escapeHtml = (str) => String(str).replace(/[&<>"']/g, (c) => (
 
 const formatPrice = (n) => n.toLocaleString('vi-VN') + ' đ';
 
-// Đọc dữ liệu an toàn từ localStorage.
-const readData = (key) => {
-    try {
-        if (typeof getData === 'function') {
-            const value = getData(key);
-            return Array.isArray(value) ? value : [];
-        }
-        const value = JSON.parse(localStorage.getItem(key) || '[]');
-        return Array.isArray(value) ? value : [];
-    } catch (error) {
-        console.error('Không đọc được dữ liệu:', key, error);
-        return [];
-    }
-};
-
-const getCategoriesForSite = () =>
-    readData('categories').filter(c => c && c.status !== 'inactive');
-
+// Danh mục và sách luôn được đọc từ nguồn localStorage do data.js khởi tạo.
+const getCategoriesForSite = () => getData('categories').filter(c => c.status !== 'inactive');
 const makeCategoryMap = () => Object.fromEntries(
-    getCategoriesForSite().map(c => [c.key || c.categoryId, c.categoryName || 'Danh mục'])
+    getCategoriesForSite().map(c => [c.key || c.categoryId, c.categoryName])
 );
 let CATEGORY_MAP = makeCategoryMap();
 
 const toSiteBook = (p) => {
-    const categories = getCategoriesForSite();
-    const category = categories.find(c => c.categoryId === p.categoryId);
-    const imageName = String(p.image || '');
+    const category = getData('categories').find(c => c.categoryId === p.categoryId);
+    const imageName = p.image || '';
     return {
-        sku: p.productId || p.sku || '',
-        title: p.productName || p.title || '',
+        sku: p.productId,
+        title: p.productName || '',
         author: p.author || '',
-        category: category?.categoryName || p.categoryName || p.category || '',
-        categoryKey: category?.key || category?.categoryId || p.categoryKey || p.category || '',
+        category: category?.categoryName || '',
+        categoryKey: category?.key || category?.categoryId || '',
         image: /^https?:\/\//i.test(imageName) || imageName.startsWith('/')
             ? imageName
             : SITE_ROOT + 'images/books/' + imageName,
-        price: Number(p.salePrice ?? p.price ?? 0),
+        price: Number(p.salePrice || 0),
         coverType: p.coverType || 'Bìa mềm',
         publisher: p.publisher || '',
         year: p.year || '',
         pages: p.pages || '',
-        stock: Number(p.stockQuantity ?? p.stock ?? 0),
-        desc: p.description || p.desc || '',
+        stock: Number(p.stockQuantity || 0),
+        desc: p.description || '',
         status: p.status || 'active'
     };
 };
 
-const loadSiteBooks = () => {
-    const saved = readData('products').filter(p => p && p.status !== 'inactive');
-    if (saved.length) return saved.map(toSiteBook);
-
-    // Dự phòng để trang vẫn hiển thị sách mẫu nếu localStorage đang rỗng.
-    if (typeof SEED_BOOKS !== 'undefined' && Array.isArray(SEED_BOOKS)) {
-        const categories = getCategoriesForSite();
-        return SEED_BOOKS.map(b => {
-            const category = categories.find(c => c.key === b.category);
-            return {
-                sku: b.sku || b.productId || '',
-                title: b.title || b.productName || '',
-                author: b.author || '',
-                category: category?.categoryName || b.category || '',
-                categoryKey: category?.key || b.category || '',
-                image: /^https?:\/\//i.test(String(b.image || '')) || String(b.image || '').startsWith('/')
-                    ? b.image
-                    : SITE_ROOT + 'images/books/' + (b.image || ''),
-                price: Number(b.price ?? b.salePrice ?? 0),
-                coverType: b.coverType || 'Bìa mềm',
-                publisher: b.publisher || '',
-                year: b.year || '',
-                pages: b.pages || '',
-                stock: Number(b.stock ?? b.stockQuantity ?? 0),
-                desc: b.desc || b.description || '',
-                status: 'active'
-            };
-        });
-    }
-    return [];
-};
+const loadSiteBooks = () => getData('products')
+    .filter(p => p.status !== 'inactive')
+    .map(toSiteBook);
 let BOOKS = loadSiteBooks();
 
 // Cập nhật trang khách khi admin thay đổi dữ liệu ở tab khác.
@@ -278,8 +233,6 @@ function initHome() {
    ========================================================== */
 
 function initProducts() {
-    CATEGORY_MAP = makeCategoryMap();
-    BOOKS = loadSiteBooks();
 
     /* ---------- 1. CẤU HÌNH (dữ liệu sách nằm ở phần A) ---------- */
     const ITEMS_PER_PAGE = 12;
@@ -320,7 +273,7 @@ function initProducts() {
 
     /* ---------- 3. HÀM TIỆN ÍCH ---------- */
     // Bỏ dấu tiếng Việt để tìm "mat biec" vẫn ra "Mắt Biếc"
-    const normalizeText = (str) => String(str ?? '')
+    const normalizeText = (str) => str
         .toLowerCase()
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '')
@@ -365,54 +318,24 @@ function initProducts() {
 
     /* ---------- 5. LỌC SÁCH ---------- */
     function applyFilters() {
-        const keyword = normalizeText(searchInput.value);
-
-        const selectedCategory = categorySelect.value;
-        const category = CATEGORY_MAP[selectedCategory];
-
+        const keyword  = normalizeText(searchInput.value);
+        const category = CATEGORY_MAP[categorySelect.value];   // undefined khi chọn "Tất cả"
         const minPrice = Number(priceMinInput.value) || 0;
-        const maxRaw = priceMaxInput.value.trim();
-        const maxPrice = maxRaw === "" ? Infinity : Number(maxRaw);
+        const maxRaw   = priceMaxInput.value.trim();
+        const maxPrice = maxRaw === '' ? Infinity : Number(maxRaw);
         const onlyInStock = inStockCheckbox.checked;
 
-        filteredBooks = books.filter(book => {
-            const title = book.title ?? book.productName ?? "";
-            const author = book.author ?? "";
-            const price = Number(book.price ?? book.salePrice ?? 0);
-            const stock = Number(book.stock ?? book.stockQuantity ?? 0);
-
-            const bookCategory =
-                book.categoryKey ??
-                book.category ??
-                book.categoryId ??
-                "";
-
-            const matchesKeyword =
-                normalizeText(title).includes(keyword) ||
-                normalizeText(author).includes(keyword);
-
-            const matchesCategory =
-                !selectedCategory ||
-                bookCategory === selectedCategory ||
-                bookCategory === category ||
-                bookCategory === CATEGORY_MAP[selectedCategory];
-
-            const matchesPrice =
-                price >= minPrice && price <= maxPrice;
-
-            const matchesStock =
-                !onlyInStock || stock > 0;
-
-            return matchesKeyword &&
-                matchesCategory &&
-                matchesPrice &&
-                matchesStock;
-        });
+        // Sách phải thỏa ĐỒNG THỜI cả 4 điều kiện
+        filteredBooks = books.filter((book) =>
+            (normalizeText(book.title).includes(keyword) || normalizeText(book.author).includes(keyword)) &&
+            (!category || book.category === category) &&
+            book.price >= minPrice && book.price <= maxPrice &&
+            (!onlyInStock || (book.stock > 0))
+        );
 
         currentPage = 1;
         updateView();
     }
-
 
 
     /* ---------- 6. MENU TÌM KIẾM NÂNG CAO ---------- */
