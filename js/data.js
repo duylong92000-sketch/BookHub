@@ -15,8 +15,6 @@
      cart       : { "MS001": 2 }   (do trang khách quản lý)
    ========================================================== */
 
-/* ==================== HÀM DÙNG CHUNG ==================== */
-
 const getData = key => {
     try {
         return JSON.parse(localStorage.getItem(key)) || [];
@@ -97,8 +95,32 @@ const SEED_BOOKS = [
 ];
 
 function seedData() {
-    if (localStorage.getItem("categories") === null)
+    const currentCategories = getData("categories");
+
+    if (localStorage.getItem("categories") === null) {
         setData("categories", CATEGORY_SEED);
+    } else {
+        // Chuyển các danh mục mẫu cũ về đúng 4 danh mục của products.js.
+        const oldDefaultNames = [
+            "Sách Trong Nước", "Sách Ngoại Văn", "Kinh Tế & Quản Trị",
+            "Văn Học Nghệ Thuật", "Kỹ Năng Sống", "Sách Thiếu Nhi"
+        ];
+        const isOldDefault = c =>
+            /^DM00[1-6]$/.test(c.categoryId || "") &&
+            oldDefaultNames.some(name => name.toLowerCase() === (c.categoryName || "").toLowerCase());
+        const customCategories = currentCategories.filter(c => !isOldDefault(c));
+        const mergedCategories = [...CATEGORY_SEED];
+
+        customCategories.forEach(c => {
+            if (!mergedCategories.some(seed =>
+                seed.categoryId === c.categoryId ||
+                (seed.key && c.key && seed.key === c.key) ||
+                seed.categoryName.toLowerCase() === (c.categoryName || "").toLowerCase()
+            )) mergedCategories.push(c);
+        });
+
+        setData("categories", mergedCategories);
+    }
 
     if (localStorage.getItem("products") === null) {
         const PROFIT = 30;
