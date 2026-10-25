@@ -101,7 +101,7 @@ if(customersLoginForm) {
             }
             else {
                 localStorage.setItem("currentUser", JSON.stringify(findUser));
-                window.location.href = "profile.html";
+                window.location.href = "../index.html";
             }
 
     });

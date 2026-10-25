@@ -18,7 +18,7 @@ function getCurrentCustomer() {
 
     for (const key of possibleKeys) {
         const customer = readJSON(key, null);
-        if (customer && customer.customerId) return customer;
+        if (customer && customer.customerID) return customer;
     }
     return null;
 }
