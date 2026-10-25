@@ -27,7 +27,22 @@ function generateId(prefix, data, field) {
     return prefix + String(max + 1).padStart(3, "0");
 }
 
+/* ==================== ADMIN-LOGIN CHECK ==================== */
+// ============== KIỂM TRA ĐĂNG NHẬP ADMIN ==============
 
+function getCurrentAdmin() {
+    return localStorage.getItem("adminLoggedIn") === "true";
+}
+
+function requireAdminLogin() {
+    if (getCurrentAdmin()) return true;
+
+    window.location.replace("login.html");
+    return false;
+}
+
+// Kiểm tra ngay khi tải file
+requireAdminLogin();
 /* ==================== DASHBOARD ==================== */
 
 function renderDashboard() {
@@ -156,11 +171,13 @@ function saveCategory(e) {
         const c = data.find(x => x.categoryId === id);
         if (c) Object.assign(c, { categoryName: name, status });
     } else {
-        data.push({
-            categoryId: generateId("DM", data, "categoryId"),
-            categoryName: name,
-            status
-        });
+        const categoryId = generateId("DM", data, "categoryId");
+        const keyBase = name.normalize("NFD").replace(/[\\u0300-\\u036f]/g, "")
+            .replace(/đ/g, "d").replace(/Đ/g, "D")
+            .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        let key = keyBase || categoryId.toLowerCase();
+        if (data.some(c => c.key === key)) key = `${key}-${categoryId.toLowerCase()}`;
+        data.push({ categoryId, key, categoryName: name, status });
     }
 
     setData("categories", data);
@@ -701,6 +718,17 @@ function savePrice(e) {
 /* ==================== EVENTS ==================== */
 
 document.addEventListener("DOMContentLoaded", () => {
+    
+    if (!requireAdminLogin()) return;
+
+    // Xử lý đăng xuất
+    document.querySelector(".admin-header .logout-link")
+        ?.addEventListener("click", event => {
+            event.preventDefault();
+
+            localStorage.removeItem("adminLoggedIn");
+            window.location.replace("login.html");
+        });
 
     [
         renderDashboard,

@@ -65,7 +65,28 @@
                     <img src="images/signup.png" alt="Đăng ký tài khoản" width="20" height="20">
                     Đăng ký
                 </a>
+               
+                <div class="user-view">
+                    <button type="button" id="user" class="user-btn">
+                        <span id="usernameDisplay">Tên tài khoản</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
 
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="customer/profile.html">
+                            Hồ sơ cá nhân
+                        </a>
+                        
+                        <a href="customer/orders.html">
+                            Lịch sử đơn hàng
+                        </a>
+
+                        <button type="button" id="logoutBtn">
+                            Đăng xuất
+                        </button>
+                    </div>
+                </div>
+            
                 <a href="admin/login.html" target="_self" title="Đi đến khu vực admin">
                     <img src="images/admin.png" alt="Admin" width="20" height="20">
                     Admin
@@ -76,11 +97,45 @@
         <main>
             <!-- Banner -->
             <section class="hero">
-                <span class="hero-tag">Nhà sách trực tuyến</span>
-                <h2 class="hero-title">Khám phá thế giới qua từng trang sách</h2>
-                <p class="hero-text">Nhiều thể loại sách, giao hàng toàn quốc, sách chính hãng 100%.</p>
-                <a href="./customer/products.html" class="hero-btn">Xem tất cả sách</a>
-            </section>
+    <div class="hero-container">
+        <!-- Cột trái: Nội dung -->
+        <div class="hero-content">
+            <span class="hero-tag">BOOKHUB - NHÓM 10</span>
+            <h2 class="hero-title">Nơi tri thức hội tụ</h2>
+            <p class="hero-text">Nhiều thể loại sách, giao hàng toàn quốc, cam kết chính hãng 100%.</p>
+            
+            <div class="hero-actions">
+                <a href="customer/products.html" class="hero-btn">Xem tất cả sách</a>
+            </div>
+
+            <!-- Thống kê / Cam kết giúp giảm khoảng trống -->
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <strong>5,000+</strong>
+                    <span>Đầu sách đa dạng</span>
+                </div>
+                <div class="stat-item">
+                    <strong>100%</strong>
+                    <span>Sách có bản quyền</span>
+                </div>
+                <div class="stat-item">
+                    <strong>Freeship</strong>
+                    <span>Đơn từ 250k</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cột phải: banner trượt giữa các cuốn sách -->
+        <div class="hero-slider" id="heroSlider" role="region" aria-roledescription="carousel" aria-label="Sách nổi bật">
+            <div class="hero-slides" id="heroSlides"></div>
+            <div class="hero-controls">
+                <button type="button" class="hero-nav" id="heroPrev" aria-label="Sách trước">&#8249;</button>
+                <div class="hero-dots" id="heroDots"></div>
+                <button type="button" class="hero-nav" id="heroNext" aria-label="Sách tiếp theo">&#8250;</button>
+            </div>
+        </div>
+    </div>
+</section>
 
             <div class="main-content">
                 <!-- Danh mục sách -->
@@ -95,7 +150,7 @@
                 <section class="home-section">
                     <div class="section-header">
                         <h2 class="section-title">Sản phẩm nổi bật</h2>
-                        <a href="./customer/products.html" class="section-link">Xem tất cả &rarr;</a>
+                        <a href="customer/products.html" class="section-link">Xem tất cả &rarr;</a>
                     </div>
                     <div class="product-grid" id="featuredList"></div>
                 </section>
@@ -126,15 +181,15 @@
                     <h3 class="footer-heading">THÔNG TIN LIÊN HỆ</h3>
                     <ul class="contact-list">
                         <li>
-                            <img src="./images/location.png" alt="Location" width="16" height="16">
+                            <img src="images/location.png" alt="Location" width="16" height="16">
                             <span>Số 273 An Dương Vương, Phường Chợ Quán, TP.HCM</span>
                         </li>
                         <li>
-                            <img src="./images/phone.png" alt="Phone" width="16" height="16">
+                            <img src="images/phone.png" alt="Phone" width="16" height="16">
                             <span>(028) 3838 2664 (Văn phòng Khoa CNTT)</span>
                         </li>
                         <li>
-                            <img src="./images/mail.png" alt="Email" width="16" height="16">
+                            <img src="images/mail.png" alt="Email" width="16" height="16">
                             <a class="mail" href="mailto:vpkcntt@sgu.edu.vn">vpkcntt@sgu.edu.vn</a>
                         </li>
                     </ul>
@@ -152,6 +207,8 @@
             </div>
         </footer>
         
+        <script src="js/data.js"></script>
         <script src="js/products.js"></script>
+        <script src="js/index.js"></script>
     </body>
 </html>
