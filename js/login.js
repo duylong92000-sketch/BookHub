@@ -95,25 +95,19 @@ if(customersLoginForm) {
                 customers.userName === usernammeCustomers.value.trim() && 
                 customers.password === passwordCustomers.value.trim()
         );
-            
-        if (!findUser) {
-            passwordError.style.display = "block";
-            passwordError.innerHTML =
-                "Tên hoặc mật khẩu không đúng";
-        }
-        else if (findUser.status === "inactive") {
-            passwordError.style.display = "block";
-            passwordError.innerHTML =
-                "Tài khoản đã bị khóa. Vui lòng liên hệ quản trị viên.";
-        }
-        else {
-            localStorage.setItem(
-                "currentUser",
-                JSON.stringify(findUser)
-            );
-
-            window.location.href = "../index.html";
-        }
+            if (!findUser) {
+                passwordError.style.display = "block";
+                passwordError.innerHTML = "Tên hoặc mật khẩu không đúng"
+            }
+            else if (findUser.status === "inactive") {
+                passwordError.style.display = "block";
+                passwordError.innerHTML =
+                    "Tài khoản đã bị khóa. Vui lòng liên hệ quản trị viên.";
+            }
+            else {
+                localStorage.setItem("currentUser", JSON.stringify(findUser));
+                window.location.href = "../index.html";
+            }
 
     });
 

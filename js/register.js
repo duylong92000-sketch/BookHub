@@ -113,8 +113,9 @@ form.addEventListener("submit", function(e){
             email: email.value.trim(),
             phone: phone.value.trim(),
             password: password.value.trim(),
-            address: address.value.trim(),
+            address: address.value,
             status: "active"
+
         };    
         
         //Push customer vào trong mảng customerLocal
