@@ -107,7 +107,7 @@ form.addEventListener("submit", function(e){
     
         //Lấy dữ liệu từ form và gộp thành đối tượng user
         const customers = {
-            customerID: taoID(),
+            customerId: taoID(),
             fullName: fullName.value.trim(),
             userName: userName.value.trim(),
             email: email.value.trim(),
