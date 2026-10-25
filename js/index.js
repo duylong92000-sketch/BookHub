@@ -5,15 +5,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const userLogin = document.getElementById("user");
     const usernameDisplay = document.getElementById("usernameDisplay");
     const userDropdown = document.getElementById("userDropdown");
-    const logoutBtn = document.getElementById("logoutBtn");
+    const logoutBtn = document.getElementById("logoutBtn"); //Đăng xuất
 
-    const loginLink = document.querySelector(
-        '.action-section a[title="Đăng nhập"]'
-    );
 
-    const registerLink = document.querySelector(
-        '.action-section a[title="Đăng ký tài khoản"]'
-    );
+    //Link voiws title đăng kí, đăng nhập, admin
+    const loginLink = document.querySelector('.action-section a[title="Đăng nhập"]');
+    const registerLink = document.querySelector('.action-section a[title="Đăng ký tài khoản"]');
+    const adminLink = document.querySelector('.action-section a[title="Đi đến khu vực admin"]');
 
 
     if(currentUser) {
@@ -22,11 +20,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
         loginLink.style.display = "none";
         registerLink.style.display = "none";
-    } else {
+        adminLink.style.display = "none";
+    } 
+    else {
         userView.style.display = "none";
 
         loginLink.style.display = "";
         registerLink.style.display = "";
+        adminLink.style.display = "";
     }
 
     // Bấm tên tài khoản để mở hoặc đóng menu
