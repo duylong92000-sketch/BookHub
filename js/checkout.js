@@ -193,68 +193,144 @@ function showCheckoutMessage(message, type = "error") {
 }
 
 // Đặt hàng
+
+let checkoutSubmitting = false;
+
 function placeOrder() {
+    // Chặn bấm đặt hàng liên tục
+    if (checkoutSubmitting) return;
+    checkoutSubmitting = true;
+
+    const btn = document.getElementById("placeOrderBtn");
+    if (btn) btn.disabled = true;
+
+    let orderSaved = false;
+
     try {
+        // 1. Kiểm tra đăng nhập
         const customer = checkoutGetCustomer();
-        if (!customer) throw new Error("Vui lòng đăng nhập trước khi đặt hàng.");
+        if (!customer || !customer.customerId) throw new Error("Vui lòng đăng nhập trước khi đặt hàng.");
         if (!window.BookHubCart) throw new Error("Chưa tải cart.js.");
 
+        // 2. Lấy giỏ hàng
         const cart = window.BookHubCart.getCart();
-        const items = window.BookHubCart.getDetailedCart();
+        const entries = Object.entries(cart);
+        if (entries.length === 0) throw new Error("Giỏ hàng đang trống.");
 
-        if (Object.keys(cart).length === 0 || items.length === 0) {
-            throw new Error("Giỏ hàng đang trống.");
+        // 3. Lấy dữ liệu tồn kho mới nhất
+        const products = window.BookHubCart.getProducts();
+        if (!Array.isArray(products) || products.length === 0) {
+            throw new Error("Không đọc được dữ liệu sản phẩm.");
         }
 
-        if (items.length !== Object.keys(cart).length) {
-            throw new Error("Có sách không còn tồn tại. Vui lòng kiểm tra giỏ hàng.");
-        }
+        const items = [];
+        let totalAmount = 0;
 
-        // Kiểm tra tồn kho
-        for (const item of items) {
-            if (item.status === "inactive" || item.stockQuantity <= 0 || item.quantity > item.stockQuantity) {
-                throw new Error(`${item.productName} không đủ số lượng tồn kho.`);
+        // 4. Kiểm tra và tính tồn kho mới
+        for (const [productId, rawQty] of entries) {
+            const product = products.find(p => p.productId === productId);
+            const quantity = Number(rawQty);
+
+            if (!product || product.status === "inactive") {
+                throw new Error(`Sách ${productId} không còn được bán.`);
             }
+
+            if (!Number.isSafeInteger(quantity) || quantity <= 0) {
+                throw new Error(`Số lượng sách ${productId} không hợp lệ.`);
+            }
+
+            const stock = Number(product.stockQuantity);
+            if (!Number.isSafeInteger(stock) || stock < quantity) {
+                throw new Error(`${product.productName} không đủ hàng (còn ${Math.max(0, stock || 0)} cuốn).`);
+            }
+
+            const unitPrice = Number(product.salePrice);
+            if (!Number.isFinite(unitPrice) || unitPrice < 0) {
+                throw new Error(`Giá sách ${product.productName} không hợp lệ.`);
+            }
+
+            // Thông tin sách lưu vào đơn hàng
+            items.push({
+                productId,
+                productName: product.productName,
+                quantity,
+                unitPrice,
+                subtotal: quantity * unitPrice
+            });
+
+            totalAmount += quantity * unitPrice;
+            product.stockQuantity = stock - quantity;
         }
 
+        // 5. Kiểm tra thông tin giao hàng
         const shippingAddress = getShippingAddress();
         const paymentMethod = validatePayment();
-        const totalAmount = window.BookHubCart.getCartTotal();
 
-        // Tạo đơn hàng
+        // 6. Tạo đơn hàng
         const newOrder = {
             orderId: generateOrderId(),
             customerId: customer.customerId,
             orderDate: getCurrentDate(),
-
-            items: items.map(item => ({
-                productId: item.productId,
-                productName: item.productName,
-                quantity: item.quantity,
-                unitPrice: item.unitPrice,
-                subtotal: item.subtotal
-            })),
-
+            items,
             totalAmount,
             shippingAddress,
             paymentMethod,
             orderStatus: "pending"
         };
 
-        // Lưu đơn hàng và xóa giỏ hàng
-        const orders = getOrders();
-        orders.push(newOrder);
-        saveOrders(orders);
+        // 7. Lưu tồn kho và đơn hàng
+        const originalProducts = localStorage.getItem("products");
 
-        localStorage.setItem(LAST_ORDER_KEY, newOrder.orderId);
-        window.BookHubCart.saveCart({});
+        try {
+            localStorage.setItem("products", JSON.stringify(products));
 
+            const orders = getOrders();
+            orders.push(newOrder);
+            saveOrders(orders);
+            orderSaved = true;
+
+        } catch (storageError) {
+            // Nếu lưu đơn thất bại, phục hồi tồn kho
+            try {
+                if (originalProducts === null) {
+                    localStorage.removeItem("products");
+                } else {
+                    localStorage.setItem("products", originalProducts);
+                }
+            } catch (rollbackError) {
+                console.error("Không thể phục hồi tồn kho:", rollbackError);
+            }
+
+            throw new Error("Không thể lưu đơn hàng. Vui lòng thử lại.");
+        }
+
+        // 8. Lưu mã đơn hàng vừa đặt
+        try {
+            localStorage.setItem(LAST_ORDER_KEY, newOrder.orderId);
+        } catch (error) {
+            console.error("Không thể lưu mã đơn gần nhất:", error);
+        }
+
+        // 9. Xóa giỏ hàng
+        try {
+            window.BookHubCart.saveCart({});
+        } catch (error) {
+            console.error("Không thể làm trống giỏ hàng:", error);
+        }
+
+        // 10. Thông báo và chuyển trang
         showCheckoutMessage("Đặt hàng thành công.", "success");
         window.location.href = "successorder.html";
 
     } catch (error) {
         showCheckoutMessage(error.message, "error");
         window.scrollTo({ top: 0, behavior: "smooth" });
+
+    } finally {
+        if (!orderSaved) {
+            checkoutSubmitting = false;
+            if (btn) btn.disabled = false;
+        }
     }
 }
 
