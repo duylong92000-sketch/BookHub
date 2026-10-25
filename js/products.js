@@ -319,7 +319,10 @@ function initProducts() {
     /* ---------- 5. LỌC SÁCH ---------- */
     function applyFilters() {
         const keyword  = normalizeText(searchInput.value);
-        const category = CATEGORY_MAP[categorySelect.value];   // undefined khi chọn "Tất cả"
+
+        const selectedCategory = categorySelect.value;
+        const category = CATEGORY_MAP[selectedCategory];
+
         const minPrice = Number(priceMinInput.value) || 0;
         const maxRaw   = priceMaxInput.value.trim();
         const maxPrice = maxRaw === '' ? Infinity : Number(maxRaw);
@@ -328,7 +331,7 @@ function initProducts() {
         // Sách phải thỏa ĐỒNG THỜI cả 4 điều kiện
         filteredBooks = books.filter((book) =>
             (normalizeText(book.title).includes(keyword) || normalizeText(book.author).includes(keyword)) &&
-            (!category || book.category === category) &&
+            (!selectedCategory || book.categoryKey === selectedCategory || book.category === category) &&
             book.price >= minPrice && book.price <= maxPrice &&
             (!onlyInStock || (book.stock > 0))
         );
