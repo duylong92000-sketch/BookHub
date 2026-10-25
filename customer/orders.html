@@ -1,174 +1,235 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>BookHub - Đơn hàng của tôi</title>
-
     <link rel="stylesheet" href="../css/customer.css">
 </head>
 
 <body class="customer-orders-page">
+<header class="top">
+            <!-- Logo + Danh mục sách -->
+            <div class="left-section">
+                <a class="logo-section" href="../index.html" title="Về trang chủ">
+                    <img src="../images/logoweb.png" alt="Logo" width="50" height="50">
+                    <div>
+                        <h1>BOOKHUB</h1>
+                        <p>Chắp cánh tri thức</p>
+                    </div>
+                </a>
 
-<header class="site-header">
+                <!-- Danh mục thể loại-->
+                <div class="category-wrapper">
+                    <button class="category-btn" type="button">
+                        <img src="../images/category.png" alt="Danh mục" width="20" height="20">
+                        <span>Danh mục</span>
+                    </button>
 
-    <div class="container header-inner">
+                    <!-- Bảng danh mục-->
+                    <ul class="category-dropdown">
+                        <li><a href="products.html">Tất cả sách</a></li>
+                        <li><a href="products.html?category=vanhoc">Văn học &amp; Tiểu thuyết</a></li>
+                        <li><a href="products.html?category=kinhte">Kinh tế &amp; Quản trị</a></li>
+                        <li><a href="products.html?category=cntt">Công nghệ thông tin</a></li>
+                        <li><a href="products.html?category=thieunhi">Sách thiếu nhi</a></li>
+                    </ul>
+                    <button type="button" class="category-back" id="categoryBack">← Quay lại</button>
+                </div>
 
-        <a href="../index.html" class="brand">
-            BookHub
-        </a>
+                <!-- Thanh tìm kiếm -->
+                <div class="search-wrapper">
+                    <input type="text" id="searchInput" placeholder="Nhập tên sách hoặc tác giả" class="search-input" aria-label="Tìm kiếm sách">
 
-        <nav class="customer-nav">
+                    <button type="button" id="btnAdvancedFilter" class="filter-btn" title="Tìm kiếm nâng cao" aria-label="Tìm kiếm nâng cao" aria-expanded="false">
+                        <img src="../images/filter.png" alt="Lọc" width="20" height="20">
+                    </button>
 
-            <a href="../index.html">
-                Trang chủ
-            </a>
+                    <button type="button" id="btnSearch" class="search-btn" aria-label="Tìm kiếm">
+                        <img src="../images/icon-search.png" alt="Tìm kiếm" width="20" height="20">
+                    </button>
+                    <!-- Khối Dropdown chứa Mức giá và Phân loại (Ẩn mặc định, hiển thị khi bấm nút Filter) -->
+                    <div id="advanced-search-dropdown" class="adv-dropdown">
+                        <!-- Các ô input giá và select danh mục -->
+                        <h4 class="adv-title">Tìm kiếm nâng cao</h4>
+                            <!-- Tiêu chí 1: Thể loại -->
+                            <div class="adv-group">
+                                <label for="adv-category">Thể loại sách:</label>
+                                <select id="adv-category">
+                                    <option value="all">Tất cả thể loại</option>
+                                    <option value="vanhoc">Văn học & Tiểu thuyết</option>
+                                    <option value="kinhte">Kinh tế & Quản trị</option>
+                                    <option value="cntt">Công nghệ thông tin</option>
+                                    <option value="thieunhi">Sách thiếu nhi</option>
+                                </select>
+                            </div>
 
-            <a href="products.html">
-                Sản phẩm
-            </a>
+                            <!-- Tiêu chí 2: Mức giá -->
+                            <div class="adv-group">
+                                <label>Mức giá (VNĐ):</label>
+                                <div class="price-inputs">
+                                    <input type="number" id="adv-price-min" placeholder="Từ" min="0">
+                                    <span>-</span>
+                                    <input type="number" id="adv-price-max" placeholder="Đến" min="0">
+                                </div>
+                            </div>
 
-            <a href="cart.html">
-                Giỏ hàng
-            </a>
+                            <!-- Tiêu chí 3: Tình trạng -->
+                            <div class="adv-group checkbox-group">
+                                <input type="checkbox" id="adv-in-stock">
+                                <label for="adv-in-stock">Chỉ hiện sản phẩm còn hàng</label>
+                            </div>
 
-            <a href="orders.html" class="active">
-                Đơn hàng
-            </a>
+                            <!-- Nút áp dụng -->
+                            <button type="button" id="btnApplyFilter" class="btn-apply">Áp dụng bộ lọc</button>
+                    </div>
+                </div>
+            </div>
 
-            <a href="profile.html">
-                Tài khoản
-            </a>
+            <!-- Cụm phải: Chức năng -->
+            <div class="action-section">
+                <a href="../customer/cart.html" target="_self" title="Xem giỏ hàng">
+                    <img src="../images/cart.png" alt="Giỏ hàng" width="20" height="20">
+                    Giỏ hàng
+                </a>
 
-        </nav>
+                <a href="../customer/login.html" target="_self" title="Đăng nhập">
+                    <img src="../images/login.png" alt="Đăng nhập" width="20" height="20">
+                    Đăng nhập
+                </a>
 
-    </div>
+                <a href="../customer/register.html" target="_self" title="Đăng ký tài khoản">
+                    <img src="../images/signup.png" alt="Đăng ký tài khoản" width="20" height="20">
+                    Đăng ký
+                </a>
+                
+                <div class="user-view">
+                    <button type="button" id="user" class="user-btn">
+                        <span id="usernameDisplay">Tên tài khoản</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
 
-</header>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="../customer/profile.html">
+                            Hồ sơ cá nhân
+                        </a>
+                        
+                        <a href="../customer/orders.html">
+                            Lịch sử đơn hàng
+                        </a>
 
-<main class="customer-main">
+                        <button type="button" id="logoutBtn">
+                            Đăng xuất
+                        </button>
+                    </div>
+                </div>
+            
+                <a href="../admin/login.html" target="_self" title="Đi đến khu vực admin">
+                    <img src="../images/admin.png" alt="Admin" width="20" height="20">
+                    Admin
+                </a>
+            </div>
+        </header>
 
-    <div class="container">
+        <main class="customer-main">
+            <div class="container">
+                <div class="page-heading-customer">
+                    <h1>Đơn hàng của tôi</h1>
+                    <p>Theo dõi lịch sử và trạng thái các đơn hàng.</p>
+                </div>
 
-        <div class="page-heading-customer">
+                <div
+                    class="empty-state"
+                    id="emptyOrders"
+                    hidden>
 
-            <h1>Đơn hàng của tôi</h1>
+                    <h2>Chưa có đơn hàng</h2>
+                    <p>Bạn chưa thực hiện đơn hàng nào.</p>
+                    <a
+                        href="products.html"
+                        class="action-btn action-btn-primary">
+                        Mua sắm ngay
+                    </a>
+                </div>
 
-            <p>
-                Theo dõi lịch sử và trạng thái các đơn hàng.
-            </p>
-
-        </div>
+                <div
+                    class="order-list"
+                    id="customerOrderList">
+                </div>
+            </div>
+        </main>
 
         <div
-            class="empty-state"
-            id="emptyOrders"
-            hidden>
+            class="order-modal"
+            id="customerOrderModal">
 
-            <h2>Chưa có đơn hàng</h2>
+            <div class="order-modal-content">
+                <div class="order-modal-header">
+                    <h2>Chi tiết đơn hàng</h2>
 
-            <p>
-                Bạn chưa thực hiện đơn hàng nào.
-            </p>
+                    <button
+                        type="button"
+                        class="order-modal-close"
+                        id="closeCustomerOrderModal">
+                        ×
+                    </button>
+                </div>
 
-            <a
-                href="products.html"
-                class="action-btn action-btn-primary">
-                Mua sắm ngay
-            </a>
-
+                <div id="customerOrderDetail"></div>
+            </div>
         </div>
 
-        <div
-            class="order-list"
-            id="customerOrderList">
-        </div>
+<!-- Phần chân trang -->
+        <footer class="site-footer">
+            <div class="footer-main">
+                <!-- Cột trái: Thông tin Đồ án & Logo -->
+                <div class="footer-col brand-info">
+                    <div class="footer-logo">
+                        <!-- Icon màu cam, bạn thay src bằng ảnh thực tế -->
+                        <img src="../images/logoweb.png" alt="Nhà Sách SGU" width="40" height="40">
+                        <span class="logo-text">BOOKHUB</span>
+                    </div>
+                    <p class="project-desc">
+                        Hệ thống website cửa hàng bán sách trực tuyến<br>
+                        Đồ án môn <strong>Lập trình web và ứng dụng</strong>.
+                    </p>
+                    <p class="faculty-info">
+                        Khoa Công nghệ Thông tin - SGU
+                    </p>
+                </div>
 
-    </div>
-
-</main>
-
-<div
-    class="order-modal"
-    id="customerOrderModal">
-
-    <div class="order-modal-content">
-
-        <div class="order-modal-header">
-
-            <h2>
-                Chi tiết đơn hàng
-            </h2>
-
-            <button
-                type="button"
-                class="order-modal-close"
-                id="closeCustomerOrderModal">
-                ×
-            </button>
-
-        </div>
-
-        <div id="customerOrderDetail"></div>
-
-    </div>
-
-</div>
-
-<footer class="site-footer">
-
-    <div class="footer-main">
-
-        <div class="brand-info">
-
-            <div class="footer-logo">
-                <span class="logo-text">
-                    BOOKHUB
-                </span>
+                <!-- Cột phải: Thông tin Liên hệ -->
+                <div class="footer-col contact-info">
+                    <h3 class="footer-heading">THÔNG TIN LIÊN HỆ</h3>
+                    <ul class="contact-list">
+                        <li>
+                            <img src="../images/location.png" alt="Location" width="16" height="16">
+                            <span>Số 273 An Dương Vương, Phường Chợ Quán, TP.HCM</span>
+                        </li>
+                        <li>
+                            <img src="../images/phone.png" alt="Phone" width="16" height="16">
+                            <span>(028) 3838 2664 (Văn phòng Khoa CNTT)</span>
+                        </li>
+                        <li>
+                            <img src="../images/mail.png" alt="Email" width="16" height="16">
+                            <a class="mail" href="mailto:vpkcntt@sgu.edu.vn">vpkcntt@sgu.edu.vn</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
-            <div class="project-desc">
-                <strong>
-                    Website quản lý cửa hàng sách BookHub
-                </strong>
+            <!-- Thanh bản quyền dưới cùng -->
+            <div class="footer-bottom">
+                <div class="bottom-left">
+                    Nhóm 10: Nguyễn Bá Khang - Huỳnh Minh Khánh - Lê Hoàng Duy Long - Cao Hoàng Nam - Lê Văn Tiến
+                </div>
+                <div class="bottom-right">
+                    Giảng viên giảng dạy: Nguyễn Thanh Sang
+                </div>
             </div>
+        </footer>
 
-            <div class="faculty-info">
-                Khoa Công Nghệ Thông Tin - SGU
-            </div>
-
-        </div>
-
-        <div class="contact-info">
-
-            <div class="footer-heading">
-                THÔNG TIN
-            </div>
-
-            <ul class="contact-list">
-                <li>
-                    Trường Đại học Sài Gòn
-                </li>
-
-                <li>
-                    BookHub - Bookstore Management System
-                </li>
-            </ul>
-
-        </div>
-
-    </div>
-
-    <div class="footer-bottom">
-        <span>Nhóm 10: Nguyễn Bá Khang - Huỳnh Minh Khánh - Lê Hoàng Duy Long - Cao Hoàng Nam - Lê Văn Tiến</span>
-        <span>Giảng viên giảng dạy: Nguyễn Thanh Sang</span>
-    </div>
-
-</footer>
-
-<script src="../js/order.js"></script>
+        <script src="../js/order.js"></script>
 
 </body>
 </html>

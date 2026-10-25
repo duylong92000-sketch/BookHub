@@ -65,7 +65,7 @@
                     <img src="../images/signup.png" alt="Đăng ký tài khoản" width="20" height="20">
                     Đăng ký
                 </a>
-               
+                
                 <div class="user-view">
                     <button type="button" id="user" class="user-btn">
                         <span id="usernameDisplay">Tên tài khoản</span>
@@ -114,7 +114,7 @@
                         <div class="cart-bottom-actions">
                             <div class="cart-product">
                                 <strong class="price-main"
-                                        id="profileAvatar"></strong>
+                                        id="profileAvatar">BH</strong>
 
                                 <div>
                                     <h3 class="related-title"
@@ -192,26 +192,26 @@
                                 </div>
 
                                 <div class="adv-group">
-                                    <label for="fullName">Họ và tên</label>
-                                    <div class="search-wrapper">
-                                        <input type="text"
-                                            id="fullName"
-                                            class="search-input"
-                                            readonly>
-                                    </div>
-                                    <small class="related-author">
-                                        Họ và tên không thể chỉnh sửa
-                                    </small>
-                                </div>
-
-                                <div class="adv-group">
-                                    <label for="username">Tên đăng nhập *</label>
+                                    <label for="username">Tên đăng nhập</label>
                                     <div class="search-wrapper">
                                         <input type="text"
                                             id="username"
                                             class="search-input"
+                                            readonly>
+                                    </div>
+                                    <small class="related-author">
+                                        Tên đăng nhập không thể chỉnh sửa
+                                    </small>
+                                </div>
+
+                                <div class="adv-group">
+                                    <label for="fullName">Họ và tên *</label>
+                                    <div class="search-wrapper">
+                                        <input type="text"
+                                            id="fullName"
+                                            class="search-input"
                                             minlength="2"
-                                            maxlength="30"
+                                            maxlength="80"
                                             required
                                             readonly>
                                     </div>
@@ -354,6 +354,275 @@
         </footer>
         <script src="../js/index.js"></script>
         <script src="../js/products.js"></script>
-        <script src="../js/profile.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const get = id => document.getElementById(id);
+
+                const storageKeys = {
+                    customers: "bookhubCustomers",
+                    currentCustomerId: "bookhubCurrentCustomerId",
+                    demoProfile: "bookhubDemoProfile"
+                };
+
+                const editableFields = [
+                    "fullName", "email", "phone", "address"
+                ];
+
+                const demoProfile = {
+                    customerId: "KH001",
+                    username: "nguyenvana",
+                    fullName: "Nguyễn Văn A",
+                    email: "nguyenvana@gmail.com",
+                    phone: "0900000001",
+                    address: "TP. Hồ Chí Minh"
+                };
+
+                const form = get("profileForm");
+                const message = get("profileMessage");
+
+                let profile = null;
+                let mode = "guest";
+                let isEditing = false;
+
+                // Đọc dữ liệu từ localStorage
+                function readData(key, fallback = null) {
+                    try {
+                        const raw = localStorage.getItem(key);
+                        return raw === null ? fallback : JSON.parse(raw);
+                    } catch {
+                        return fallback;
+                    }
+                }
+
+                // Lấy hồ sơ
+                function loadProfile() {
+                    const currentId = localStorage.getItem(
+                        storageKeys.currentCustomerId
+                    );
+
+                    if (currentId) {
+                        const customers = readData(storageKeys.customers, []);
+                        const customer = Array.isArray(customers)
+                            ? customers.find(c => c.customerId === currentId)
+                            : null;
+
+                        if (!customer || customer.status !== "active") {
+                            mode = "invalid";
+                            profile = null;
+                            return;
+                        }
+
+                        mode = "shared";
+                        profile = { ...customer };
+                        return;
+                    }
+
+                    // Hồ sơ mẫu khi chưa đăng nhập
+                    mode = "demo";
+                    profile = { ...demoProfile };
+
+                    const saved = readData(storageKeys.demoProfile);
+                    if (saved && typeof saved === "object" &&
+                        !Array.isArray(saved)) {
+                        editableFields.forEach(field => {
+                            if (typeof saved[field] === "string") {
+                                profile[field] = saved[field];
+                            }
+                        });
+                    }
+                }
+
+                // Hiển thị thông tin
+                function renderProfile() {
+                    [
+                        "customerId",
+                        "username",
+                        ...editableFields
+                    ].forEach(field => {
+                        get(field).value = profile
+                            ? String(profile[field] ?? "")
+                            : "";
+                    });
+
+                    const fullName = profile
+                        ? String(profile.fullName || "Khách hàng").trim()
+                        : "Chưa đăng nhập";
+
+                    get("sidebarFullName").textContent = fullName;
+                    get("sidebarUsername").textContent = profile
+                        ? "@" + (profile.username || "")
+                        : "Vui lòng đăng nhập";
+
+                    let avatar = "BH";
+
+                    if (profile) {
+                        const words = fullName.split(/\s+/).filter(Boolean);
+
+                        if (words.length > 1) {
+                            avatar = words[0][0] +
+                                words[words.length - 1][0];
+                        } else if (words.length === 1) {
+                            avatar = words[0].substring(0, 2);
+                        }
+                    }
+
+                    get("profileAvatar").textContent =
+                        avatar.toLocaleUpperCase("vi-VN");
+                }
+
+                // Thông báo
+                function showMessage(text, error = false) {
+                    message.textContent = text;
+                    message.hidden = !text;
+                    message.className = error ? "out-stock" : "in-stock";
+                }
+
+                // Bật / tắt chỉnh sửa
+                function setEditing(value) {
+                    isEditing = Boolean(value && profile);
+
+                    editableFields.forEach(field => {
+                        get(field).readOnly = !isEditing;
+                    });
+
+                    get("editWrapper").hidden = isEditing || !profile;
+                    get("profileActions").hidden = !isEditing;
+                }
+
+                // Chỉnh sửa
+                get("editProfileBtn").addEventListener("click", () => {
+                    setEditing(true);
+                    showMessage("");
+                    get("fullName").focus();
+                });
+
+                // Hủy
+                get("cancelProfileBtn").addEventListener("click", () => {
+                    renderProfile();
+                    setEditing(false);
+                    showMessage("Đã hủy thay đổi.");
+                });
+
+                // Lưu thông tin
+                form.addEventListener("submit", event => {
+                    event.preventDefault();
+
+                    if (!isEditing || !profile) return;
+                    if (!form.reportValidity()) return;
+
+                    const changes = {};
+
+                    editableFields.forEach(field => {
+                        changes[field] = get(field).value.trim();
+                    });
+
+                    changes.phone = changes.phone.replace(/\s/g, "");
+
+                    // Kiểm tra dữ liệu
+                    if (changes.fullName.length < 2) {
+                        showMessage("Họ tên phải có ít nhất 2 ký tự.", true);
+                        return;
+                    }
+
+                    if (!/^\d{9,11}$/.test(changes.phone)) {
+                        showMessage("Số điện thoại không hợp lệ.", true);
+                        return;
+                    }
+
+                    try {
+                        if (mode === "shared") {
+                            const currentId = localStorage.getItem(
+                                storageKeys.currentCustomerId
+                            );
+
+                            if (currentId !== profile.customerId) {
+                                showMessage("Phiên đăng nhập đã thay đổi.", true);
+                                return;
+                            }
+
+                            const customers = readData(
+                                storageKeys.customers, []
+                            );
+
+                            if (!Array.isArray(customers)) {
+                                showMessage("Dữ liệu không hợp lệ.", true);
+                                return;
+                            }
+
+                            const index = customers.findIndex(c =>
+                                c.customerId === currentId &&
+                                c.status === "active"
+                            );
+
+                            if (index === -1) {
+                                showMessage("Không tìm thấy tài khoản.", true);
+                                return;
+                            }
+
+                            const duplicate = customers.some(c =>
+                                c.customerId !== currentId &&
+                                String(c.email || "").toLowerCase() ===
+                                changes.email.toLowerCase()
+                            );
+
+                            if (duplicate) {
+                                showMessage("Email đã được sử dụng.", true);
+                                return;
+                            }
+
+                            const updated = {
+                                ...customers[index],
+                                ...changes
+                            };
+
+                            customers[index] = updated;
+
+                            localStorage.setItem(
+                                storageKeys.customers,
+                                JSON.stringify(customers)
+                            );
+
+                            profile = updated;
+
+                        } else if (mode === "demo") {
+                            profile = { ...profile, ...changes };
+
+                            localStorage.setItem(
+                                storageKeys.demoProfile,
+                                JSON.stringify(profile)
+                            );
+                        } else {
+                            return;
+                        }
+
+                        renderProfile();
+                        setEditing(false);
+
+                        showMessage(
+                            mode === "demo"
+                                ? "Đã lưu thông tin hồ sơ mẫu!"
+                                : "Cập nhật thông tin thành công!"
+                        );
+
+                    } catch {
+                        showMessage("Không thể lưu thông tin.", true);
+                    }
+                });
+
+                // Khởi tạo
+                loadProfile();
+                renderProfile();
+                setEditing(false);
+
+                if (mode === "demo") {
+                    showMessage("Đang xem dữ liệu mẫu, chưa đăng nhập.");
+                } else if (mode === "invalid") {
+                    showMessage(
+                        "Tài khoản không hợp lệ hoặc đã bị khóa.",
+                        true
+                    );
+                }
+            });
+        </script>
     </body>
 </html>
