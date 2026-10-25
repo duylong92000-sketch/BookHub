@@ -318,27 +318,54 @@ function initProducts() {
 
     /* ---------- 5. LỌC SÁCH ---------- */
     function applyFilters() {
-        const keyword  = normalizeText(searchInput.value);
+        const keyword = normalizeText(searchInput.value);
 
         const selectedCategory = categorySelect.value;
         const category = CATEGORY_MAP[selectedCategory];
 
         const minPrice = Number(priceMinInput.value) || 0;
-        const maxRaw   = priceMaxInput.value.trim();
-        const maxPrice = maxRaw === '' ? Infinity : Number(maxRaw);
+        const maxRaw = priceMaxInput.value.trim();
+        const maxPrice = maxRaw === "" ? Infinity : Number(maxRaw);
         const onlyInStock = inStockCheckbox.checked;
 
-        // Sách phải thỏa ĐỒNG THỜI cả 4 điều kiện
-        filteredBooks = books.filter((book) =>
-            (normalizeText(book.title).includes(keyword) || normalizeText(book.author).includes(keyword)) &&
-            (!selectedCategory || book.categoryKey === selectedCategory || book.category === category) &&
-            book.price >= minPrice && book.price <= maxPrice &&
-            (!onlyInStock || (book.stock > 0))
-        );
+        filteredBooks = books.filter(book => {
+            const title = book.title ?? book.productName ?? "";
+            const author = book.author ?? "";
+            const price = Number(book.price ?? book.salePrice ?? 0);
+            const stock = Number(book.stock ?? book.stockQuantity ?? 0);
+
+            const bookCategory =
+                book.categoryKey ??
+                book.category ??
+                book.categoryId ??
+                "";
+
+            const matchesKeyword =
+                normalizeText(title).includes(keyword) ||
+                normalizeText(author).includes(keyword);
+
+            const matchesCategory =
+                !selectedCategory ||
+                bookCategory === selectedCategory ||
+                bookCategory === category ||
+                bookCategory === CATEGORY_MAP[selectedCategory];
+
+            const matchesPrice =
+                price >= minPrice && price <= maxPrice;
+
+            const matchesStock =
+                !onlyInStock || stock > 0;
+
+            return matchesKeyword &&
+                matchesCategory &&
+                matchesPrice &&
+                matchesStock;
+        });
 
         currentPage = 1;
         updateView();
     }
+
 
 
     /* ---------- 6. MENU TÌM KIẾM NÂNG CAO ---------- */
