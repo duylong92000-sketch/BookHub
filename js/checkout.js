@@ -2,38 +2,38 @@
 const ORDER_KEY = "orders";
 const LAST_ORDER_KEY = "lastOrderId";
 
-function checkoutReadJSON(key, defaultValue = []) {
+// Đọc dữ liệu
+function checkoutReadJSON(key, defaultValue) {
     try {
         const value = localStorage.getItem(key);
-        return value ? JSON.parse(value) : defaultValue;
+        return value === null ? defaultValue : JSON.parse(value);
     } catch (error) {
-        console.error(error);
+        console.error("Lỗi đọc dữ liệu:", key, error);
         return defaultValue;
     }
 }
 
+// Lấy danh sách đơn hàng
 function getOrders() {
     const orders = checkoutReadJSON(ORDER_KEY, []);
     return Array.isArray(orders) ? orders : [];
 }
 
+// Lưu đơn hàng
 function saveOrders(orders) {
     localStorage.setItem(ORDER_KEY, JSON.stringify(orders));
 }
 
+// Tạo mã đơn hàng
 function generateOrderId() {
-    const orders = getOrders();
-    let maxNumber = 0;
-
-    orders.forEach(order => {
-        const match = String(order.orderId || "").match(/\d+/);
-        if (match) maxNumber = Math.max(maxNumber, Number(match[0]));
-    });
-
-    const nextNumber = maxNumber + 1;
-    return "DH" + String(nextNumber).padStart(3, "0");
+    const max = getOrders().reduce((largest, order) => {
+        const match = String(order.orderId || "").match(/^DH(\d+)$/);
+        return match ? Math.max(largest, Number(match[1])) : largest;
+    }, 0);
+    return "DH" + String(max + 1).padStart(3, "0");
 }
 
+// Lấy ngày hiện tại
 function getCurrentDate() {
     const date = new Date();
     const year = date.getFullYear();
@@ -42,171 +42,177 @@ function getCurrentDate() {
     return `${year}-${month}-${day}`;
 }
 
+// Lấy thông tin khách hàng từ Account
 function checkoutGetCustomer() {
-    if (window.BookHubCart && window.BookHubCart.getCurrentCustomer) {
-        return window.BookHubCart.getCurrentCustomer();
-    }
-    return null;
+    return window.BookHubCart?.getCurrentCustomer() || null;
 }
 
+// Hiển thị thông tin khách hàng
 function renderCustomerInfo() {
     const customer = checkoutGetCustomer();
     if (!customer) {
-        alert("Bạn cần đăng nhập để thanh toán.");
+        alert("Vui lòng đăng nhập để thanh toán.");
         window.location.href = "login.html";
         return false;
     }
 
-    const fullName = document.getElementById("checkoutFullName");
-    const phone = document.getElementById("checkoutPhone");
-    const email = document.getElementById("checkoutEmail");
-    const address = document.getElementById("accountAddressText");
+    const fields = {
+        checkoutFullName: customer.fullName || "",
+        checkoutPhone: customer.phone || "",
+        checkoutEmail: customer.email || ""
+    };
 
-    if (fullName) fullName.value = customer.fullName || "";
-    if (phone) phone.value = customer.phone || "";
-    if (email) email.value = customer.email || "";
+    Object.entries(fields).forEach(([id, value]) => {
+        const input = document.getElementById(id);
+        if (input) input.value = value;
+    });
+
+    const address = document.getElementById("accountAddressText");
     if (address) address.textContent = customer.address || "Tài khoản chưa có địa chỉ.";
     return true;
 }
 
+// Hiển thị đơn hàng cần thanh toán
 function renderCheckoutSummary() {
-    if (!window.BookHubCart) return false;
     const cart = window.BookHubCart.getDetailedCart();
-
     if (cart.length === 0) {
-        alert("Giỏ hàng đang trống.");
+        alert("Giỏ hàng đang trống hoặc sản phẩm không còn tồn tại.");
         window.location.href = "cart.html";
         return false;
     }
 
-    const container = document.getElementById("checkoutItems");
-    if (container) {
-        container.innerHTML = cart.map(item => `
-            <div class="checkout-item">
-                <div>
-                    <strong>${item.productName}</strong>
-                    <small>SL: ${item.quantity}</small>
-                </div>
-                <strong>${window.BookHubCart.formatCurrency(item.subtotal)}</strong>
-            </div>
-        `).join("");
+    const itemsEl = document.getElementById("checkoutItems");
+    if (itemsEl) {
+        itemsEl.innerHTML = "";
+
+        cart.forEach(item => {
+            const div = document.createElement("div");
+            div.className = "checkout-item";
+
+            const nameWrap = document.createElement("div");
+            const name = document.createElement("strong");
+            name.textContent = item.productName;
+
+            const qty = document.createElement("small");
+            qty.textContent = "SL: " + item.quantity;
+            nameWrap.append(name, qty);
+
+            const price = document.createElement("strong");
+            price.textContent = window.BookHubCart.formatCurrency(item.subtotal);
+
+            div.append(nameWrap, price);
+            itemsEl.appendChild(div);
+        });
     }
 
-    const total = window.BookHubCart.getCartTotal();
-    const subtotal = document.getElementById("checkoutSubtotal");
-    const totalElement = document.getElementById("checkoutTotal");
+    const total = window.BookHubCart.formatCurrency(window.BookHubCart.getCartTotal());
+    const subtotalEl = document.getElementById("checkoutSubtotal");
+    const totalEl = document.getElementById("checkoutTotal");
 
-    if (subtotal) subtotal.textContent = window.BookHubCart.formatCurrency(total);
-    if (totalElement) totalElement.textContent = window.BookHubCart.formatCurrency(total);
+    if (subtotalEl) subtotalEl.textContent = total;
+    if (totalEl) totalEl.textContent = total;
     return true;
 }
 
+// Hiện hoặc ẩn ô nhập địa chỉ mới
 function updateAddressBox() {
     const selected = document.querySelector('input[name="shippingAddressType"]:checked');
-    const newAddressBox = document.getElementById("newAddressBox");
-    if (!newAddressBox) return;
-
-    if (selected && selected.value === "new") {
-        newAddressBox.classList.add("show");
-    } else {
-        newAddressBox.classList.remove("show");
-    }
+    const box = document.getElementById("newAddressBox");
+    if (box) box.classList.toggle("show", selected?.value === "new");
 }
 
+// Lấy địa chỉ giao hàng
 function getShippingAddress() {
     const customer = checkoutGetCustomer();
-    const type = document.querySelector('input[name="shippingAddressType"]:checked');
-    if (!type) throw new Error("Vui lòng chọn địa chỉ nhận hàng.");
+    const choice = document.querySelector('input[name="shippingAddressType"]:checked');
 
-    if (type.value === "account") {
-        if (!customer || !customer.address || !customer.address.trim()) {
-            throw new Error("Tài khoản chưa có địa chỉ. Vui lòng nhập địa chỉ giao hàng mới.");
-        }
-        return customer.address.trim();
+    if (!choice) throw new Error("Vui lòng chọn địa chỉ nhận hàng.");
+
+    // Sử dụng địa chỉ trong Account
+    if (choice.value === "account") {
+        const address = String(customer?.address || "").trim();
+        if (!address) throw new Error("Tài khoản chưa có địa chỉ, vui lòng nhập địa chỉ mới.");
+        return address;
     }
 
-    const receiverName = document.getElementById("newReceiverName").value.trim();
-    const receiverPhone = document.getElementById("newReceiverPhone").value.trim();
-    const province = document.getElementById("newProvince").value.trim();
-    const district = document.getElementById("newDistrict").value.trim();
-    const street = document.getElementById("newStreet").value.trim();
+    // Nhập địa chỉ mới
+    const ids = ["newReceiverName", "newReceiverPhone", "newProvince", "newDistrict", "newStreet"];
+    const [name, phone, province, district, street] = ids.map(id => (document.getElementById(id)?.value || "").trim());
 
-    if (!receiverName || !receiverPhone || !province || !district || !street) {
-        throw new Error("Vui lòng nhập đầy đủ địa chỉ giao hàng mới.");
+    if (![name, phone, province, district, street].every(Boolean)) {
+        throw new Error("Vui lòng nhập đầy đủ địa chỉ giao hàng.");
     }
 
-    if (!/^[0-9]{9,11}$/.test(receiverPhone)) {
-        throw new Error("Số điện thoại người nhận không hợp lệ.");
-    }
-
-    return `${receiverName} - ${receiverPhone} - ${street}, ${district}, ${province}`;
+    if (!/^\d{9,11}$/.test(phone)) throw new Error("Số điện thoại không hợp lệ.");
+    return `${name} - ${phone} - ${street}, ${district}, ${province}`;
 }
 
+// Hiển thị thông tin thanh toán
 function updatePaymentDetail() {
-    const payment = document.querySelector('input[name="paymentMethod"]:checked');
-    const cardBox = document.getElementById("cardPaymentDetail");
-    const giftBox = document.getElementById("giftcardPaymentDetail");
+    const selected = document.querySelector('input[name="paymentMethod"]:checked');
+    const card = document.getElementById("cardPaymentDetail");
+    const gift = document.getElementById("giftcardPaymentDetail");
 
-    if (cardBox) cardBox.classList.remove("show");
-    if (giftBox) giftBox.classList.remove("show");
-    if (!payment) return;
-
-    if (payment.value === "visa" || payment.value === "mastercard") {
-        cardBox.classList.add("show");
-    }
-
-    if (payment.value === "giftcard") {
-        giftBox.classList.add("show");
-    }
+    if (card) card.classList.toggle("show", ["visa", "mastercard"].includes(selected?.value));
+    if (gift) gift.classList.toggle("show", selected?.value === "giftcard");
 }
 
+// Kiểm tra phương thức thanh toán
 function validatePayment() {
-    const payment = document.querySelector('input[name="paymentMethod"]:checked');
-    if (!payment) throw new Error("Vui lòng chọn phương thức thanh toán.");
-    const paymentMethod = payment.value;
+    const selected = document.querySelector('input[name="paymentMethod"]:checked');
+    if (!selected) throw new Error("Vui lòng chọn phương thức thanh toán.");
 
-    if (paymentMethod === "visa" || paymentMethod === "mastercard") {
-        const cardNumber = document.getElementById("cardNumber").value.replace(/\s/g, "");
-        const cardHolder = document.getElementById("cardHolder").value.trim();
-        const cardExpiry = document.getElementById("cardExpiry").value.trim();
-        const cardCVV = document.getElementById("cardCVV").value.trim();
+    const method = selected.value;
 
-        if (!/^\d{16}$/.test(cardNumber)) throw new Error("Số thẻ phải gồm 16 chữ số.");
-        if (!cardHolder) throw new Error("Vui lòng nhập tên chủ thẻ.");
-        if (!/^\d{2}\/\d{2}$/.test(cardExpiry)) throw new Error("Ngày hết hạn phải có dạng MM/YY.");
-        if (!/^\d{3,4}$/.test(cardCVV)) throw new Error("CVV không hợp lệ.");
+    if (["visa", "mastercard"].includes(method)) {
+        const number = document.getElementById("cardNumber")?.value.replace(/\s/g, "") || "";
+        const holder = document.getElementById("cardHolder")?.value.trim() || "";
+        const expiry = document.getElementById("cardExpiry")?.value.trim() || "";
+        const cvv = document.getElementById("cardCVV")?.value.trim() || "";
+
+        if (!/^\d{16}$/.test(number)) throw new Error("Số thẻ phải có 16 chữ số.");
+        if (!holder) throw new Error("Vui lòng nhập tên chủ thẻ.");
+        if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiry)) throw new Error("Ngày hết hạn phải là MM/YY.");
+        if (!/^\d{3,4}$/.test(cvv)) throw new Error("CVV không hợp lệ.");
     }
 
-    if (paymentMethod === "giftcard") {
-        const code = document.getElementById("giftcardCode").value.trim();
-        if (!code) throw new Error("Vui lòng nhập mã Giftcard.");
+    if (method === "giftcard" && !document.getElementById("giftcardCode")?.value.trim()) {
+        throw new Error("Vui lòng nhập mã Giftcard.");
     }
-    return paymentMethod;
+
+    return method;
 }
 
+// Hiển thị thông báo
 function showCheckoutMessage(message, type = "error") {
-    const element = document.getElementById("checkoutMessage");
-    if (!element) return;
+    const el = document.getElementById("checkoutMessage");
+    if (!el) return;
 
-    element.textContent = message;
-    element.className = "checkout-message";
-    if (type === "success") {
-        element.classList.add("checkout-message-success");
-    } else {
-        element.classList.add("checkout-message-error");
-    }
+    el.textContent = message;
+    el.className = "checkout-message " + (type === "success" ? "checkout-message-success" : "checkout-message-error");
 }
 
+// Đặt hàng
 function placeOrder() {
     try {
         const customer = checkoutGetCustomer();
-        if (!customer) throw new Error("Bạn cần đăng nhập.");
+        if (!customer) throw new Error("Vui lòng đăng nhập trước khi đặt hàng.");
+        if (!window.BookHubCart) throw new Error("Chưa tải cart.js.");
 
-        const detailedCart = window.BookHubCart.getDetailedCart();
-        if (detailedCart.length === 0) throw new Error("Giỏ hàng đang trống.");
+        const cart = window.BookHubCart.getCart();
+        const items = window.BookHubCart.getDetailedCart();
 
-        for (const item of detailedCart) {
-            if (item.stockQuantity > 0 && item.quantity > item.stockQuantity) {
+        if (Object.keys(cart).length === 0 || items.length === 0) {
+            throw new Error("Giỏ hàng đang trống.");
+        }
+
+        if (items.length !== Object.keys(cart).length) {
+            throw new Error("Có sách không còn tồn tại. Vui lòng kiểm tra giỏ hàng.");
+        }
+
+        // Kiểm tra tồn kho
+        for (const item of items) {
+            if (item.status === "inactive" || item.stockQuantity <= 0 || item.quantity > item.stockQuantity) {
                 throw new Error(`${item.productName} không đủ số lượng tồn kho.`);
             }
         }
@@ -214,57 +220,66 @@ function placeOrder() {
         const shippingAddress = getShippingAddress();
         const paymentMethod = validatePayment();
         const totalAmount = window.BookHubCart.getCartTotal();
-        const orderItems = detailedCart.map(item => ({
-            productId: item.productId,
-            productName: item.productName,
-            quantity: item.quantity,
-            unitPrice: item.unitPrice,
-            subtotal: item.subtotal
-        }));
 
+        // Tạo đơn hàng
         const newOrder = {
             orderId: generateOrderId(),
             customerId: customer.customerId,
             orderDate: getCurrentDate(),
-            items: orderItems,
-            totalAmount: totalAmount,
-            shippingAddress: shippingAddress,
-            paymentMethod: paymentMethod,
+
+            items: items.map(item => ({
+                productId: item.productId,
+                productName: item.productName,
+                quantity: item.quantity,
+                unitPrice: item.unitPrice,
+                subtotal: item.subtotal
+            })),
+
+            totalAmount,
+            shippingAddress,
+            paymentMethod,
             orderStatus: "pending"
         };
 
+        // Lưu đơn hàng và xóa giỏ hàng
         const orders = getOrders();
         orders.push(newOrder);
         saveOrders(orders);
+
         localStorage.setItem(LAST_ORDER_KEY, newOrder.orderId);
-        localStorage.removeItem("cart");
+        window.BookHubCart.saveCart({});
+
         showCheckoutMessage("Đặt hàng thành công.", "success");
         window.location.href = "successorder.html";
+
     } catch (error) {
         showCheckoutMessage(error.message, "error");
         window.scrollTo({ top: 0, behavior: "smooth" });
     }
 }
 
+// Định dạng thông tin thẻ
 function setupCardFormatting() {
-    const cardNumber = document.getElementById("cardNumber");
-    if (cardNumber) {
-        cardNumber.addEventListener("input", function () {
-            let value = this.value.replace(/\D/g, "").slice(0, 16);
-            this.value = value.replace(/(.{4})/g, "$1 ").trim();
+    const number = document.getElementById("cardNumber");
+
+    if (number) {
+        number.addEventListener("input", function () {
+            this.value = this.value.replace(/\D/g, "").slice(0, 16).replace(/(.{4})/g, "$1 ").trim();
         });
     }
 
     const expiry = document.getElementById("cardExpiry");
+
     if (expiry) {
         expiry.addEventListener("input", function () {
-            let value = this.value.replace(/\D/g, "").slice(0, 4);
-            if (value.length >= 3) value = value.slice(0, 2) + "/" + value.slice(2);
-            this.value = value;
+            let v = this.value.replace(/\D/g, "").slice(0, 4);
+            if (v.length >= 3) v = v.slice(0, 2) + "/" + v.slice(2);
+            this.value = v;
         });
     }
 
     const cvv = document.getElementById("cardCVV");
+
     if (cvv) {
         cvv.addEventListener("input", function () {
             this.value = this.value.replace(/\D/g, "").slice(0, 4);
@@ -272,10 +287,10 @@ function setupCardFormatting() {
     }
 }
 
+// Khởi chạy trang thanh toán
 document.addEventListener("DOMContentLoaded", function () {
     if (!document.body.classList.contains("checkout-page")) return;
-    if (!renderCustomerInfo()) return;
-    if (!renderCheckoutSummary()) return;
+    if (!renderCustomerInfo() || !renderCheckoutSummary()) return;
 
     updateAddressBox();
     updatePaymentDetail();
@@ -288,7 +303,8 @@ document.addEventListener("DOMContentLoaded", function () {
         input.addEventListener("change", updatePaymentDetail);
     });
 
-    const placeOrderButton = document.getElementById("placeOrderBtn");
-    if (placeOrderButton) placeOrderButton.addEventListener("click", placeOrder);
+    const btn = document.getElementById("placeOrderBtn");
+    if (btn) btn.addEventListener("click", placeOrder);
+
     setupCardFormatting();
 });
