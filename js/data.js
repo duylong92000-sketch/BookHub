@@ -122,26 +122,39 @@ function seedData() {
         setData("categories", mergedCategories);
     }
 
-    if (localStorage.getItem("products") === null) {
-        const PROFIT = 30;
+    const PROFIT = 30;
 
-        setData("products", SEED_BOOKS.map(b => ({
-            productId: b.sku,                                   // dùng mã MSxxx làm mã sản phẩm
-            productName: b.title,
-            categoryId: CATEGORY_SEED.find(c => c.key === b.category).categoryId,
-            author: b.author,
-            publisher: b.publisher,
-            importPrice: Math.round(b.price / (1 + PROFIT / 100)),
-            profitRate: PROFIT,
-            salePrice: b.price,                                 // giữ đúng giá niêm yết ban đầu
-            stockQuantity: b.stock,
-            description: b.desc,
-            image: b.image,                                     // chỉ tên file trong images/books/
-            coverType: b.coverType,
-            year: b.year,
-            pages: b.pages,
-            status: "active"
-        })));
+    const initialProducts = SEED_BOOKS.map(b => ({
+        productId: b.sku,
+        productName: b.title,
+        categoryId: CATEGORY_SEED.find(c => c.key === b.category).categoryId,
+        author: b.author,
+        publisher: b.publisher,
+        importPrice: Math.round(b.price / (1 + PROFIT / 100)),
+        profitRate: PROFIT,
+        salePrice: b.price,
+        stockQuantity: b.stock,
+        description: b.desc,
+        image: b.image,
+        coverType: b.coverType,
+        year: b.year,
+        pages: b.pages,
+        status: "active"
+    }));
+
+    if (localStorage.getItem("products") === null) {
+        setData("products", initialProducts);
+    } else {
+        const savedProducts = getData("products");
+        const missingProducts = initialProducts.filter(
+            initial => !savedProducts.some(
+                saved => saved.productId === initial.productId
+            )
+        );
+
+        if (missingProducts.length > 0) {
+            setData("products", [...savedProducts, ...missingProducts]);
+        }
     }
 
     ["customers", "orders", "imports"].forEach(key => {
