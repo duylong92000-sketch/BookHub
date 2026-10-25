@@ -36,7 +36,7 @@ function orderGetCurrentCustomer() {
     const keys = ["currentCustomer", "currentUser", "loggedInCustomer", "loggedInUser"];
     for (const key of keys) {
         const customer = orderReadJSON(key, null);
-        if (customer && customer.customerID) return customer;
+        if (customer && customer.customerId) return customer;
     }
     return null;
 }
