@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    // Khóa localStorage (phải trùng với register.js / login.js)
+    // Khóa localStorage 
     const customersKey = "customers";
     const currentUserKey = "currentUser";
 
