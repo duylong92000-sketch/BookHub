@@ -23,84 +23,67 @@ const escapeHtml = (str) => String(str).replace(/[&<>"']/g, (c) => (
 
 const formatPrice = (n) => n.toLocaleString('vi-VN') + ' đ';
 
-// value của <option> trong products.html  ->  tên thể loại trong dữ liệu
-const CATEGORY_MAP = {
-    vanhoc:   'Văn học & Tiểu thuyết',
-    kinhte:   'Kinh tế & Quản trị',
-    cntt:     'Công nghệ thông tin',
-    thieunhi: 'Sách thiếu nhi'
+// Danh mục và sách luôn được đọc từ nguồn localStorage do data.js khởi tạo.
+const getCategoriesForSite = () => getData('categories').filter(c => c.status !== 'inactive');
+const makeCategoryMap = () => Object.fromEntries(
+    getCategoriesForSite().map(c => [c.key || c.categoryId, c.categoryName])
+);
+let CATEGORY_MAP = makeCategoryMap();
+
+const toSiteBook = (p) => {
+    const category = getData('categories').find(c => c.categoryId === p.categoryId);
+    const imageName = p.image || '';
+    return {
+        sku: p.productId,
+        title: p.productName || '',
+        author: p.author || '',
+        category: category?.categoryName || '',
+        categoryKey: category?.key || category?.categoryId || '',
+        image: /^https?:\/\//i.test(imageName) || imageName.startsWith('/')
+            ? imageName
+            : SITE_ROOT + 'images/books/' + imageName,
+        price: Number(p.salePrice || 0),
+        coverType: p.coverType || 'Bìa mềm',
+        publisher: p.publisher || '',
+        year: p.year || '',
+        pages: p.pages || '',
+        stock: Number(p.stockQuantity || 0),
+        desc: p.description || '',
+        status: p.status || 'active'
+    };
 };
 
-/* ----------------------------------------------------------
-   DANH SÁCH SÁCH (15 cuốn)
-   - image: chỉ ghi tên file, ảnh nằm trong images/books/
-   - sku: không được trùng nhau (trang chi tiết tìm sách theo mã này)
-   - category: dùng CATEGORY_MAP.<khóa> để luôn khớp với bộ lọc
-   - stock: số cuốn trong kho (0 = hết hàng)
-   - LƯU Ý: price, publisher, year, pages, stock, desc (trừ Mắt Biếc)
-     là dữ liệu MẪU, hãy thay bằng thông tin thật của từng cuốn
-   ---------------------------------------------------------- */
-const BOOK_LIST = [
-    // ----- Văn học & Tiểu thuyết -----
-    { sku: 'MS001', title: 'Chí Phèo', author: 'Nam Cao', category: CATEGORY_MAP.vanhoc, image: 'chi-pheo.jpg',
-      price: 55000, coverType: 'Bìa mềm', publisher: 'NXB Văn Học', year: 2018, pages: 120, stock: 30,
-      desc: 'Truyện ngắn nổi tiếng của Nam Cao về số phận bi kịch của người nông dân bị đẩy vào con đường tha hóa trong xã hội cũ.' },
-    { sku: 'MS002', title: 'Hạ Đỏ', author: 'Nguyễn Nhật Ánh', category: CATEGORY_MAP.vanhoc, image: 'ha-do.jpg',
-      price: 95000, coverType: 'Bìa mềm', publisher: 'NXB Trẻ', year: 2019, pages: 260, stock: 18,
-      desc: 'Tác phẩm của nhà văn Nguyễn Nhật Ánh với lối viết giản dị, giàu cảm xúc.' },
-    { sku: 'MS003', title: 'Đất Rừng Phương Nam', author: 'Đoàn Giỏi', category: CATEGORY_MAP.vanhoc, image: 'dat-rung-phuong-nam.jpg',
-      price: 110000, coverType: 'Bìa cứng', publisher: 'NXB Kim Đồng', year: 2020, pages: 380, stock: 0,
-      desc: 'Tiểu thuyết của Đoàn Giỏi kể về những ngày phiêu bạt của cậu bé An trên vùng sông nước Nam Bộ.' },
-    { sku: 'MS004', title: 'Mắt Biếc', author: 'Nguyễn Nhật Ánh', category: CATEGORY_MAP.vanhoc, image: 'matbiec.jpg',
-      price: 100000, coverType: 'Bìa mềm', publisher: 'NXB Trẻ', year: 2020, pages: 300, stock: 26,
-      desc: 'Tác phẩm xúc động viết về mối tình thầm lặng của chàng trai làng Đo Đo tên Ngạn dành cho cô bạn thân Hà Lan với đôi mắt biếc vương vấn cả một đời.' },
+const loadSiteBooks = () => getData('products')
+    .filter(p => p.status !== 'inactive')
+    .map(toSiteBook);
+let BOOKS = loadSiteBooks();
 
-    // ----- Kinh tế & Quản trị -----
-    { sku: 'MS005', title: 'Quản Trị Hiệu Suất Cao', author: 'Andrew S. Grove', category: CATEGORY_MAP.kinhte, image: 'quantri-hieusuatcao.jpg',
-      price: 140000, coverType: 'Bìa mềm', publisher: 'NXB Thế Giới', year: 2021, pages: 320, stock: 12,
-      desc: 'Cuốn sách về cách nâng cao hiệu suất làm việc của cá nhân và đội nhóm, từ kinh nghiệm quản lý của tác giả.' },
-    { sku: 'MS006', title: '12 Nguyên Tắc Quản Trị Kinh Doanh Của Inamori', author: 'Inamori Kazuo', category: CATEGORY_MAP.kinhte, image: '12-nguyentac-qtkd.jpg',
-      price: 120000, coverType: 'Bìa mềm', publisher: 'NXB Lao Động', year: 2022, pages: 280, stock: 20,
-      desc: 'Trình bày các nguyên tắc quản trị kinh doanh mà Inamori Kazuo đúc kết từ kinh nghiệm điều hành doanh nghiệp.' },
-    { sku: 'MS007', title: 'Người Giàu Nhất Thành Babylon', author: 'George S. Clason', category: CATEGORY_MAP.kinhte, image: 'nguoi-giau-nhat-thanh-babylon.jpg',
-      price: 85000, coverType: 'Bìa mềm', publisher: 'NXB Thanh Niên', year: 2019, pages: 200, stock: 35,
-      desc: 'Những câu chuyện ngụ ngôn về cách quản lý tiền bạc và xây dựng tài sản.' },
-    { sku: 'MS008', title: 'Đắc Nhân Tâm', author: 'Dale Carnegie', category: CATEGORY_MAP.kinhte, image: 'dac-nhan-tam.jpg',
-      price: 90000, coverType: 'Bìa mềm', publisher: 'NXB Tổng Hợp', year: 2020, pages: 320, stock: 40,
-      desc: 'Cuốn sách kinh điển về nghệ thuật giao tiếp, ứng xử và xây dựng các mối quan hệ.' },
+// Cập nhật trang khách khi admin thay đổi dữ liệu ở tab khác.
+window.addEventListener('storage', (event) => {
+    if (['products', 'categories'].includes(event.key)) window.location.reload();
+});
 
-    // ----- Công nghệ thông tin -----
-    { sku: 'MS009', title: 'Lập Trình Python Cho Người Mới Bắt Đầu', author: 'Nguyễn Ngọc Tân', category: CATEGORY_MAP.cntt, image: 'laptrinh-python-cho-nguoi-moi-bat-dau.jpg',
-      price: 150000, coverType: 'Bìa mềm', publisher: 'NXB Thanh Niên', year: 2023, pages: 340, stock: 15,
-      desc: 'Giáo trình nhập môn lập trình Python dành cho người mới bắt đầu.' },
-    { sku: 'MS010', title: 'Sổ Tay "Dân IT" Lập Trình Web & Lập Trình Ứng Dụng', author: 'Đào Xuân Hiệp', category: CATEGORY_MAP.cntt, image: 'lap-trinh-web.jpg',
-      price: 180000, coverType: 'Bìa mềm', publisher: 'NXB Thanh Niên', year: 2022, pages: 400, stock: 10,
-      desc: 'Sổ tay tổng hợp kiến thức và kỹ năng lập trình web và lập trình ứng dụng.' },
-    { sku: 'MS011', title: 'Database Management System', author: 'Sotirios Zygiaris', category: CATEGORY_MAP.cntt, image: 'database-management-system.jpg',
-      price: 220000, coverType: 'Bìa cứng', publisher: 'NXB Khoa Học Kỹ Thuật', year: 2021, pages: 450, stock: 8,
-      desc: 'Tài liệu về các khái niệm và nguyên lý của hệ quản trị cơ sở dữ liệu.' },
+// ----- Giỏ hàng dùng chung: nút "Chọn mua" (thẻ sách) và nút "Thêm vào giỏ hàng" (trang chi tiết) -----
+// Lưu trong localStorage (khóa "cart") dạng { "MS001": 2, "MS005": 1 }: mã sách -> số lượng
+function getCart() {
+    try { return JSON.parse(localStorage.getItem('cart')) || {}; } catch (e) { return {}; }
+}
 
-    // ----- Sách thiếu nhi -----
-    { sku: 'MS012', title: 'Dế Mèn Phiêu Lưu Ký', author: 'Tô Hoài', category: CATEGORY_MAP.thieunhi, image: 'de-men-phieu-luu-ky.jpg',
-      price: 75000, coverType: 'Bìa cứng', publisher: 'NXB Kim Đồng', year: 2019, pages: 160, stock: 22,
-      desc: 'Tác phẩm kinh điển của Tô Hoài kể về cuộc phiêu lưu của chú Dế Mèn.' },
-    { sku: 'MS013', title: 'Doraemon: Nobita Và Cuộc Phiêu Lưu Vào Thế Giới Trong Tranh', author: 'Fujiko F. Fujio', category: CATEGORY_MAP.thieunhi, image: 'doraemon.jpg',
-      price: 25000, coverType: 'Bìa mềm', publisher: 'NXB Kim Đồng', year: 2020, pages: 190, stock: 50,
-      desc: 'Cuộc phiêu lưu của Nobita, Doraemon và các bạn trong thế giới trong tranh.' },
-    { sku: 'MS014', title: 'Hoàng Tử Rơm', author: 'Nhiều tác giả', category: CATEGORY_MAP.thieunhi, image: 'hoang-tu-rom.jpg',
-      price: 45000, coverType: 'Bìa mềm', publisher: 'NXB Kim Đồng', year: 2021, pages: 48, stock: 14,
-      desc: 'Truyện thiếu nhi dành cho các bạn nhỏ.' },
-    { sku: 'MS015', title: 'Trí Khôn Của Ta Đây', author: 'Truyện cổ tích Việt Nam', category: CATEGORY_MAP.thieunhi, image: 'tri-khon-cua-ta-day.jpg',
-      price: 30000, coverType: 'Bìa mềm', publisher: 'NXB Kim Đồng', year: 2018, pages: 32, stock: 25,
-      desc: 'Truyện cổ tích Việt Nam về trí khôn và sự thông minh.' }
-];
-
-// Thêm đường dẫn đầy đủ cho ảnh: images/books/<tên file>
-const BOOKS = BOOK_LIST.map((b) => ({ ...b, image: SITE_ROOT + 'images/books/' + b.image }));
+// Thêm sách vào giỏ, không vượt quá số cuốn trong kho.
+// Trả về số lượng thực sự đã thêm (0 nếu hết hàng hoặc giỏ đã đạt mức tối đa).
+function addToCart(sku, qty = 1) {
+    const book = BOOKS.find((b) => b.sku === sku);
+    if (!book || book.stock <= 0) return 0;
+    const cart = getCart();
+    const before = cart[sku] || 0;
+    cart[sku] = Math.min(before + qty, book.stock);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    return cart[sku] - before;
+}
 
 function createCardHTML(book) {
     const buyButton = (book.stock > 0)
-        ? `<button class="btn-buy" type="button"><img src="${SITE_ROOT}images/buy.png" alt="" width="16" height="16"> Chọn mua</button>`
+        ? `<button class="btn-buy" type="button" data-sku="${escapeHtml(book.sku)}"><img src="${SITE_ROOT}images/buy.png" alt="" width="16" height="16"> Chọn mua</button>`
         : `<button class="btn-buy" type="button" disabled>Hết hàng</button>`;
 
     return `
@@ -126,6 +109,20 @@ function createCardHTML(book) {
         </div>`;
 }
 
+// Nút "Chọn mua" trên thẻ sách: thêm 1 cuốn vào giỏ và báo kết quả trên chính nút đó
+function initBuyButtons() {
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.btn-buy');
+        if (!btn || btn.disabled || btn.dataset.busy) return;
+
+        const added = addToCart(btn.dataset.sku, 1);
+        const oldHTML = btn.innerHTML;
+        btn.dataset.busy = '1';                        // tránh bấm dồn trong lúc đang hiện thông báo
+        btn.textContent = added ? 'Đã thêm ✓' : 'Đã đủ số lượng';
+        setTimeout(() => { btn.innerHTML = oldHTML; delete btn.dataset.busy; }, 1200);
+    });
+}
+
 // Ô tìm kiếm trên header của các trang không có danh sách: chuyển sang products.html?q=...
 function bindHeaderSearch() {
     const input = document.getElementById('searchInput');
@@ -138,15 +135,85 @@ function bindHeaderSearch() {
    B. TRANG CHỦ (data-page="home"): danh mục + sản phẩm nổi bật
    ========================================================== */
 
+// ----- Banner trượt ở trang chủ: đổi qua lại giữa vài cuốn sách -----
+function initHeroSlider() {
+    const HERO_SKUS = ['MS004', 'MS008', 'MS009', 'MS012', 'MS002'];   // mã các cuốn hiện trên banner (sửa tại đây)
+    const INTERVAL = 5000;                                              // tự chuyển sau 5 giây
+
+    const root = document.getElementById('heroSlider');
+    if (!root) return;
+    const books = HERO_SKUS.map((sku) => BOOKS.find((b) => b.sku === sku)).filter((b) => b && b.stock > 0);
+    if (books.length === 0) { root.hidden = true; return; }
+
+    const slidesBox = document.getElementById('heroSlides');
+    const dotsBox = document.getElementById('heroDots');
+    slidesBox.innerHTML = books.map((b, i) => `
+        <div class="hero-slide" role="group" aria-roledescription="slide" aria-label="${i + 1} / ${books.length}">
+            <img class="hero-slide-cover" src="${escapeHtml(b.image)}" alt="Bìa sách ${escapeHtml(b.title)}"${i ? ' loading="lazy"' : ''}>
+            <div class="hero-slide-info">
+                <span class="hero-slide-cat">${escapeHtml(b.category)}</span>
+                <h3 class="hero-slide-title">${escapeHtml(b.title)}</h3>
+                <p class="hero-slide-author">${escapeHtml(b.author)}</p>
+                <p class="hero-slide-price">${formatPrice(b.price)}</p>
+                <a class="hero-slide-link" href="${PAGE_DETAIL}?sku=${encodeURIComponent(b.sku)}">Xem chi tiết</a>
+            </div>
+        </div>`).join('');
+    dotsBox.innerHTML = books.map((b, i) => `<button type="button" class="hero-dot" aria-label="Xem sách ${i + 1}: ${escapeHtml(b.title)}"></button>`).join('');
+
+    const slides = [...slidesBox.children];
+    const dots = [...dotsBox.children];
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let current = 0;
+    let timer = null;
+
+    function show(i) {
+        current = (i + books.length) % books.length;
+        slides.forEach((s, n) => { s.classList.toggle('active', n === current); s.setAttribute('aria-hidden', String(n !== current)); });
+        dots.forEach((d, n) => { d.classList.toggle('active', n === current); d.setAttribute('aria-current', String(n === current)); });
+    }
+    const stop = () => { clearInterval(timer); timer = null; };
+    const play = () => { stop(); if (!reduceMotion && books.length > 1) timer = setInterval(() => show(current + 1), INTERVAL); };
+    const go = (i) => { show(i); play(); };          // người dùng bấm -> đếm lại 5 giây từ đầu
+
+    document.getElementById('heroPrev').addEventListener('click', () => go(current - 1));
+    document.getElementById('heroNext').addEventListener('click', () => go(current + 1));
+    dots.forEach((d, n) => d.addEventListener('click', () => go(n)));
+
+    // Rê chuột hoặc đang focus vào banner thì tạm dừng; rời đi thì chạy tiếp
+    root.addEventListener('mouseenter', stop);
+    root.addEventListener('mouseleave', play);
+    root.addEventListener('focusin', stop);
+    root.addEventListener('focusout', play);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else play(); });
+    root.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') go(current - 1);
+        if (e.key === 'ArrowRight') go(current + 1);
+    });
+
+    // Vuốt trái/phải trên điện thoại
+    let startX = null;
+    slidesBox.addEventListener('pointerdown', (e) => { startX = e.clientX; });
+    slidesBox.addEventListener('pointerup', (e) => {
+        if (startX !== null && Math.abs(e.clientX - startX) > 40) go(current + (e.clientX < startX ? 1 : -1));
+        startX = null;
+    });
+
+    if (books.length === 1) root.querySelector('.hero-controls').hidden = true;
+    show(0);
+    play();
+}
+
 function initHome() {
     const FEATURED_COUNT = 8;
+
+    initHeroSlider();   // banner trượt
 
     // Ô tìm kiếm trên header -> chuyển sang products.html?q=...
     bindHeaderSearch();
 
     // Danh mục: mỗi thẻ dẫn tới products.html?category=<key>
     document.getElementById('categoryList').innerHTML = Object.entries(CATEGORY_MAP).map(([key, name]) => {
-        const count = BOOKS.filter((b) => b.category === name).length;
+        const count = BOOKS.filter((b) => b.categoryKey === key).length;
         return `
             <a class="category-card" href="${PAGE_PRODUCTS}?category=${key}">
                 <h3>${escapeHtml(name)}</h3>
@@ -184,6 +251,20 @@ function initProducts() {
     const priceMaxInput     = document.getElementById('adv-price-max');
     const inStockCheckbox   = document.getElementById('adv-in-stock');
     const btnApplyFilter    = document.getElementById('btnApplyFilter');
+
+    // Bổ sung danh mục do admin tạo, giữ lại lựa chọn "Tất cả".
+    if (categorySelect) {
+        const existingValues = new Set([...categorySelect.options].map(option => option.value));
+        getCategoriesForSite().forEach(category => {
+            const key = category.key || category.categoryId;
+            if (!existingValues.has(key)) {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = category.categoryName;
+                categorySelect.appendChild(option);
+            }
+        });
+    }
 
     const books = BOOKS;
     let filteredBooks = [...books];   // ban đầu chưa lọc nên chứa toàn bộ sách
@@ -425,14 +506,6 @@ function initDetail() {
         });
     }
 
-    // Giỏ hàng lưu trong localStorage dạng { "MS001": 2, "MS005": 1 }
-    function addToCart(itemSku, qty) {
-        let cart = {};
-        try { cart = JSON.parse(localStorage.getItem('cart')) || {}; } catch (e) { cart = {}; }
-        cart[itemSku] = Math.min((cart[itemSku] || 0) + qty, book.stock);
-        localStorage.setItem('cart', JSON.stringify(cart));
-    }
-
     /* ---------- Sách cùng thể loại ---------- */
     function renderRelated() {
         const related = BOOKS.filter((b) => b.category === book.category && b.sku !== book.sku).slice(0, 4);
@@ -512,6 +585,7 @@ function initCategoryMenu() {
 
 document.addEventListener('DOMContentLoaded', () => {
     initCategoryMenu();
+    initBuyButtons();
     const initPage = { home: initHome, products: initProducts, detail: initDetail }[document.body.dataset.page];
     if (initPage) initPage();
 });
