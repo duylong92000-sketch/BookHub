@@ -15,8 +15,6 @@
      cart       : { "MS001": 2 }   (do trang khách quản lý)
    ========================================================== */
 
-/* ==================== HÀM DÙNG CHUNG ==================== */
-
 const getData = key => {
     try {
         return JSON.parse(localStorage.getItem(key)) || [];
@@ -97,29 +95,66 @@ const SEED_BOOKS = [
 ];
 
 function seedData() {
-    if (localStorage.getItem("categories") === null)
+    const currentCategories = getData("categories");
+
+    if (localStorage.getItem("categories") === null) {
         setData("categories", CATEGORY_SEED);
+    } else {
+        // Chuyển các danh mục mẫu cũ về đúng 4 danh mục của products.js.
+        const oldDefaultNames = [
+            "Sách Trong Nước", "Sách Ngoại Văn", "Kinh Tế & Quản Trị",
+            "Văn Học Nghệ Thuật", "Kỹ Năng Sống", "Sách Thiếu Nhi"
+        ];
+        const isOldDefault = c =>
+            /^DM00[1-6]$/.test(c.categoryId || "") &&
+            oldDefaultNames.some(name => name.toLowerCase() === (c.categoryName || "").toLowerCase());
+        const customCategories = currentCategories.filter(c => !isOldDefault(c));
+        const mergedCategories = [...CATEGORY_SEED];
+
+        customCategories.forEach(c => {
+            if (!mergedCategories.some(seed =>
+                seed.categoryId === c.categoryId ||
+                (seed.key && c.key && seed.key === c.key) ||
+                seed.categoryName.toLowerCase() === (c.categoryName || "").toLowerCase()
+            )) mergedCategories.push(c);
+        });
+
+        setData("categories", mergedCategories);
+    }
+
+    const PROFIT = 30;
+
+    const initialProducts = SEED_BOOKS.map(b => ({
+        productId: b.sku,
+        productName: b.title,
+        categoryId: CATEGORY_SEED.find(c => c.key === b.category).categoryId,
+        author: b.author,
+        publisher: b.publisher,
+        importPrice: Math.round(b.price / (1 + PROFIT / 100)),
+        profitRate: PROFIT,
+        salePrice: b.price,
+        stockQuantity: b.stock,
+        description: b.desc,
+        image: b.image,
+        coverType: b.coverType,
+        year: b.year,
+        pages: b.pages,
+        status: "active"
+    }));
 
     if (localStorage.getItem("products") === null) {
-        const PROFIT = 30;
+        setData("products", initialProducts);
+    } else {
+        const savedProducts = getData("products");
+        const missingProducts = initialProducts.filter(
+            initial => !savedProducts.some(
+                saved => saved.productId === initial.productId
+            )
+        );
 
-        setData("products", SEED_BOOKS.map(b => ({
-            productId: b.sku,                                   // dùng mã MSxxx làm mã sản phẩm
-            productName: b.title,
-            categoryId: CATEGORY_SEED.find(c => c.key === b.category).categoryId,
-            author: b.author,
-            publisher: b.publisher,
-            importPrice: Math.round(b.price / (1 + PROFIT / 100)),
-            profitRate: PROFIT,
-            salePrice: b.price,                                 // giữ đúng giá niêm yết ban đầu
-            stockQuantity: b.stock,
-            description: b.desc,
-            image: b.image,                                     // chỉ tên file trong images/books/
-            coverType: b.coverType,
-            year: b.year,
-            pages: b.pages,
-            status: "active"
-        })));
+        if (missingProducts.length > 0) {
+            setData("products", [...savedProducts, ...missingProducts]);
+        }
     }
 
     ["customers", "orders", "imports"].forEach(key => {
