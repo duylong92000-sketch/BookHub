@@ -170,8 +170,78 @@ function bindHeaderSearch() {
    B. TRANG CHỦ (data-page="home"): danh mục + sản phẩm nổi bật
    ========================================================== */
 
+// ----- Banner trượt ở trang chủ: đổi qua lại giữa vài cuốn sách -----
+function initHeroSlider() {
+    const HERO_SKUS = ['MS004', 'MS008', 'MS009', 'MS012', 'MS002'];   // mã các cuốn hiện trên banner (sửa tại đây)
+    const INTERVAL = 5000;                                              // tự chuyển sau 5 giây
+
+    const root = document.getElementById('heroSlider');
+    if (!root) return;
+    const books = HERO_SKUS.map((sku) => BOOKS.find((b) => b.sku === sku)).filter((b) => b && b.stock > 0);
+    if (books.length === 0) { root.hidden = true; return; }
+
+    const slidesBox = document.getElementById('heroSlides');
+    const dotsBox = document.getElementById('heroDots');
+    slidesBox.innerHTML = books.map((b, i) => `
+        <div class="hero-slide" role="group" aria-roledescription="slide" aria-label="${i + 1} / ${books.length}">
+            <img class="hero-slide-cover" src="${escapeHtml(b.image)}" alt="Bìa sách ${escapeHtml(b.title)}"${i ? ' loading="lazy"' : ''}>
+            <div class="hero-slide-info">
+                <span class="hero-slide-cat">${escapeHtml(b.category)}</span>
+                <h3 class="hero-slide-title">${escapeHtml(b.title)}</h3>
+                <p class="hero-slide-author">${escapeHtml(b.author)}</p>
+                <p class="hero-slide-price">${formatPrice(b.price)}</p>
+                <a class="hero-slide-link" href="${PAGE_DETAIL}?sku=${encodeURIComponent(b.sku)}">Xem chi tiết</a>
+            </div>
+        </div>`).join('');
+    dotsBox.innerHTML = books.map((b, i) => `<button type="button" class="hero-dot" aria-label="Xem sách ${i + 1}: ${escapeHtml(b.title)}"></button>`).join('');
+
+    const slides = [...slidesBox.children];
+    const dots = [...dotsBox.children];
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let current = 0;
+    let timer = null;
+
+    function show(i) {
+        current = (i + books.length) % books.length;
+        slides.forEach((s, n) => { s.classList.toggle('active', n === current); s.setAttribute('aria-hidden', String(n !== current)); });
+        dots.forEach((d, n) => { d.classList.toggle('active', n === current); d.setAttribute('aria-current', String(n === current)); });
+    }
+    const stop = () => { clearInterval(timer); timer = null; };
+    const play = () => { stop(); if (!reduceMotion && books.length > 1) timer = setInterval(() => show(current + 1), INTERVAL); };
+    const go = (i) => { show(i); play(); };          // người dùng bấm -> đếm lại 5 giây từ đầu
+
+    document.getElementById('heroPrev').addEventListener('click', () => go(current - 1));
+    document.getElementById('heroNext').addEventListener('click', () => go(current + 1));
+    dots.forEach((d, n) => d.addEventListener('click', () => go(n)));
+
+    // Rê chuột hoặc đang focus vào banner thì tạm dừng; rời đi thì chạy tiếp
+    root.addEventListener('mouseenter', stop);
+    root.addEventListener('mouseleave', play);
+    root.addEventListener('focusin', stop);
+    root.addEventListener('focusout', play);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else play(); });
+    root.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') go(current - 1);
+        if (e.key === 'ArrowRight') go(current + 1);
+    });
+
+    // Vuốt trái/phải trên điện thoại
+    let startX = null;
+    slidesBox.addEventListener('pointerdown', (e) => { startX = e.clientX; });
+    slidesBox.addEventListener('pointerup', (e) => {
+        if (startX !== null && Math.abs(e.clientX - startX) > 40) go(current + (e.clientX < startX ? 1 : -1));
+        startX = null;
+    });
+
+    if (books.length === 1) root.querySelector('.hero-controls').hidden = true;
+    show(0);
+    play();
+}
+
 function initHome() {
     const FEATURED_COUNT = 8;
+
+    initHeroSlider();   // banner trượt
 
     // Ô tìm kiếm trên header -> chuyển sang products.html?q=...
     bindHeaderSearch();
