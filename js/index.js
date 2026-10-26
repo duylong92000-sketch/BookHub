@@ -51,8 +51,54 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Đăng xuất
-    logoutBtn.addEventListener("click", function () {
-        localStorage.removeItem("currentUser");
-        window.location.href = "../index.html";
-    });
+    logoutBtn.addEventListener("click", logout);
 });
+
+
+
+// Nhớ trang hiện tại khi bấm vào liên kết Đăng nhập / Đăng ký
+document.addEventListener("click", function (e) {
+    const link = e.target.closest('a[href*="login.html"], a[href*="register.html"]');
+    if (!link) return;
+
+    // Đang ở chính trang đăng nhập/đăng ký thì giữ nguyên địa chỉ đã nhớ trước đó
+    const currentPage = window.location.pathname.split("/").pop().toLowerCase();
+    if (currentPage === "login.html" || currentPage === "register.html") return;
+    sessionStorage.setItem("returnUrl", window.location.href);
+});
+
+// Đăng xuất ở lại đúng trang đang xem
+function logout() {
+    localStorage.removeItem("currentUser");
+
+    // Lưu giỏ hàng vào tài khoản rồi xóa giỏ đang hiển thị
+    try {
+        const user = JSON.parse(localStorage.getItem("currentUser"));
+ 
+        if (user && user.customerId) {
+            const cart = JSON.parse(localStorage.getItem("cart")) || {};
+            const allCarts = JSON.parse(localStorage.getItem("userCarts")) || {};
+ 
+            allCarts[user.customerId] = cart;
+            localStorage.setItem("userCarts", JSON.stringify(allCarts));
+        }
+    } catch (error) {
+        console.error("Lỗi lưu giỏ hàng khi đăng xuất:", error);
+    }
+ 
+    localStorage.removeItem("cart");
+    localStorage.removeItem("currentUser");
+
+
+    // Các trang bắt buộc đăng nhập thì về trang chủ, còn lại tải lại trang
+    const loginRequiredPages = ["profile.html", "orders.html", "checkout.html"];
+    const page = window.location.pathname.split("/").pop().toLowerCase();
+
+    if (loginRequiredPages.includes(page)) {
+        window.location.href = window.location.pathname.includes("/pages/")
+            ? "../index.html"
+            : "index.html";
+    } else {
+        window.location.reload();
+    }
+}

@@ -103,8 +103,16 @@ form.addEventListener("submit", function(e){
         password.value.trim() === repassword.value.trim())
     {
         
+        //kiểm tra trùng userName
+        const daTonTai = customersLocal.some(c =>
+            String(c.userName).toLowerCase() === userName.value.trim().toLowerCase()
+        );
+        if (daTonTai) {
+            usernameError.style.display = "block";
+            usernameError.textContent = "Tên hiển thị đã được sử dụng";
+            return;
+        }
         
-    
         //Lấy dữ liệu từ form và gộp thành đối tượng user
         const customers = {
             customerId: taoID(),
@@ -123,6 +131,10 @@ form.addEventListener("submit", function(e){
         
         //Lưu dữ liệu lên local
         localStorage.setItem("customers", JSON.stringify(customersLocal))
+
+        // Khóa nút để tránh bấm nhiều lần
+        const submitBtn = form.querySelector('[type="submit"]');
+        if (submitBtn) submitBtn.disabled = true;
         
         //chuyển hướng về trang đăng nhập
         setTimeout(function(){
@@ -200,7 +212,11 @@ password.addEventListener("input", function () {
 
 //Kiểm tra lại mật khẩu
 repassword.addEventListener("input", function() {
-    if (password.value !== repassword.value){
+    if (repassword.value.trim() === "") { 
+        repasswordError.textContent = "Vui lòng nhập lại mật khẩu";
+    }
+
+    else if (password.value !== repassword.value){
         repasswordError.textContent = "Mật khẩu không khớp";
     }
     else {
