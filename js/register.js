@@ -122,6 +122,7 @@ form.addEventListener("submit", function(e){
             phone: phone.value.trim(),
             password: password.value.trim(),
             address: address.value,
+            status: "active"
 
         };    
         

@@ -197,6 +197,11 @@ if(customersLoginForm) {
                 passwordError.style.display = "block";
                 passwordError.innerHTML = "Tên hoặc mật khẩu không đúng"
             }
+            else if (findUser.status === "inactive") {
+                passwordError.style.display = "block";
+                passwordError.innerHTML =
+                    "Tài khoản đã bị khóa. Vui lòng liên hệ quản trị viên.";
+            }
             else {
                 localStorage.setItem("currentUser", JSON.stringify(findUser));
 

@@ -6,6 +6,9 @@
         name="viewport"
         content="width=device-width, initial-scale=1.0">
     <title>BookHub Admin - Đơn hàng</title>
+    <script src="../js/data.js"></script>
+    <script src="../js/admin.js"></script>
+    <script src="../js/order.js"></script>
     <link rel="stylesheet" href="../css/admin.css">
 </head>
 
@@ -125,9 +128,9 @@
         <section class="panel">
             <div class="panel-header">
 
-                <h2>
-                    Danh sách đơn hàng
-                </h2>
+                    <span id="adminOrderCount">
+                        0 đơn hàng
+                    </span>
 
                 <span id="adminOrderCount">
                     0 đơn hàng
@@ -161,16 +164,17 @@
         </section>
     </main>
 
-    <div
-        class="modal"
-        id="adminOrderModal">
+            <div class="modal-content">
 
         <div class="modal-content">
             <div class="modal-header">
 
-                <h2>
-                    Chi tiết đơn hàng
-                </h2>
+                    <button
+                        type="button"
+                        class="close-btn"
+                        id="closeAdminOrderModal">
+                        ×
+                    </button>
 
                 <button
                     type="button"
@@ -220,7 +224,6 @@
                     </li>
                 </ul>
             </div>
-        </div>
 
         <!-- Thanh bản quyền dưới cùng -->
         <div class="footer-bottom">
@@ -233,8 +236,5 @@
         </div>
     </footer>
 
-    <script src="../js/data.js"></script>
-    <script src="../js/order.js"></script>
-
-</body>
+    </body>
 </html>
