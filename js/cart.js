@@ -1,6 +1,7 @@
 
 const CART_KEY = "cart";
 const PRODUCT_KEY = "products";
+const USER_CARTS_KEY = "userCarts"; // giỏ hàng đã lưu theo từng tài khoản
 
 // Đọc dữ liệu localStorage
 function readJSON(key, defaultValue) {
@@ -52,9 +53,20 @@ function getCart() {
     return cart;
 }
 
+// Lưu giỏ hàng của tài khoản đang đăng nhập
+function syncUserCart(cart) {
+    const user = getCurrentCustomer();
+    if (!user) return;
+ 
+    const allCarts = readJSON(USER_CARTS_KEY, {});
+    allCarts[user.customerId] = cart;
+    localStorage.setItem(USER_CARTS_KEY, JSON.stringify(allCarts));
+}
+
 // Lưu giỏ hàng
 function saveCart(cart) {
     localStorage.setItem(CART_KEY, JSON.stringify(normalizeCart(cart)));
+    syncUserCart(normalizeCart(cart));
     updateCartCount();
 }
 
