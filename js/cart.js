@@ -1,5 +1,4 @@
 
-const CART_KEY = "cart";
 const PRODUCT_KEY = "products";
 const USER_CARTS_KEY = "userCarts"; // giỏ hàng đã lưu theo từng tài khoản
 
@@ -46,29 +45,33 @@ function normalizeCart(value) {
 }
 
 // Lấy giỏ hàng cùng định dạng với products.js
+
+ // Tạo khóa giỏ hàng theo tài khoản
+function getCartKey() {
+    const customer = getCurrentCustomer();
+    if (!customer || !customer.customerId) return null;
+    return "cart_" + customer.customerId;
+}
+
+// Lấy giỏ hàng của tài khoản đang đăng nhập
 function getCart() {
-    const raw = readJSON(CART_KEY, {});
-    const cart = normalizeCart(raw);
-    if (Array.isArray(raw)) localStorage.setItem(CART_KEY, JSON.stringify(cart));
-    return cart;
+    const key = getCartKey();
+    if (!key) return {};
+
+    const cart = readJSON(key, {});
+    return normalizeCart(cart);
 }
 
-// Lưu giỏ hàng của tài khoản đang đăng nhập
-function syncUserCart(cart) {
-    const user = getCurrentCustomer();
-    if (!user) return;
- 
-    const allCarts = readJSON(USER_CARTS_KEY, {});
-    allCarts[user.customerId] = cart;
-    localStorage.setItem(USER_CARTS_KEY, JSON.stringify(allCarts));
-}
-
-// Lưu giỏ hàng
+// Lưu giỏ hàng riêng cho từng khách hàng
 function saveCart(cart) {
-    localStorage.setItem(CART_KEY, JSON.stringify(normalizeCart(cart)));
-    syncUserCart(normalizeCart(cart));
+    const key = getCartKey();
+    if (!key) return false;
+
+    localStorage.setItem(key, JSON.stringify(normalizeCart(cart)));
     updateCartCount();
+    return true;
 }
+
 
 // Định dạng tiền
 function formatCurrency(value) {
@@ -89,6 +92,12 @@ function findProduct(productId) {
 
 // Thêm sản phẩm vào giỏ hàng
 function addToCart(productId, quantity = 1) {
+    if (!getCurrentCustomer()) {
+    alert("Vui lòng đăng nhập để sử dụng giỏ hàng.");
+    window.location.href = "login.html";
+    return false;
+    }
+    
     const product = findProduct(productId);
     const qty = Number(quantity);
     if (!product || product.status === "inactive" || !Number.isSafeInteger(qty) || qty <= 0) return false;
@@ -251,6 +260,12 @@ function renderCartPage() {
 
 // Khởi chạy các chức năng
 document.addEventListener("DOMContentLoaded", function () {
+    if (document.body.classList.contains("cart-page") && !getCurrentCustomer()) {
+        alert("Vui lòng đăng nhập để xem giỏ hàng.");
+        window.location.replace("login.html");
+        return;
+    }
+
     updateCartCount();
     renderCartPage();
 

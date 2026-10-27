@@ -203,17 +203,33 @@ if(customersLoginForm) {
                     "Tài khoản đã bị khóa. Vui lòng liên hệ quản trị viên.";
             }
             else {
-                localStorage.setItem("currentUser", JSON.stringify(findUser));
+                // Lấy khóa giỏ hàng riêng của tài khoản
+                const cartKey = "cart_" + findUser.customerId;
 
-                // Gộp giỏ hàng đã lưu của tài khoản với sản phẩm thêm trước khi đăng nhập
-                mergeCartOnLogin(findUser);
+                // Chỉ chuyển dữ liệu cũ nếu chưa có giỏ hàng riêng
+                if (localStorage.getItem(cartKey) === null) {
+                    try {
+                        const allCarts = JSON.parse( localStorage.getItem("userCarts") || "{}");
 
-                // Quay lại trang người dùng đang xem trước khi bấm Đăng nhập
+                        const oldCart = allCarts[findUser.customerId];
+
+                        if (oldCart && typeof oldCart === "object") {
+                            localStorage.setItem( cartKey,JSON.stringify(oldCart));
+                        }
+                    } catch (error) {
+                        console.error("Lỗi chuyển dữ liệu giỏ cũ:", error);
+                        }
+                }
+
+                // Đăng nhập thành công
+                localStorage.setItem("currentUser",JSON.stringify(findUser));
+
+                // Không xóa hoặc tạo lại giỏ nếu giỏ đã tồn tại
+
                 const returnUrl = sessionStorage.getItem("returnUrl");
                 sessionStorage.removeItem("returnUrl");
- 
-                window.location.href = isSafeReturnUrl(returnUrl)? returnUrl : "../index.html";
 
+                window.location.href = isSafeReturnUrl(returnUrl)? returnUrl: "../index.html";
             }
 
     });
