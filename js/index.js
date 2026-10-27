@@ -67,38 +67,32 @@ document.addEventListener("click", function (e) {
     sessionStorage.setItem("returnUrl", window.location.href);
 });
 
-// Đăng xuất ở lại đúng trang đang xem
+
+// Đăng xuất nhưng vẫn giữ giỏ hàng của từng tài khoản
 function logout() {
+
+    // Chỉ xóa thông tin đăng nhập
     localStorage.removeItem("currentUser");
 
-    // Lưu giỏ hàng vào tài khoản rồi xóa giỏ đang hiển thị
-    try {
-        const user = JSON.parse(localStorage.getItem("currentUser"));
- 
-        if (user && user.customerId) {
-            const cart = JSON.parse(localStorage.getItem("cart")) || {};
-            const allCarts = JSON.parse(localStorage.getItem("userCarts")) || {};
- 
-            allCarts[user.customerId] = cart;
-            localStorage.setItem("userCarts", JSON.stringify(allCarts));
-        }
-    } catch (error) {
-        console.error("Lỗi lưu giỏ hàng khi đăng xuất:", error);
-    }
- 
-    localStorage.removeItem("cart");
-    localStorage.removeItem("currentUser");
+    // KHÔNG xóa cart_customerId
+    // KHÔNG gọi saveCart({})
+    // KHÔNG xóa dữ liệu giỏ hàng
 
+    const path = window.location.pathname;
+    const page = path.split("/").pop().toLowerCase();
 
-    // Các trang bắt buộc đăng nhập thì về trang chủ, còn lại tải lại trang
-    const loginRequiredPages = ["profile.html", "orders.html", "checkout.html"];
-    const page = window.location.pathname.split("/").pop().toLowerCase();
+    const loginRequiredPages = [
+        "cart.html",
+        "checkout.html",
+        "profile.html",
+        "orders.html"
+    ];
 
     if (loginRequiredPages.includes(page)) {
-        window.location.href = window.location.pathname.includes("/pages/")
-            ? "../index.html"
-            : "index.html";
+        // Từ trang customer quay về trang chủ
+        window.location.href = "../index.html";
     } else {
+        // Cập nhật giao diện đăng xuất
         window.location.reload();
     }
 }
