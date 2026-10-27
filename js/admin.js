@@ -27,7 +27,22 @@ function generateId(prefix, data, field) {
     return prefix + String(max + 1).padStart(3, "0");
 }
 
+/* ==================== ADMIN-LOGIN CHECK ==================== */
+// ============== KIỂM TRA ĐĂNG NHẬP ADMIN ==============
 
+function getCurrentAdmin() {
+    return localStorage.getItem("adminLoggedIn") === "true";
+}
+
+function requireAdminLogin() {
+    if (getCurrentAdmin()) return true;
+
+    window.location.replace("login.html");
+    return false;
+}
+
+// Kiểm tra ngay khi tải file
+requireAdminLogin();
 /* ==================== DASHBOARD ==================== */
 
 function renderDashboard() {
@@ -703,6 +718,17 @@ function savePrice(e) {
 /* ==================== EVENTS ==================== */
 
 document.addEventListener("DOMContentLoaded", () => {
+    
+    if (!requireAdminLogin()) return;
+
+    // Xử lý đăng xuất
+    document.querySelector(".admin-header .logout-link")
+        ?.addEventListener("click", event => {
+            event.preventDefault();
+
+            localStorage.removeItem("adminLoggedIn");
+            window.location.replace("login.html");
+        });
 
     [
         renderDashboard,

@@ -6,6 +6,9 @@
         name="viewport"
         content="width=device-width, initial-scale=1.0">
     <title>BookHub Admin - Đơn hàng</title>
+    <script src="../js/data.js"></script>
+    <script src="../js/admin.js"></script>
+    <script src="../js/order.js"></script>
     <link rel="stylesheet" href="../css/admin.css">
 </head>
 
@@ -125,9 +128,9 @@
         <section class="panel">
             <div class="panel-header">
 
-                <h2>
-                    Danh sách đơn hàng
-                </h2>
+                    <span id="adminOrderCount">
+                        0 đơn hàng
+                    </span>
 
                 <span id="adminOrderCount">
                     0 đơn hàng
@@ -161,17 +164,8 @@
         </section>
     </main>
 
-    <div
-        class="modal"
-        id="adminOrderModal">
-
         <div class="modal-content">
             <div class="modal-header">
-
-                <h2>
-                    Chi tiết đơn hàng
-                </h2>
-
                 <button
                     type="button"
                     class="close-btn"
@@ -184,20 +178,21 @@
     </div>
 
     <!-- Phần chân trang -->
-    <footer class="site-footer">
+        <footer class="site-footer">
         <div class="footer-main">
             <!-- Cột trái: Thông tin Đồ án & Logo -->
             <div class="footer-col brand-info">
                 <div class="footer-logo">
                     <!-- Icon màu cam, bạn thay src bằng ảnh thực tế -->
                     <img src="../images/logoweb.png" alt="Nhà Sách SGU" width="40" height="40">
-                    <span class="logo-text">BOOKHUB</span>
+                    <span class="logo-text">NHÀ SÁCH SGU</span>
                 </div>
                 <p class="project-desc">
                     Hệ thống website cửa hàng bán sách trực tuyến<br>
                     Đồ án môn <strong>Lập trình web và ứng dụng</strong>.
                 </p>
                 <p class="faculty-info">
+                    
                     Khoa Công nghệ Thông tin - SGU
                 </p>
             </div>
@@ -233,8 +228,5 @@
         </div>
     </footer>
 
-    <script src="../js/data.js"></script>
-    <script src="../js/order.js"></script>
-
-</body>
+    </body>
 </html>
