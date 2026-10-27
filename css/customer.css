@@ -867,16 +867,6 @@ a.logo-section { text-decoration: none; }
     color: #2b1d12;
 }
 
-.summary-box {
-    margin-top: 12px;
-    padding: 18px 20px;
-    border: 1px solid #EFE7D8;
-    border-radius: 10px;
-    background-color: rgba(255, 255, 255, 0.5);
-    color: #555;
-    line-height: 1.7;
-}
-
 .purchase-row { display: flex; align-items: center; gap: 15px; margin: 32px 0 16px; }
 .qty-label { font-size: 14px; font-weight: bold; }
 
