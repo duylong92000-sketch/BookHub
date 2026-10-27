@@ -39,9 +39,11 @@ const toSiteBook = (p) => {
         author: p.author || '',
         category: category?.categoryName || '',
         categoryKey: category?.key || category?.categoryId || '',
-        image: /^https?:\/\//i.test(imageName) || imageName.startsWith('/')
+        image: /^data:image\//i.test(imageName) ||
+            /^https?:\/\//i.test(imageName) ||
+            imageName.startsWith("/")
             ? imageName
-            : SITE_ROOT + 'images/books/' + imageName,
+            : SITE_ROOT + "images/books/" + imageName,
         price: Number(p.salePrice || 0),
         coverType: p.coverType || 'Bìa mềm',
         publisher: p.publisher || '',

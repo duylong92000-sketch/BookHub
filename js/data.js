@@ -100,7 +100,6 @@ function seedData() {
     if (localStorage.getItem("categories") === null) {
         setData("categories", CATEGORY_SEED);
     } else {
-        // Chuyển các danh mục mẫu cũ về đúng 4 danh mục của products.js.
         const oldDefaultNames = [
             "Sách Trong Nước", "Sách Ngoại Văn", "Kinh Tế & Quản Trị",
             "Văn Học Nghệ Thuật", "Kỹ Năng Sống", "Sách Thiếu Nhi"
@@ -161,5 +160,3 @@ function seedData() {
         if (localStorage.getItem(key) === null) setData(key, []);
     });
 }
-
-seedData();

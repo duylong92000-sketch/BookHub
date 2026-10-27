@@ -257,7 +257,8 @@ function openProductForm(id = "") {
         productImportPrice: p?.importPrice || 0,
         productProfitRate: p?.profitRate || 30,
         productStock: p?.stockQuantity || 0,
-        productDescription: p?.description || ""
+        productDescription: p?.description || "",
+        productImage: p?.image || ""
     };
 
     // Phải đổ danh sách <option> trước khi gán value cho select
@@ -270,6 +271,66 @@ function openProductForm(id = "") {
         document.getElementById(fieldId).value = value
     );
 
+    
+    const imageInput = document.getElementById("productImage");
+    const imagePreview = document.getElementById("productImagePreview");
+
+    imageInput.value = "";
+
+    const savedImage = p?.image || "";
+
+    if (savedImage) {
+        imagePreview.src = savedImage;
+        imagePreview.style.display = "block";
+    } else {
+        imagePreview.removeAttribute("src");
+        imagePreview.style.display = "none";
+    }
+
+    imageInput.onchange = () => {
+        const file = imageInput.files[0];
+
+        if (!file) return;
+
+        if (!file.type.startsWith("image/")) {
+            alert("Vui lòng chọn một tệp hình ảnh.");
+            imageInput.value = "";
+            return;
+        }
+
+        if (file.size > 2 * 1024 * 1024) {
+            alert("Ảnh không được vượt quá 2 MB.");
+            imageInput.value = "";
+            return;
+        }
+
+        imagePreview.src = URL.createObjectURL(file);
+        imagePreview.style.display = "block";
+    };
+
+    function updateProductImagePreview() {
+        const value = imageInput.value.trim();
+
+        if (!value) {
+            imagePreview.style.display = "none";
+            imagePreview.removeAttribute("src");
+            return;
+        }
+
+        imagePreview.src = /^https?:\/\//i.test(value) || value.startsWith("/")
+            ? value
+            : "../images/books/" + value;
+
+        imagePreview.style.display = "block";
+    }
+
+    imageInput.oninput = updateProductImagePreview;
+    imagePreview.onerror = () => {
+        imagePreview.style.display = "none";
+    };
+
+    updateProductImagePreview();
+
     document.getElementById("productModalTitle").textContent =
         p ? "Sửa sản phẩm" : "Thêm sản phẩm";
 
@@ -280,14 +341,43 @@ function closeProductForm() {
     document.getElementById("productModal")?.classList.remove("show");
 }
 
-function saveProduct(e) {
+
+async function saveProduct(e) {
     e.preventDefault();
 
     const products = getData("products");
     const id = document.getElementById("productId").value;
+    const oldProduct = products.find(x => x.productId === id);
+
+    const imageInput = document.getElementById("productImage");
+    const file = imageInput.files[0];
+
+    let image = oldProduct?.image || "";
+
+    if (file) {
+        if (!file.type.startsWith("image/")) {
+            return alert("Vui lòng chọn một tệp hình ảnh hợp lệ.");
+        }
+
+        if (file.size > 2 * 1024 * 1024) {
+            return alert("Ảnh không được vượt quá 2 MB.");
+        }
+
+        try {
+            image = await new Promise((resolve, reject) => {
+                const reader = new FileReader();
+
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = () => reject(new Error("Không đọc được ảnh"));
+
+                reader.readAsDataURL(file);
+            });
+        } catch {
+            return alert("Không thể đọc ảnh. Vui lòng thử lại.");
+        }
+    }
 
     const p = {
-        // Tiền tố "MS" để đồng nhất với mã sách mẫu (MS001...)
         productId: id || generateId("MS", products, "productId"),
         productName: document.getElementById("productName").value.trim(),
         categoryId: document.getElementById("productCategory").value,
@@ -297,14 +387,17 @@ function saveProduct(e) {
         profitRate: Number(document.getElementById("productProfitRate").value),
         stockQuantity: Number(document.getElementById("productStock").value),
         description: document.getElementById("productDescription").value.trim(),
-        status: "active"
+        image,
+        status: oldProduct?.status || "active"
     };
 
-    if (!p.productName)
-        return alert("Vui lòng nhập tên sản phẩm");
+    if (!p.productName) {
+        return alert("Vui lòng nhập tên sản phẩm.");
+    }
 
-    if (p.importPrice < 0 || p.profitRate < 0 || p.stockQuantity < 0)
-        return alert("Giá nhập, lợi nhuận và tồn kho không được âm");
+    if (p.importPrice < 0 || p.profitRate < 0 || p.stockQuantity < 0) {
+        return alert("Giá nhập, lợi nhuận và tồn kho không được âm.");
+    }
 
     p.salePrice = Math.round(
         p.importPrice * (1 + p.profitRate / 100)
@@ -312,16 +405,22 @@ function saveProduct(e) {
 
     const index = products.findIndex(x => x.productId === id);
 
-    if (index >= 0)
-        // Giữ lại image, coverType, year, pages... của sản phẩm cũ
+    if (index >= 0) {
         products[index] = { ...products[index], ...p };
-    else
-        products.push({ ...p, image: "" });
+    } else {
+        products.push(p);
+    }
 
-    setData("products", products);
+    try {
+        setData("products", products);
+    } catch {
+        return alert("Không đủ dung lượng lưu ảnh. Hãy chọn ảnh nhỏ hơn.");
+    }
+
     closeProductForm();
     renderProducts();
 }
+
 
 const editProduct = id => openProductForm(id);
 
