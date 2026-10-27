@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentPage = 1;
     let selectedId = null;
     let isEditing = false;
+    let resetId = null;
 
     // ================= ĐỌC / GHI DỮ LIỆU =================
 
@@ -215,10 +216,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 makeButton("Xem", "view", id),
 
                 makeButton(
-                    "Sửa",
-                    "edit",
+                    "Đổi MK",
+                    "reset-password",
                     id,
-                    "btn-primary"
+                    "btn-warning"
                 ),
 
                 isActive(customer)
@@ -269,7 +270,7 @@ document.addEventListener("DOMContentLoaded", () => {
         selectedId = id;
 
         get("customerId").value = id;
-        get("username").value = getUsername(customer);
+        get("userName").value = getUsername(customer);
         get("fullName").value = customer.fullName || "";
         get("email").value = customer.email || "";
         get("phone").value = customer.phone || "";
@@ -461,6 +462,61 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    // Admin đặt lại mật khẩu không cần mật khẩu cũ.
+    function openReset(id) {
+        const c = getCustomers().find(x => getCustomerId(x) === id);
+        if (!c) return;
+        resetId = id;
+        get("resetPasswordForm").reset();
+        get("resetCustomerName").textContent = `${getUsername(c)} (${id})`;
+        showNotice("resetPasswordNotice", "");
+        get("resetPasswordModal").classList.add("show");
+        get("resetPasswordModal").setAttribute("aria-hidden", "false");
+        get("adminNewPassword").focus();
+    }
+
+    function closeReset() {
+        get("resetPasswordModal").classList.remove("show");
+        get("resetPasswordModal").setAttribute("aria-hidden", "true");
+        get("resetPasswordForm").reset();
+        resetId = null;
+    }
+
+    get("resetPasswordForm").addEventListener("submit", event => {
+        event.preventDefault();
+        if (!resetId || !get("resetPasswordForm").reportValidity()) return;
+        const newPassword = get("adminNewPassword").value;
+        const confirmPassword = get("adminConfirmPassword").value;
+        if (newPassword.length < 8 || !newPassword.trim()) {
+            showNotice("resetPasswordNotice", "Mật khẩu mới phải dài ít nhất 8 ký tự.");
+            return;
+        }
+        if (newPassword !== confirmPassword) {
+            showNotice("resetPasswordNotice", "Hai lần nhập mật khẩu không khớp.");
+            return;
+        }
+        const customers = getCustomers();
+        const index = customers.findIndex(c => getCustomerId(c) === resetId);
+        if (index < 0) return showNotice("resetPasswordNotice", "Không tìm thấy tài khoản.");
+        if (customers[index].password === newPassword) {
+            showNotice("resetPasswordNotice", "Mật khẩu mới phải khác mật khẩu cũ.");
+            return;
+        }
+        const id = resetId;
+        customers[index] = { ...customers[index], password: newPassword };
+        try {
+            saveCustomers(customers);
+            // Đăng xuất Customer hiện tại nếu chính tài khoản đó bị đặt lại mật khẩu.
+            const current = JSON.parse(localStorage.getItem("currentUser") || "null");
+            if (current && getCustomerId(current) === id)
+                localStorage.removeItem("currentUser");
+            closeReset();
+            showNotice("customerNotice", `Đã đặt lại mật khẩu cho ${id}.`);
+        } catch (error) {
+            showNotice("resetPasswordNotice", "Không thể lưu mật khẩu.");
+        }
+    });
+
     // ================= SỰ KIỆN THAO TÁC =================
 
     // Nút Xem / Sửa / Khóa trong bảng
@@ -477,13 +533,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (action === "view") {
             openModal(id);
         }
-
-        if (action === "edit") {
-            openModal(id, true);
-        }
-
         if (action === "toggle") {
             toggleStatus(id);
+        }
+        if (action === "reset-password"){
+            openReset(id);
         }
     });
 
@@ -503,6 +557,17 @@ document.addEventListener("DOMContentLoaded", () => {
         "click",
         closeModal
     );
+
+    // Đóng hộp thoại đổi mật khẩu
+    get("closeResetBtn").addEventListener("click", closeReset);
+
+    get("cancelResetBtn").addEventListener("click", closeReset);
+
+    get("resetPasswordModal").addEventListener("click", event => {
+        if (event.target === get("resetPasswordModal")) {
+            closeReset();
+        }
+    });
 
     // Tìm kiếm
     get("customerSearch").addEventListener("input", () => {
@@ -555,6 +620,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("keydown", event => {
         if (event.key === "Escape") {
             closeModal();
+            closeReset();
         }
     });
 

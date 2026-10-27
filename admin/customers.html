@@ -250,7 +250,36 @@
                 </form>
             </div>
         </div>
-
+        <!-- Admin đặt lại mật khẩu khách hàng -->
+        <div class="modal" id="resetPasswordModal" role="dialog" aria-modal="true"
+            aria-labelledby="resetPasswordTitle" aria-hidden="true">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="resetPasswordTitle">Đặt lại mật khẩu</h2>
+                    <button type="button" class="close-btn" id="closeResetBtn"
+                            aria-label="Đóng">&times;</button>
+                </div>
+                <p>Đặt lại mật khẩu cho: <strong id="resetCustomerName"></strong></p>
+                <form id="resetPasswordForm">
+                    <div class="form-group" style="margin-top:16px">
+                        <label for="adminNewPassword">Mật khẩu mới</label>
+                        <input type="password" id="adminNewPassword" minlength="8"
+                            autocomplete="new-password" required>
+                    </div>
+                    <div class="form-group" style="margin-top:16px">
+                        <label for="adminConfirmPassword">Nhập lại mật khẩu mới</label>
+                        <input type="password" id="adminConfirmPassword" minlength="8"
+                            autocomplete="new-password" required>
+                    </div>
+                    <p id="resetPasswordNotice" class="notice" role="status" hidden></p>
+                    <div class="form-actions">
+                        <button type="button" class="btn" id="cancelResetBtn">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Xác nhận đặt lại</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
         <!-- FOOTER -->
         <footer class="site-footer">
             <div class="footer-main">
