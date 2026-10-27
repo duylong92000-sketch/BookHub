@@ -300,11 +300,11 @@ function openAdminOrderDetail(orderId) {
     const modal = document.getElementById("adminOrderModal");
     container.innerHTML = `
         <div class="admin-order-detail-grid">
-            <div><span>Mã đơn hàng</span><strong>${order.orderId}</strong></div>
-            <div><span>Mã khách hàng</span><strong>${order.customerId}</strong></div>
-            <div><span>Ngày đặt</span><strong>${orderFormatDate(order.orderDate)}</strong></div>
-            <div><span>Thanh toán</span><strong>${getPaymentText(order.paymentMethod)}</strong></div>
-            <div><span>Trạng thái</span><strong>${getStatusText(order.orderStatus)}</strong></div>
+            <div><span>Mã đơn hàng: </span><strong>${order.orderId}</strong></div>
+            <div><span>Mã khách hàng: </span><strong>${order.customerId}</strong></div>
+            <div><span>Ngày đặt: </span><strong>${orderFormatDate(order.orderDate)}</strong></div>
+            <div><span>Thanh toán: </span><strong>${getPaymentText(order.paymentMethod)}</strong></div>
+            <div><span>Trạng thái: </span><strong>${getStatusText(order.orderStatus)}</strong></div>
         </div>
         <div class="admin-order-address">
             <h3>Địa chỉ nhận hàng</h3>
