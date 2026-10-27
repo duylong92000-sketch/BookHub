@@ -95,9 +95,9 @@ function logout() {
     const page = window.location.pathname.split("/").pop().toLowerCase();
 
     if (loginRequiredPages.includes(page)) {
-        window.location.href = window.location.pathname.includes("/pages/")
-            ? "../index.html"
-            : "index.html";
+        const inSubFolder = window.location.pathname.includes("/customer/")
+                         || window.location.pathname.includes("/pages/");
+        window.location.href = inSubFolder ? "../index.html" : "index.html";
     } else {
         window.location.reload();
     }
