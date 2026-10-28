@@ -267,8 +267,89 @@
                                         </button>
                                     </div>
                                 </div>
-
                             </form>
+                            <!-- Form 2: Đổi mật khẩu -->
+                            <div class="summary-box" style="margin-top:24px">
+                                <h3 class="section-title">🔒 Đổi mật khẩu</h3>
+                                <p>Nhập đúng mật khẩu hiện tại để đổi sang mật khẩu mới.</p>
+                                <form id="changePasswordForm">
+                                    <div class="adv-group">
+                                        <label for="currentPassword">Mật khẩu hiện tại *</label>
+                                        <div class="search-wrapper">
+                                            <input id="currentPassword" type="password" class="search-input"
+                                                autocomplete="current-password" required>
+                                        </div>
+                                    </div>
+                                    <div class="adv-group">
+                                        <label for="newPassword">Mật khẩu mới *</label>
+                                        <div class="search-wrapper">
+                                            <input id="newPassword" type="password" class="search-input"
+                                                autocomplete="new-password" minlength="8" required>
+                                        </div>
+                                    </div>
+                                    <div class="adv-group">
+                                        <label for="confirmNewPassword">Nhập lại mật khẩu mới *</label>
+                                        <div class="search-wrapper">
+                                            <input id="confirmNewPassword" type="password" class="search-input"
+                                                autocomplete="new-password" minlength="8" required>
+                                        </div>
+                                    </div>
+                                    <p id="passwordMessage" role="status" aria-live="polite" hidden></p>
+                                    <div class="purchase-row">
+                                        <button type="submit" class="action-btn action-btn-primary">
+                                            Cập nhật mật khẩu
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            
+                            <!-- ================= XÓA TÀI KHOẢN ================= -->
+                            <div class="summary-box" style="margin-top: 24px; border: 1px solid #d6a4a4;">
+
+                                <h3 class="section-title" style="color: #b83232;">
+                                    ⚠ Xóa tài khoản
+                                </h3>
+
+                                <p>
+                                    Khi xóa tài khoản, bạn sẽ không thể đăng nhập lại.
+                                    Vui lòng nhập mật khẩu hiện tại để xác nhận.
+                                </p>
+
+                                <form id="deleteAccountForm">
+
+                                    <div class="adv-group">
+                                        <label for="deleteAccountPassword">
+                                            Mật khẩu hiện tại *
+                                        </label>
+
+                                        <div class="search-wrapper">
+                                            <input
+                                                type="password"
+                                                id="deleteAccountPassword"
+                                                class="search-input"
+                                                placeholder="Nhập mật khẩu để xác nhận"
+                                                autocomplete="current-password"
+                                                required>
+                                        </div>
+                                    </div>
+
+                                    <p id="deleteAccountMessage"
+                                    role="status"
+                                    aria-live="polite"
+                                    hidden></p>
+
+                                    <div class="purchase-row">
+                                        <button
+                                            type="submit"
+                                            class="action-btn"
+                                            style="background: #b83232; color: white;">
+                                            Xóa tài khoản
+                                        </button>
+                                    </div>
+
+                                </form>
+                            </div>
 
                             <!-- Bảo mật -->
                             <div class="summary-box">

@@ -39,9 +39,11 @@ const toSiteBook = (p) => {
         author: p.author || '',
         category: category?.categoryName || '',
         categoryKey: category?.key || category?.categoryId || '',
-        image: /^https?:\/\//i.test(imageName) || imageName.startsWith('/')
+        image: /^data:image\//i.test(imageName) ||
+            /^https?:\/\//i.test(imageName) ||
+            imageName.startsWith("/")
             ? imageName
-            : SITE_ROOT + 'images/books/' + imageName,
+            : SITE_ROOT + "images/books/" + imageName,
         price: Number(p.salePrice || 0),
         coverType: p.coverType || 'Bìa mềm',
         publisher: p.publisher || '',
@@ -65,20 +67,76 @@ window.addEventListener('storage', (event) => {
 
 // ----- Giỏ hàng dùng chung: nút "Chọn mua" (thẻ sách) và nút "Thêm vào giỏ hàng" (trang chi tiết) -----
 // Lưu trong localStorage (khóa "cart") dạng { "MS001": 2, "MS005": 1 }: mã sách -> số lượng
-function getCart() {
-    try { return JSON.parse(localStorage.getItem('cart')) || {}; } catch (e) { return {}; }
+function getCurrentCartUser() {
+    try {
+        const user = JSON.parse(localStorage.getItem("currentUser") || "null");
+        return user && user.customerId ? user : null;
+    } catch (error) {
+        return null;
+    }
 }
 
-// Thêm sách vào giỏ, không vượt quá số cuốn trong kho.
-// Trả về số lượng thực sự đã thêm (0 nếu hết hàng hoặc giỏ đã đạt mức tối đa).
+// Tạo khóa giỏ hàng riêng theo mã khách hàng
+function getCartKey() {
+    const user = getCurrentCartUser();
+    return user ? "cart_" + user.customerId : null;
+}
+
+// Lấy giỏ hàng của tài khoản đang đăng nhập
+function getCart() {
+    const key = getCartKey();
+    if (!key) return {};
+
+    try {
+        const cart = JSON.parse(localStorage.getItem(key) || "{}");
+        if (!cart || typeof cart !== "object") return {};
+
+        if (Array.isArray(cart)) {
+            return Object.fromEntries(
+                cart.filter(item => item && item.productId)
+                    .map(item => [item.productId, Number(item.quantity)])
+            );
+        }
+
+        return cart;
+    } catch (error) {
+        return {};
+    }
+}
+
+// Thêm sách vào giỏ hàng
 function addToCart(sku, qty = 1) {
-    const book = BOOKS.find((b) => b.sku === sku);
-    if (!book || book.stock <= 0) return 0;
+    const user = getCurrentCartUser();
+
+    // Chưa đăng nhập không được thêm sách
+    if (!user) {
+        alert("Vui lòng đăng nhập trước khi thêm sách vào giỏ hàng.");
+        window.location.href = SITE_ROOT + "customer/login.html";
+        return -1;
+    }
+
+    const quantity = Number(qty);
+    if (!Number.isSafeInteger(quantity) || quantity <= 0) return 0;
+
+    // Lấy thông tin tồn kho mới nhất
+    const products = getData("products");
+    const product = products.find(p => p.productId === sku);
+    if (!product || product.status === "inactive") return 0;
+
+    const stock = Number(product.stockQuantity || 0);
+    if (!Number.isSafeInteger(stock) || stock <= 0) return 0;
+
     const cart = getCart();
-    const before = cart[sku] || 0;
-    cart[sku] = Math.min(before + qty, book.stock);
-    localStorage.setItem('cart', JSON.stringify(cart));
-    return cart[sku] - before;
+    const before = Number(cart[sku] || 0);
+    const added = Math.max(0, Math.min(quantity, stock - before));
+
+    if (added <= 0) return 0;
+
+    cart[sku] = before + added;
+
+    // Lưu giỏ hàng riêng của khách hàng
+    localStorage.setItem(getCartKey(), JSON.stringify(cart));
+    return added;
 }
 
 function createCardHTML(book) {
@@ -110,16 +168,25 @@ function createCardHTML(book) {
 }
 
 // Nút "Chọn mua" trên thẻ sách: thêm 1 cuốn vào giỏ và báo kết quả trên chính nút đó
+
 function initBuyButtons() {
-    document.addEventListener('click', (e) => {
-        const btn = e.target.closest('.btn-buy');
+    document.addEventListener("click", function (e) {
+        const btn = e.target.closest(".btn-buy");
         if (!btn || btn.disabled || btn.dataset.busy) return;
 
         const added = addToCart(btn.dataset.sku, 1);
+
+        // Chưa đăng nhập thì không hiện "Đã thêm"
+        if (added === -1) return;
+
         const oldHTML = btn.innerHTML;
-        btn.dataset.busy = '1';                        // tránh bấm dồn trong lúc đang hiện thông báo
-        btn.textContent = added ? 'Đã thêm ✓' : 'Đã đủ số lượng';
-        setTimeout(() => { btn.innerHTML = oldHTML; delete btn.dataset.busy; }, 1200);
+        btn.dataset.busy = "1";
+        btn.textContent = added > 0 ? "Đã thêm ✓" : "Hết hàng hoặc đã đủ số lượng";
+
+        setTimeout(function () {
+            btn.innerHTML = oldHTML;
+            delete btn.dataset.busy;
+        }, 1200);
     });
 }
 
@@ -499,10 +566,19 @@ function initDetail() {
         btnPlus.addEventListener('click',  () => { qty++; updateQty(); });
         updateQty();
 
-        btnAdd.addEventListener('click', () => {
-            addToCart(book.sku, qty);
-            btnAdd.textContent = 'Đã thêm vào giỏ hàng ✓';
-            setTimeout(() => { btnAdd.textContent = 'Thêm vào giỏ hàng'; }, 1500);
+        btnAdd.addEventListener("click", function () {
+            const added = addToCart(book.sku, qty);
+            if (added === -1) return;
+
+            if (added === 0) {
+                alert("Sách hết hàng hoặc giỏ đã đủ số lượng.");
+                return;
+            }
+
+            btnAdd.textContent = "Đã thêm vào giỏ hàng ✓";
+            setTimeout(function () {
+                btnAdd.textContent = "Thêm vào giỏ hàng";
+            }, 1500);
         });
     }
 

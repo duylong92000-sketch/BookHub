@@ -1069,3 +1069,173 @@ a.logo-section { text-decoration: none; }
     .cm-form-grid { grid-template-columns: 1fr; padding: 18px; }
     .cm-field-full { grid-column: auto; }
 }
+
+
+/* MODAL CHI TIET DON HANG ADMIN */
+
+#adminOrderModal {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.55);
+}
+
+#adminOrderModal.show {
+    display: flex;
+}
+
+#adminOrderModal .admin-order-modal {
+    width: min(900px, 100%);
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 28px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.2);
+}
+
+/* Tieu de */
+#adminOrderModal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #ddd8cc;
+}
+
+#adminOrderModal .modal-header h2 {
+    margin: 0;
+    font-size: 24px;
+    color: #3f6248;
+}
+
+#adminOrderModal .close-btn {
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: #666;
+    font-size: 30px;
+}
+
+/* Thong tin don hang */
+#adminOrderModal .admin-order-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    padding: 20px;
+    margin-bottom: 22px;
+    background: #f5f1e8;
+    border-radius: 10px;
+}
+
+#adminOrderModal .admin-order-detail-grid > div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+#adminOrderModal .admin-order-detail-grid span {
+    color: #777;
+    font-size: 14px;
+}
+
+#adminOrderModal .admin-order-detail-grid strong {
+    color: #39443d;
+    font-size: 16px;
+    overflow-wrap: anywhere;
+}
+
+/* Dia chi */
+#adminOrderModal .admin-order-address {
+    margin-bottom: 24px;
+}
+
+#adminOrderModal h3 {
+    margin: 0 0 12px;
+    font-size: 19px;
+    color: #3f6248;
+}
+
+#adminOrderModal .admin-order-address p {
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* Bang san pham */
+#adminOrderModal .table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+#adminOrderModal .data-table {
+    width: 100%;
+    min-width: 0;
+    border-collapse: collapse;
+}
+
+#adminOrderModal .data-table th,
+#adminOrderModal .data-table td {
+    padding: 13px 10px;
+    text-align: left;
+    border-bottom: 1px solid #e9e5dc;
+}
+
+#adminOrderModal .data-table th {
+    background: #eee7d7;
+    color: #3f6248;
+    white-space: nowrap;
+}
+
+#adminOrderModal .data-table td {
+    overflow-wrap: anywhere;
+}
+
+/* Tong tien */
+#adminOrderModal .admin-order-total {
+    margin-top: 20px;
+    padding: 16px;
+    background: #e7efe8;
+    border-radius: 8px;
+    color: #2e4d36;
+    font-weight: bold;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    #adminOrderModal .admin-order-modal {
+        padding: 18px;
+    }
+
+    #adminOrderModal .admin-order-detail-grid {
+        grid-template-columns: 1fr;
+        padding: 15px;
+    }
+
+    #adminOrderModal .data-table {
+        min-width: 600px;
+    }
+}
+
+#adminOrderModal .admin-order-detail-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+    padding: 18px;
+    border-radius: 8px;
+    background: #e7efe8;
+    color: #2e4d36;
+    font-size: 17px;
+}
+
+#adminOrderModal .admin-order-detail-total strong {
+    font-size: 21px;
+    white-space: nowrap;
+}

@@ -236,6 +236,112 @@ document.addEventListener("DOMContentLoaded", function () {
             showMessage("Không thể lưu thông tin.", true);
         }
     });
+    
+// ================= XÓA TÀI KHOẢN =================
+
+    get("deleteAccountForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const password = get("deleteAccountPassword").value;
+        const message = get("deleteAccountMessage");
+
+        function showDeleteMessage(text) {
+            message.textContent = text;
+            message.hidden = false;
+            message.className = "out-stock";
+        }
+
+        // Kiểm tra tài khoản đang đăng nhập
+        if (!customer) {
+            showDeleteMessage("Vui lòng đăng nhập để xóa tài khoản.");
+            return;
+        }
+
+        const currentSession = JSON.parse(
+            localStorage.getItem(currentUserKey) || "null"
+        );
+
+        if (!currentSession ||
+            currentSession.customerId !== customer.customerId) {
+            showDeleteMessage("Phiên đăng nhập không hợp lệ.");
+            return;
+        }
+
+        // Lấy dữ liệu tài khoản mới nhất
+        const customers = getCustomers();
+
+        const index = customers.findIndex(
+            c => c.customerId === customer.customerId
+        );
+
+        if (index === -1 || customers[index].status === "inactive") {
+            showDeleteMessage("Tài khoản không tồn tại hoặc đã bị khóa.");
+            return;
+        }
+
+        // Bắt buộc nhập đúng mật khẩu hiện tại
+        if (password !== customers[index].password) {
+            showDeleteMessage("Mật khẩu không chính xác!");
+            return;
+        }
+
+        // Xác nhận lần cuối
+        const confirmed = window.confirm(
+            "Bạn có chắc chắn muốn XÓA TÀI KHOẢN?\n" +
+            "Sau khi xóa, bạn sẽ không thể đăng nhập lại."
+        );
+
+        if (!confirmed) return;
+
+        const customerId = customer.customerId;
+
+        try {
+            // Xóa tài khoản khỏi danh sách khách hàng
+            customers.splice(index, 1);
+
+            localStorage.setItem(
+                customersKey,
+                JSON.stringify(customers)
+            );
+
+            // Xóa giỏ hàng đã lưu của khách hàng
+            try {
+                const userCarts = JSON.parse(
+                    localStorage.getItem("userCarts") || "{}"
+                );
+
+                if (userCarts && typeof userCarts === "object") {
+                    delete userCarts[customerId];
+
+                    localStorage.setItem(
+                        "userCarts",
+                        JSON.stringify(userCarts)
+                    );
+                }
+            } catch (error) {
+                console.warn("Không thể dọn giỏ hàng:", error);
+            }
+
+            // Xóa phiên đăng nhập hiện tại
+            localStorage.removeItem(currentUserKey);
+            localStorage.removeItem("cart");
+
+            // Xóa trang quay lại đã lưu
+            sessionStorage.removeItem("returnUrl");
+
+            alert("Tài khoản đã được xóa thành công!");
+
+            // Chuyển về trang đăng nhập
+            window.location.replace("login.html");
+
+        } catch (error) {
+            console.error("Lỗi xóa tài khoản:", error);
+
+            showDeleteMessage(
+                "Không thể xóa tài khoản. Vui lòng thử lại."
+            );
+        }
+    });
 
     // Khởi tạo trang
     loadProfile();

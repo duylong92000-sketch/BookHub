@@ -156,9 +156,27 @@
                         </div>
 
                         <div class="form-group full">
+                                <div class="form-group full">
+                                    <label for="productImage">Ảnh sản phẩm</label>
+                                    <input
+                                        type="file"
+                                        id="productImage"
+                                        accept="image/*">
+                                    <img
+                                        id="productImagePreview"
+                                        alt="Xem trước ảnh sản phẩm"
+                                        style="display:none; width:150px; max-height:200px; object-fit:contain; margin-top:10px;">
+                                </div>
+                            <img
+                                id="productImagePreview"
+                                src=""
+                                alt="Xem trước ảnh sản phẩm"
+                                style="display:none; max-width:150px; max-height:200px; margin-top:10px; object-fit:contain;">
+                        </div>
+
+                        <div class="form-group full">
                             <label>Mô tả</label>
-                            <textarea
-                                id="productDescription"></textarea>
+                            <textarea id="productDescription"></textarea>
                         </div>
                     </div>
 

@@ -62,6 +62,10 @@ form.addEventListener("submit", function(e){
         emailError.style.display = "block";
         emailError.innerHTML = "Email không được để trống"
     }
+    else if (!/^[^\s@]+@[^\s@]+\.com$/i.test(email.value.trim())) {
+        emailError.style.display = "block";
+        emailError.innerHTML = "Email không đúng định dạng"
+    }
     else{
         emailError.style.display = "none"
     }
@@ -80,6 +84,10 @@ form.addEventListener("submit", function(e){
         passwordError.style.display = "block";
         passwordError.innerHTML = "Mật khẩu không được để trống"
     }
+    else if (password.value.length < 8){
+        passwordError.style.display = "block";
+        passwordError.innerHTML = "Mật khẩu phải có ít nhất 8 ký tự"
+    }
     else{
         passwordError.style.display = "none"
     }
@@ -87,7 +95,11 @@ form.addEventListener("submit", function(e){
 
     if (!repassword.value.trim()){
         repasswordError.style.display = "block";
-        repasswordError.innerHTML = "Mật khẩu không khớp"
+        repasswordError.innerHTML = "Vui lòng nhập mật khẩu"
+    }
+    else if (password.value !== repassword.value){
+        repasswordError.style.display = "block"
+        repasswordError.textContent = "Mật khẩu không khớp";
     }
     else{
         repasswordError.style.display = "none"
@@ -180,7 +192,7 @@ email.addEventListener("input", function () {
     if (email.value.trim() === "") {
         emailError.textContent = "Vui lòng nhập email";
     } 
-    else if (email.validity.typeMismatch) {
+    else if (!/^[^\s@]+@[^\s@]+\.com$/i.test(email.value.trim())) {
         emailError.textContent = "Email không đúng định dạng";
     } 
     else {
@@ -202,7 +214,7 @@ password.addEventListener("input", function () {
     if(password.value.trim() === "") {
         passwordError.textContent = "Vui lòng nhập password";
     }
-    else if (password.validity.tooShort) {
+    else if (password.value.length < 8){
         passwordError.textContent = "Mật khẩu phải có ít nhất 8 ký tự";
     } 
     else {
