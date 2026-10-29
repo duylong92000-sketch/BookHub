@@ -587,7 +587,7 @@ function initDetail() {
         const related = BOOKS.filter((b) => b.category === book.category && b.sku !== book.sku).slice(0, 4);
         if (related.length === 0) return;
 
-        relatedNote.textContent = 'Cùng chuyên mục ' + book.category;
+        relatedNote.textContent = 'Cùng danh mục ' + book.category;
         relatedList.innerHTML = related.map((b) => `
             <a class="related-card" href="${PAGE_DETAIL}?sku=${encodeURIComponent(b.sku)}">
                 <img src="${escapeHtml(b.image)}" alt="${escapeHtml(b.title)}" loading="lazy">

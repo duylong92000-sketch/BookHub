@@ -1088,6 +1088,7 @@ a.logo-section { text-decoration: none; }
     cursor: pointer;
     font-size: 13px;
     font-weight: bold;
+    text-decoration: none;
 }
 
 .btn-detail {
