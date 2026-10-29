@@ -319,9 +319,8 @@ a.logo-section { text-decoration: none; }
 
 /* Khu vực tài khoản */
 .user-view {
-    position: relative;
+    position:relative;
     display: none;
-    font-family: "Be Vietnam Pro", sans-serif;
 }
 
 /* Nút tên tài khoản */
@@ -362,7 +361,7 @@ a.logo-section { text-decoration: none; }
 }
 
 /* Các mục trong menu */
-.user-dropdown a,
+.action-section .user-dropdown a,
 .user-dropdown button {
     display: block;
     width: 100%;
