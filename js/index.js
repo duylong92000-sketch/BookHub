@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     if(currentUser) {
-        userLogin.innerHTML = currentUser.userName;
+        usernameDisplay.textContent = currentUser.userName;
         userView.style.display = "block";
 
         loginLink.style.display = "none";
