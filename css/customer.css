@@ -403,7 +403,6 @@ a.logo-section { text-decoration: none; }
     overflow: hidden;
 }
 
-
 .hero-container {
     max-width: 1300px;
     margin: 0 auto;
@@ -462,7 +461,6 @@ a.logo-section { text-decoration: none; }
     box-shadow: 0 6px 20px rgba(198, 81, 2, 0.5);
 }
 
-
 .hero-stats {
     display: flex;
     gap: 32px;
@@ -483,8 +481,13 @@ a.logo-section { text-decoration: none; }
     color: rgba(250, 246, 240, 0.7);
 }
 
-/* ===== BANNER TRƯỢT: bắt đầu ===== */
-.hero-slider { width: 100%; max-width: 480px; margin: 0 auto; }
+/* BANNER TRƯỢT */
+.hero-slider {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
 .hero-slides {
     position: relative;
     height: 320px;
@@ -494,6 +497,7 @@ a.logo-section { text-decoration: none; }
     border: 1px solid rgba(255, 255, 255, 0.15);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
 }
+
 .hero-slide {
     position: absolute;
     inset: 0;
@@ -502,16 +506,18 @@ a.logo-section { text-decoration: none; }
     gap: 22px;
     padding: 20px 24px;
     opacity: 0;
-    visibility: hidden;                 /* slide đang ẩn không nhận tab/bấm chuột */
+    visibility: hidden;
     transform: translateX(16px);
     transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s linear 0.5s;
 }
+
 .hero-slide.active {
     opacity: 1;
     visibility: visible;
     transform: none;
     transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s;
 }
+
 .hero-slide-cover {
     flex: 0 0 auto;
     height: 100%;
@@ -520,8 +526,21 @@ a.logo-section { text-decoration: none; }
     border-radius: 8px;
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
 }
-.hero-slide-info { flex: 1; min-width: 0; }
-.hero-slide-cat { display: block; margin-bottom: 8px; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: #F8E7B0; }
+
+.hero-slide-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.hero-slide-cat {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #F8E7B0;
+}
+
 .hero-slide-title {
     font-family: var(--font-heading);
     font-size: 1.35rem;
@@ -532,99 +551,20 @@ a.logo-section { text-decoration: none; }
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
-.hero-slide-author { margin-top: 6px; font-size: 14px; color: rgba(250, 246, 240, 0.75); }
-.hero-slide-price { margin: 12px 0 16px; font-size: 1.25rem; font-weight: bold; color: #F8E7B0; }
-.hero-slide-link {
-    display: inline-block;
-    padding: 9px 20px;
-    border-radius: 8px;
-    background-color: var(--accent);
-    color: #fff;
+
+.hero-slide-author {
+    margin-top: 6px;
     font-size: 14px;
+    color: rgba(250, 246, 240, 0.75);
+}
+
+.hero-slide-price {
+    margin: 12px 0 16px;
+    font-size: 1.25rem;
     font-weight: bold;
-    text-decoration: none;
-    box-shadow: 0 4px 14px rgba(198, 81, 2, 0.4);
-    transition: all 0.2s ease;
-}
-
-.hero-btn:hover {
-    background-color: var(--accent-dark);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(198, 81, 2, 0.5);
-}
-
-
-.hero-stats {
-    display: flex;
-    gap: 32px;
-    margin-top: 36px;
-    padding-top: 24px;
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-.stat-item strong {
-    display: block;
-    font-size: 1.4rem;
     color: #F8E7B0;
-    font-family: var(--font-heading);
 }
 
-.stat-item span {
-    font-size: 13px;
-    color: rgba(250, 246, 240, 0.7);
-}
-
-
-.hero-slider { width: 100%; max-width: 480px; margin: 0 auto; }
-.hero-slides {
-    position: relative;
-    height: 320px;
-    overflow: hidden;
-    border-radius: 16px;
-    background-color: rgba(255, 255, 255, 0.07);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
-}
-.hero-slide {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    gap: 22px;
-    padding: 20px 24px;
-    opacity: 0;
-    visibility: hidden;                 /* slide đang ẩn không nhận tab/bấm chuột */
-    transform: translateX(16px);
-    transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s linear 0.5s;
-}
-.hero-slide.active {
-    opacity: 1;
-    visibility: visible;
-    transform: none;
-    transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s;
-}
-.hero-slide-cover {
-    flex: 0 0 auto;
-    height: 100%;
-    aspect-ratio: 3 / 4;
-    object-fit: cover;
-    border-radius: 8px;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
-}
-.hero-slide-info { flex: 1; min-width: 0; }
-.hero-slide-cat { display: block; margin-bottom: 8px; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: #F8E7B0; }
-.hero-slide-title {
-    font-family: var(--font-heading);
-    font-size: 1.35rem;
-    line-height: 1.3;
-    color: #fff;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-.hero-slide-author { margin-top: 6px; font-size: 14px; color: rgba(250, 246, 240, 0.75); }
-.hero-slide-price { margin: 12px 0 16px; font-size: 1.25rem; font-weight: bold; color: #F8E7B0; }
 .hero-slide-link {
     display: inline-block;
     padding: 9px 20px;
@@ -636,10 +576,20 @@ a.logo-section { text-decoration: none; }
     text-decoration: none;
     transition: background-color 0.2s;
 }
-.hero-slide-link:hover { background-color: var(--accent-dark); }
 
+.hero-slide-link:hover {
+    background-color: var(--accent-dark);
+}
 
-.hero-controls { display: flex; justify-content: center; align-items: center; gap: 14px; margin-top: 14px; }
+/* ĐIỀU KHIỂN BANNER */
+.hero-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    margin-top: 14px;
+}
+
 .hero-nav {
     width: 34px;
     height: 34px;
@@ -652,8 +602,16 @@ a.logo-section { text-decoration: none; }
     cursor: pointer;
     transition: background-color 0.2s;
 }
-.hero-nav:hover { background-color: rgba(255, 255, 255, 0.15); }
-.hero-dots { display: flex; gap: 8px; }
+
+.hero-nav:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.hero-dots {
+    display: flex;
+    gap: 8px;
+}
+
 .hero-dot {
     width: 9px;
     height: 9px;
@@ -664,10 +622,18 @@ a.logo-section { text-decoration: none; }
     cursor: pointer;
     transition: width 0.3s ease, background-color 0.3s ease;
 }
-.hero-dot.active { width: 26px; background-color: #F8E7B0; }
+
+.hero-dot.active {
+    width: 26px;
+    background-color: #F8E7B0;
+}
 
 @media (prefers-reduced-motion: reduce) {
-    .hero-slide, .hero-slide.active, .hero-dot { transition: none; }
+    .hero-slide,
+    .hero-slide.active,
+    .hero-dot {
+        transition: none;
+    }
 }
 /* ===== BANNER TRƯỢT: kết thúc ===== */
 
