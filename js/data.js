@@ -160,3 +160,4 @@ function seedData() {
         if (localStorage.getItem(key) === null) setData(key, []);
     });
 }
+seedData();
