@@ -1,16 +1,15 @@
 /* ==========================================================
-   BOOKHUB - products.js (một file JS duy nhất cho cả website)
-
-   Mục lục:
-     A. Dữ liệu & hàm dùng chung
-     B. Trang chủ         -> initHome()
-     C. Trang danh sách   -> initProducts()
-     D. Trang chi tiết    -> initDetail()
-     E. Khởi chạy theo thuộc tính <body data-page="...">
+    BOOKHUB - products.js
+    Mục lục:
+    A. Dữ liệu & hàm dùng chung
+    B. Trang chủ         -> initHome()
+    C. Trang danh sách   -> initProducts()
+    D. Trang chi tiết    -> initDetail()
+    E. Khởi chạy theo thuộc tính <body data-page="...">
    ========================================================== */
 
 /* ==========================================================
-   A. DỮ LIỆU & HÀM DÙNG CHUNG
+    A. DỮ LIỆU & HÀM DÙNG CHUNG
    ========================================================== */
 
 
@@ -110,7 +109,7 @@ function addToCart(sku, qty = 1) {
 
     // Chưa đăng nhập không được thêm sách
     if (!user) {
-        alert("Vui lòng đăng nhập trước khi thêm sách vào giỏ hàng.");
+        alert("Vui lòng đăng nhập trước khi thêm sách vào giỏ hàng!");
         window.location.href = SITE_ROOT + "customer/login.html";
         return -1;
     }
@@ -167,8 +166,7 @@ function createCardHTML(book) {
         </div>`;
 }
 
-// Nút "Chọn mua" trên thẻ sách: thêm 1 cuốn vào giỏ và báo kết quả trên chính nút đó
-
+// Nút "Chọn mua" trên thẻ sách
 function initBuyButtons() {
     document.addEventListener("click", function (e) {
         const btn = e.target.closest(".btn-buy");
@@ -181,7 +179,16 @@ function initBuyButtons() {
 
         const oldHTML = btn.innerHTML;
         btn.dataset.busy = "1";
-        btn.textContent = added > 0 ? "Đã thêm ✓" : "Hết hàng hoặc đã đủ số lượng";
+        
+        if (added > 0) {
+            btn.textContent = "Đã thêm ✓";
+            if (typeof updateCartBadge === 'function') updateCartBadge();
+            
+            // Hiển thị trên hộp thoại của trình duyệt
+            alert("Đã thêm vào giỏ hàng thành công"); 
+        } else {
+            btn.textContent = "Hết hàng hoặc đã đủ số lượng";
+        }
 
         setTimeout(function () {
             btn.innerHTML = oldHTML;
@@ -576,6 +583,11 @@ function initDetail() {
             }
 
             btnAdd.textContent = "Đã thêm vào giỏ hàng ✓";
+            if (typeof updateCartBadge === 'function') updateCartBadge(); // Cập nhật số giỏ hàng
+            
+            // Hiển thị trên hộp thoại của trình duyệt
+            alert("Đã thêm vào giỏ hàng thành công");
+            
             setTimeout(function () {
                 btnAdd.textContent = "Thêm vào giỏ hàng";
             }, 1500);
@@ -587,7 +599,7 @@ function initDetail() {
         const related = BOOKS.filter((b) => b.category === book.category && b.sku !== book.sku).slice(0, 4);
         if (related.length === 0) return;
 
-        relatedNote.textContent = 'Cùng chuyên mục ' + book.category;
+        relatedNote.textContent = 'Cùng danh mục ' + book.category;
         relatedList.innerHTML = related.map((b) => `
             <a class="related-card" href="${PAGE_DETAIL}?sku=${encodeURIComponent(b.sku)}">
                 <img src="${escapeHtml(b.image)}" alt="${escapeHtml(b.title)}" loading="lazy">
