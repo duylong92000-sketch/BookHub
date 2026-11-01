@@ -569,13 +569,21 @@ function renderOrders() {
 function viewOrder(id) {
   const o = getData("orders").find(x => x.orderId === id); if (!o) return;
   const c = getData("customers").find(x => x.customerId === o.customerId) || {}, products = getData("products");
+  // Chịu được nhiều kiểu tên trường; thiếu đơn giá thì lấy giá bán hiện tại của sản phẩm
+  const lines = (o.items || []).map(i => {
+    const pr = products.find(p => String(p.productId) === String(i.productId ?? i.id ?? i.sku));
+    const qty = Number(i.quantity ?? i.qty ?? i.soLuong ?? 0);
+    const price = Number(i.price ?? i.unitPrice ?? i.salePrice ?? i.productPrice ?? pr?.salePrice ?? 0);
+    return {name: i.productName || i.name || pr?.productName || i.productId, qty, price, sub: Number(i.subtotal ?? i.total ?? qty * price)};
+  });
+  const total = Number(o.totalAmount ?? o.total) || lines.reduce((t, l) => t + l.sub, 0);
   openModal(`<div class="admin-order-modal">${mh('Chi tiết đơn hàng')}<div id="adminOrderDetail">
     <p><strong>Mã đơn:</strong> ${esc(o.orderId)} &nbsp; <strong>Ngày đặt:</strong> ${esc(o.orderDate)} &nbsp; <strong>Thanh toán:</strong> ${esc(o.paymentMethod || o.payment || '—')}</p>
     <p><strong>Khách hàng:</strong> ${esc(c.fullName || o.customerId)} - ${esc(c.phone)} - ${esc(o.address || o.shippingAddress || c.address)}</p>
     <div class="table-wrap"><table class="data-table"><thead><tr><th>Sản phẩm</th><th>SL</th><th>Đơn giá</th><th>Thành tiền</th></tr></thead><tbody>
-    ${(o.items || []).map(i => `<tr><td>${esc(products.find(p => p.productId === i.productId)?.productName || i.productId)}</td><td>${i.quantity}</td><td>${money(i.price)}</td><td>${money(i.quantity * i.price)}</td></tr>`).join('')}
+    ${lines.map(l => `<tr><td>${esc(l.name)}</td><td>${l.qty}</td><td>${money(l.price)}</td><td>${money(l.sub)}</td></tr>`).join('')}
     </tbody></table></div>
-    <p class="total-box">Tổng tiền: <strong>${money(o.totalAmount)}</strong></p>
+    <p class="total-box">Tổng tiền: <strong>${money(total)}</strong></p>
     <div class="form-group"><label>Trạng thái</label><select id="orderStatusSelect">
       ${Object.entries(statusText).map(([k, v]) => `<option value="${k}" ${k === o.orderStatus ? 'selected' : ''}>${v}</option>`).join('')}</select></div>
     <div class="form-actions"><button type="button" class="btn" onclick="closeModal()">Đóng</button>
