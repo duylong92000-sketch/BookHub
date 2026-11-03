@@ -14,8 +14,9 @@
 
 
 const SITE_ROOT = new URL('../', document.currentScript.src).href;   // thư mục cha của js/
-const PAGE_PRODUCTS = SITE_ROOT + 'customer/products.html';
-const PAGE_DETAIL   = SITE_ROOT + 'customer/productdetail.html';
+const PAGE_PRODUCTS = '#products';
+const PAGE_DETAIL   = '#detail';
+const getParams = () => new URLSearchParams(window.location.hash.split('?')[1] || '');
 const escapeHtml = (str) => String(str).replace(/[&<>"']/g, (c) => (
     { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
 ));
@@ -110,7 +111,7 @@ function addToCart(sku, qty = 1) {
     // Chưa đăng nhập không được thêm sách
     if (!user) {
         alert("Vui lòng đăng nhập trước khi thêm sách vào giỏ hàng!");
-        window.location.href = SITE_ROOT + "customer/login.html";
+        window.location.hash = "#login";
         return -1;
     }
 
@@ -199,8 +200,10 @@ function initBuyButtons() {
 
 // Ô tìm kiếm trên header của các trang không có danh sách: chuyển sang products.html?q=...
 function bindHeaderSearch() {
+    if (bindHeaderSearch.done) return;
+    bindHeaderSearch.done = true;
     const input = document.getElementById('searchInput');
-    const go = () => { window.location.href = PAGE_PRODUCTS + '?q=' + encodeURIComponent(input.value.trim()); };
+    const go = () => { if (document.body.dataset.page === 'products') return; window.location.href = PAGE_PRODUCTS + '?q=' + encodeURIComponent(input.value.trim()); };
     input.addEventListener('keydown', (e) => { if (e.key === 'Enter') go(); });
     document.getElementById('btnSearch').addEventListener('click', go);
 }
@@ -211,6 +214,8 @@ function bindHeaderSearch() {
 
 // ----- Banner trượt ở trang chủ: đổi qua lại giữa vài cuốn sách -----
 function initHeroSlider() {
+    if (initHeroSlider.done) return;
+    initHeroSlider.done = true;
     const HERO_SKUS = ['MS004', 'MS008', 'MS009', 'MS012', 'MS002'];   // mã các cuốn hiện trên banner (sửa tại đây)
     const INTERVAL = 5000;                                              // tự chuyển sau 5 giây
 
@@ -307,6 +312,7 @@ function initHome() {
    ========================================================== */
 
 function initProducts() {
+    if (initProducts.reload) { initProducts.reload(); return; }   // đã khởi tạo: chỉ nạp lại
 
     /* ---------- 1. CẤU HÌNH (dữ liệu sách nằm ở phần A) ---------- */
     const ITEMS_PER_PAGE = 12;
@@ -340,7 +346,7 @@ function initProducts() {
         });
     }
 
-    const books = BOOKS;
+    let books = BOOKS;
     let filteredBooks = [...books];   // ban đầu chưa lọc nên chứa toàn bộ sách
     let currentPage = 1;
 
@@ -453,11 +459,19 @@ function initProducts() {
 
 
     /* ---------- 8. KHỞI CHẠY ---------- */
-    // Nhận điều kiện từ các trang khác: products.html?q=...&category=...
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('q')) searchInput.value = params.get('q');
-    if (CATEGORY_MAP[params.get('category')]) categorySelect.value = params.get('category');
-    applyFilters();
+    // Nhận điều kiện từ liên kết: #products?q=...&category=...
+    function loadFromHash() {
+        books = BOOKS;                               // dữ liệu mới nhất
+        const params = getParams();
+        searchInput.value = params.get('q') || '';
+        categorySelect.value = CATEGORY_MAP[params.get('category')] ? params.get('category') : 'all';
+        priceMinInput.value = '';
+        priceMaxInput.value = '';
+        inStockCheckbox.checked = false;
+        applyFilters();
+    }
+    initProducts.reload = loadFromHash; 
+    loadFromHash();
 }
 
 /* ==========================================================
@@ -473,8 +487,9 @@ function initDetail() {
     const relatedSection = document.getElementById('relatedSection');
     const relatedList    = document.getElementById('relatedList');
     const relatedNote    = document.getElementById('relatedNote');
+    relatedSection.hidden = true;   // ẩn trước, có sách gợi ý thì hiện lại
 
-    const sku  = new URLSearchParams(window.location.search).get('sku');
+    const sku  = getParams().get('sku');
     const book = BOOKS.find((b) => b.sku === sku);
 
     bindHeaderSearch();   // ô tìm kiếm trên header -> products.html?q=...

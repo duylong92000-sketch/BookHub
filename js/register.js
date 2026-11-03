@@ -1,10 +1,10 @@
 // Lấy ra elements 
 const form = document.getElementById("formRegister")
 const fullName = document.getElementById("fullName")
-const userName = document.getElementById("userName")
+const userName = document.getElementById("regUserName")
 const email= document.getElementById("email")
 const phone = document.getElementById("phone")
-const password = document.getElementById("password")
+const password = document.getElementById("regPassword")
 const repassword = document.getElementById("repassword")
 const address = document.getElementById("address")
 
@@ -13,7 +13,7 @@ const nameError = document.getElementById("nameError")
 const usernameError = document.getElementById("usernameError")
 const emailError = document.getElementById("emailError")
 const phoneError = document.getElementById("phoneError")
-const passwordError = document.getElementById("passwordError")
+const passwordError = document.getElementById("regPasswordError")
 const repasswordError = document.getElementById("repasswordError")
 const addressError = document.getElementById("addressError")
 
@@ -150,7 +150,7 @@ form.addEventListener("submit", function(e){
         
         //chuyển hướng về trang đăng nhập
         setTimeout(function(){
-        window.location.href = "login.html"
+        window.location.hash = "#login"
         }, 500);
     }
     

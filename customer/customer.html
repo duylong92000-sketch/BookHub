@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>BookHub - Hồ sơ cá nhân</title>
+        <link rel="stylesheet" href="../css/customer.css">
+    </head>
+
+    <body>
+        <header class="top">
+            <!-- Logo + Danh mục sách -->
+            <div class="left-section">
+                <a class="logo-section" href="../index.html#home" title="Về trang chủ">
+                    <img src="../images/logoweb.png" alt="Logo" width="50" height="50">
+                    <div>
+                        <h1>BOOKHUB</h1>
+                        <p>Chắp cánh tri thức</p>
+                    </div>
+                </a>
+
+                <!-- Danh mục thể loại-->
+                <div class="category-wrapper">
+                    <button class="category-btn" type="button">
+                        <img src="../images/category.png" alt="Danh mục" width="20" height="20">
+                        <span>Danh mục</span>
+                    </button>
+
+                    <!-- Bảng danh mục-->
+                    <ul class="category-dropdown">
+                        <li><a href="../index.html#products">Tất cả sách</a></li>
+                        <li><a href="../index.html#products?category=vanhoc">Văn học &amp; Tiểu thuyết</a></li>
+                        <li><a href="../index.html#products?category=kinhte">Kinh tế &amp; Quản trị</a></li>
+                        <li><a href="../index.html#products?category=cntt">Công nghệ thông tin</a></li>
+                        <li><a href="../index.html#products?category=thieunhi">Sách thiếu nhi</a></li>
+                    </ul>
+                    <button type="button" class="category-back" id="categoryBack">← Quay lại</button>
+                </div>
+
+                <!-- Thanh tìm kiếm -->
+                <div class="search-wrapper">
+                    <input type="text" id="searchInput" placeholder="Nhập tên sách hoặc tác giả" class="search-input" aria-label="Tìm kiếm sách">
+
+                    <button type="button" id="btnSearch" class="search-btn" aria-label="Tìm kiếm">
+                        <img src="../images/icon-search.png" alt="Tìm kiếm" width="20" height="20">
+                    </button>
+                </div>
+            </div>
+
+            <!-- Cụm phải: Chức năng -->
+            <div class="action-section">
+                <a href="#cart" target="_self" title="Xem giỏ hàng">
+                    <img src="../images/cart.png" alt="Giỏ hàng" width="20" height="20">
+                    Giỏ hàng
+                </a>
+
+                <a href="../index.html#login" target="_self" title="Đăng nhập">
+                    <img src="../images/login.png" alt="Đăng nhập" width="20" height="20">
+                    Đăng nhập
+                </a>
+
+                <a href="../index.html#register" target="_self" title="Đăng ký tài khoản">
+                    <img src="../images/signup.png" alt="Đăng ký tài khoản" width="20" height="20">
+                    Đăng ký
+                </a>
+            
+                <div class="user-view">
+                    <button type="button" id="user" class="user-btn">
+                        <span id="usernameDisplay">Tên tài khoản</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="#profile">
+                            Hồ sơ cá nhân
+                        </a>
+                    
+                        <a href="#orders">
+                            Đơn hàng của tôi
+                        </a>
+
+                        <button type="button" id="logoutBtn">
+                            Đăng xuất
+                        </button>
+                    </div>
+                </div>
+        
+                <a href="../admin/admin.html" target="_self" title="Đi đến khu vực admin">
+                    <img src="../images/admin.png" alt="Admin" width="20" height="20">
+                    Admin
+                </a>
+            </div>
+        </header>
+
+        <!-- ===== CÁC VIEW (chuyển bằng #hash, mặc định là #profile) ===== -->
+
+        <!-- #profile: Hồ sơ cá nhân (trang mặc định) -->
+        <div id="view-profile" data-view hidden>
+            <main class="customer-main">
+                <div class="main-content">
+
+                    <section class="page-heading-customer">
+                        <h1>Hồ sơ cá nhân</h1>
+                        <p>Quản lý và cập nhật thông tin tài khoản BookHub</p>
+                    </section>
+
+                    <!-- Bố cục hai cột -->
+                    <div class="detail-card">
+
+                        <!-- CỘT TRÁI -->
+                        <aside class="cart-card">
+                            <div class="cart-card-heading">
+                                <h2>Tài khoản</h2>
+                            </div>
+
+                            <div class="cart-bottom-actions">
+                                <div class="cart-product">
+                                    <strong class="price-main"
+                                            id="profileAvatar">BH</strong>
+
+                                    <div>
+                                        <h3 class="related-title"
+                                            id="sidebarFullName">
+                                            Đang tải...
+                                        </h3>
+
+                                        <p class="related-author"
+                                        id="sidebarUsername"></p>
+                                    </div>
+                                </div>
+
+                                <div class="price-box">
+                                    <p class="detail-category">
+                                        ★ Thành viên BookHub
+                                    </p>
+                                </div>
+
+                                <nav class="customer-nav">
+                                    <a href="#profile" class="active">
+                                        Hồ sơ cá nhân
+                                    </a>
+
+                                    <a href="#orders">
+                                        Đơn hàng của tôi
+                                    </a>
+
+                                    <a href="../index.html">
+                                        Về trang chủ
+                                    </a>
+                                </nav>
+                            </div>
+                        </aside>
+
+                        <!-- CỘT PHẢI -->
+                        <section class="cart-card">
+
+                            <div class="cart-card-heading">
+                                <div>
+                                    <h2>Thông tin cá nhân</h2>
+                                    <p class="related-author">
+                                        Xem và chỉnh sửa thông tin tài khoản
+                                    </p>
+                                </div>
+
+                                <span id="editWrapper" hidden>
+                                    <button type="button"
+                                            id="editProfileBtn"
+                                            class="action-btn action-btn-primary">
+                                        ✎ Chỉnh sửa
+                                    </button>
+                                </span>
+                            </div>
+
+                            <div class="cart-bottom-actions">
+                                <form id="profileForm">
+
+                                    <!-- Mã khách hàng -->
+                                    <div class="adv-group">
+                                        <label for="customerId">Mã khách hàng</label>
+                                        <div class="search-wrapper">
+                                            <input type="text"
+                                                id="customerId"
+                                                class="search-input"
+                                                readonly>
+                                        </div>
+                                        <small class="related-author">
+                                            Mã định danh của tài khoản
+                                        </small>
+                                    </div>
+
+                                    <div class="adv-group">
+                                        <label for="username">Tên đăng nhập</label>
+                                        <div class="search-wrapper">
+                                            <input type="text"
+                                                id="username"
+                                                class="search-input"
+                                                readonly>
+                                        </div>
+                                        <small class="related-author">
+                                            Tên đăng nhập không thể chỉnh sửa
+                                        </small>
+                                    </div>
+
+                                    <div class="adv-group">
+                                        <label for="fullName">Họ và tên *</label>
+                                        <div class="search-wrapper">
+                                            <input type="text"
+                                                id="fullName"
+                                                class="search-input"
+                                                minlength="2"
+                                                maxlength="80"
+                                                required
+                                                readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="adv-group">
+                                        <label for="email">Email *</label>
+                                        <div class="search-wrapper">
+                                            <input type="email"
+                                                id="email"
+                                                class="search-input"
+                                                required
+                                                readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="adv-group">
+                                        <label for="phone">Số điện thoại *</label>
+                                        <div class="search-wrapper">
+                                            <input type="tel"
+                                                id="phone"
+                                                class="search-input"
+                                                maxlength="11"
+                                                required
+                                                readonly>
+                                        </div>
+                                    </div>
+                            
+                                    <div class="adv-group">
+                                        <label for="address">Địa chỉ</label>
+                                        <div class="search-wrapper">
+                                            <input type="text"
+                                                id="address"
+                                                class="search-input"
+                                                maxlength="200"
+                                                placeholder="Chưa cập nhật địa chỉ"
+                                                readonly>
+                                        </div>
+                                    </div>
+
+                                    <!-- Thông báo -->
+                                    <p id="profileMessage"
+                                    role="status"
+                                    aria-live="polite"
+                                    hidden></p>
+
+                                    <!-- Lưu / Hủy -->
+                                    <div id="profileActions" hidden>
+                                        <div class="purchase-row">
+                                            <button type="button"
+                                                    id="cancelProfileBtn"
+                                                    class="action-btn action-btn-secondary">
+                                                Hủy
+                                            </button>
+
+                                            <button type="submit"
+                                                    class="action-btn action-btn-primary">
+                                                Lưu thay đổi
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                                <!-- Form 2: Đổi mật khẩu -->
+                                <div class="summary-box" style="margin-top:24px">
+                                    <h3 class="section-title">🔒 Đổi mật khẩu</h3>
+                                    <p>Nhập đúng mật khẩu hiện tại để đổi sang mật khẩu mới.</p>
+                                    <form id="changePasswordForm">
+                                        <div class="adv-group">
+                                            <label for="currentPassword">Mật khẩu hiện tại *</label>
+                                            <div class="search-wrapper">
+                                                <input id="currentPassword" type="password" class="search-input"
+                                                    autocomplete="current-password" required>
+                                            </div>
+                                        </div>
+                                        <div class="adv-group">
+                                            <label for="newPassword">Mật khẩu mới *</label>
+                                            <div class="search-wrapper">
+                                                <input id="newPassword" type="password" class="search-input"
+                                                    autocomplete="new-password" minlength="8" required>
+                                            </div>
+                                        </div>
+                                        <div class="adv-group">
+                                            <label for="confirmNewPassword">Nhập lại mật khẩu mới *</label>
+                                            <div class="search-wrapper">
+                                                <input id="confirmNewPassword" type="password" class="search-input"
+                                                    autocomplete="new-password" minlength="8" required>
+                                            </div>
+                                        </div>
+                                        <p id="passwordMessage" role="status" aria-live="polite" hidden></p>
+                                        <div class="purchase-row">
+                                            <button type="submit" class="action-btn action-btn-primary">
+                                                Cập nhật mật khẩu
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                        
+                                <!-- ================= XÓA TÀI KHOẢN ================= -->
+                                <div class="summary-box" style="margin-top: 24px; border: 1px solid #d6a4a4;">
+
+                                    <h3 class="section-title" style="color: #b83232;">
+                                        ⚠ Xóa tài khoản
+                                    </h3>
+
+                                    <p>
+                                        Khi xóa tài khoản, bạn sẽ không thể đăng nhập lại.
+                                        Vui lòng nhập mật khẩu hiện tại để xác nhận.
+                                    </p>
+
+                                    <form id="deleteAccountForm">
+
+                                        <div class="adv-group">
+                                            <label for="deleteAccountPassword">
+                                                Mật khẩu hiện tại *
+                                            </label>
+
+                                            <div class="search-wrapper">
+                                                <input
+                                                    type="password"
+                                                    id="deleteAccountPassword"
+                                                    class="search-input"
+                                                    placeholder="Nhập mật khẩu để xác nhận"
+                                                    autocomplete="current-password"
+                                                    required>
+                                            </div>
+                                        </div>
+
+                                        <p id="deleteAccountMessage"
+                                        role="status"
+                                        aria-live="polite"
+                                        hidden></p>
+
+                                        <div class="purchase-row">
+                                            <button
+                                                type="submit"
+                                                class="action-btn"
+                                                style="background: #b83232; color: white;">
+                                                Xóa tài khoản
+                                            </button>
+                                        </div>
+
+                                    </form>
+                                </div>
+
+                                <!-- Bảo mật -->
+                                <div class="summary-box">
+                                    <h3 class="section-title">🔒 Bảo mật tài khoản</h3>
+                                    <p>
+                                        Không chia sẻ mật khẩu hoặc thông tin
+                                        đăng nhập với người khác.
+                                    </p>
+                                </div>
+                            </div>
+
+                        </section>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- #cart: Giỏ hàng -->
+        <div id="view-cart" class="cart-page" data-view hidden>
+            <main class="customer-main">
+                <div class="container">
+
+                    <div class="page-heading-customer">
+                        <h1>Giỏ hàng của bạn</h1>
+                        <p>Kiểm tra sản phẩm trước khi tiến hành đặt hàng.</p>
+                    </div>
+
+                    <div class="empty-state" id="emptyCart" hidden>
+                        <h2>Giỏ hàng đang trống</h2>
+                        <p>Bạn chưa có sản phẩm nào trong giỏ hàng.</p>
+
+                        <a href="../index.html#product" class="action-btn action-btn-primary">
+                            Tiếp tục mua sắm
+                        </a>
+                    </div>
+
+                    <div class="cart-layout" id="cartContent">
+                        <section class="cart-card">
+
+                            <div class="cart-card-heading">
+                                <h2>Sản phẩm</h2>
+
+                                <button
+                                    type="button"
+                                    class="action-btn action-btn-danger"
+                                    id="clearCartBtn">
+                                    Xóa toàn bộ
+                                </button>
+                            </div>
+
+                            <div class="cart-table-wrap">
+                                <table class="cart-table">
+                                    <thead>
+                                    <tr>
+                                        <th>Sản phẩm</th>
+                                        <th>Đơn giá</th>
+                                        <th>Số lượng</th>
+                                        <th>Thành tiền</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody id="cartTableBody"></tbody>
+                                </table>
+                            </div>
+
+                            <div class="cart-bottom-actions">
+                                <a href="products.html"
+                                    class="action-btn action-btn-secondary">
+                                    ← Tiếp tục mua hàng
+                                </a>
+                            </div>
+                        </section>
+
+                        <aside class="cart-summary">
+                            <h2>Tổng đơn hàng</h2>
+
+                            <div class="summary-row">
+                                <span>Tạm tính</span>
+                                <strong id="cartSubtotal">0 ₫</strong>
+                            </div>
+
+                            <div class="summary-row">
+                                <span>Phí vận chuyển</span>
+                                <strong>Miễn phí</strong>
+                            </div>
+
+                            <div class="summary-row summary-total">
+                                <span>Tổng cộng</span>
+                                <strong id="cartTotal">0 ₫</strong>
+                            </div>
+
+                            <a
+                                href="#checkout"
+                                class="action-btn action-btn-primary action-btn-block"
+                                id="checkoutBtn">
+                                Tiến hành đặt hàng
+                            </a>
+                        </aside>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- #checkout: Thanh toán -->
+        <div id="view-checkout" class="checkout-page" data-view hidden>
+            <main class="customer-main">
+                <div class="container">
+                    
+                    <div class="page-heading-customer">
+                        <h1>Thanh toán</h1>
+                        <p>Kiểm tra thông tin và hoàn tất đơn hàng.</p>
+                    </div>
+
+                    <div class="checkout-layout">
+                        <div class="checkout-left">
+                            <section class="checkout-card" id="customerInfoCard">
+                                <h2>1. Thông tin khách hàng</h2>
+                                <div class="checkout-form-grid">
+
+                                    <div class="checkout-form-group">
+                                        <label for="checkoutFullName">
+                                            Họ và tên
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            id="checkoutFullName"
+                                            readonly>
+                                    </div>
+
+                                    <div class="checkout-form-group">
+                                        <label for="checkoutPhone">
+                                            Số điện thoại
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            id="checkoutPhone"
+                                            readonly>
+                                    </div>
+
+                                    <div class="checkout-form-group checkout-full">
+                                        <label for="checkoutEmail">
+                                            Email
+                                        </label>
+
+                                        <input
+                                            type="email"
+                                            id="checkoutEmail"
+                                            readonly>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="checkout-card">
+                                <h2>2. Địa chỉ nhận hàng</h2>
+
+                                <div class="address-option">
+                                    <input
+                                        type="radio"
+                                        name="shippingAddressType"
+                                        id="accountAddressOption"
+                                        value="account"
+                                        checked>
+
+                                    <label for="accountAddressOption">
+                                        <strong>Sử dụng địa chỉ trong tài khoản</strong>
+                                        <span id="accountAddressText">
+                                            Chưa có địa chỉ
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <div class="address-option">
+                                    <input
+                                        type="radio"
+                                        name="shippingAddressType"
+                                        id="newAddressOption"
+                                        value="new">
+
+                                    <label for="newAddressOption">
+                                        <strong>Nhập địa chỉ giao hàng mới</strong>
+                                        <span>Sử dụng địa chỉ khác cho đơn hàng này.</span>
+                                    </label>
+                                </div>
+
+                                <div class="new-address-box" id="newAddressBox">
+                                    <div class="checkout-form-grid">
+                                        <div class="checkout-form-group">
+                                            <label for="newReceiverName">
+                                                Người nhận
+                                            </label>
+
+                                            <input
+                                                type="text"
+                                                id="newReceiverName"
+                                                placeholder="Nhập tên người nhận">
+                                        </div>
+
+                                        <div class="checkout-form-group">
+                                            <label for="newReceiverPhone">
+                                                Số điện thoại
+                                            </label>
+
+                                            <input
+                                                type="tel"
+                                                id="newReceiverPhone"
+                                                placeholder="Ví dụ: 0901234567">
+                                        </div>
+
+                                        <div class="checkout-form-group">
+                                            <label for="newProvince">
+                                                Tỉnh / Thành phố
+                                            </label>
+
+                                            <input
+                                                type="text"
+                                                id="newProvince"
+                                                placeholder="TP. Hồ Chí Minh">
+                                        </div>
+
+                                        <div class="checkout-form-group">
+                                            <label for="newDistrict">
+                                                Quận / Huyện
+                                            </label>
+
+                                            <input
+                                                type="text"
+                                                id="newDistrict"
+                                                placeholder="Quận / Huyện">
+                                        </div>
+
+                                        <div class="checkout-form-group checkout-full">
+                                            <label for="newStreet">
+                                                Địa chỉ chi tiết
+                                            </label>
+
+                                            <textarea
+                                                id="newStreet"
+                                                placeholder="Số nhà, tên đường, phường/xã..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="checkout-card">
+                                <h2>3. Phương thức thanh toán</h2>
+
+                                <div class="payment-option">
+                                    <input
+                                        type="radio"
+                                        name="paymentMethod"
+                                        id="paymentCash"
+                                        value="cash"
+                                        checked>
+
+                                    <label for="paymentCash">
+                                        <strong>Thanh toán tiền mặt</strong>
+                                        <span>Thanh toán khi nhận hàng.</span>
+                                    </label>
+                                </div>
+
+                                <div class="payment-option">
+                                    <input
+                                        type="radio"
+                                        name="paymentMethod"
+                                        id="paymentVisa"
+                                        value="visa">
+
+                                    <label for="paymentVisa">
+                                        <strong>Visa</strong>
+                                        <span>Thanh toán trực tuyến bằng thẻ Visa.</span>
+                                    </label>
+                                </div>
+
+                                <div class="payment-option">
+                                    <input
+                                        type="radio"
+                                        name="paymentMethod"
+                                        id="paymentMastercard"
+                                        value="mastercard">
+
+                                    <label for="paymentMastercard">
+                                        <strong>Mastercard</strong>
+                                        <span>Thanh toán trực tuyến bằng Mastercard.</span>
+                                    </label>
+                                </div>
+
+                                <div class="payment-option">
+                                    <input
+                                        type="radio"
+                                        name="paymentMethod"
+                                        id="paymentGiftcard"
+                                        value="giftcard">
+
+                                    <label for="paymentGiftcard">
+                                        <strong>Giftcard</strong>
+                                        <span>Thanh toán bằng mã thẻ quà tặng.</span>
+                                    </label>
+                                </div>
+
+                                <div
+                                    class="payment-detail"
+                                    id="cardPaymentDetail">
+
+                                    <div class="checkout-form-grid">
+                                        <div class="checkout-form-group checkout-full">
+                                            <label for="cardNumber">
+                                                Số thẻ
+                                            </label>
+
+                                            <input
+                                                type="text"
+                                                id="cardNumber"
+                                                maxlength="19"
+                                                placeholder="1234 5678 9012 3456">
+                                        </div>
+
+                                        <div class="checkout-form-group checkout-full">
+                                            <label for="cardHolder">
+                                                Tên chủ thẻ
+                                            </label>
+
+                                            <input
+                                                type="text"
+                                                id="cardHolder"
+                                                placeholder="NGUYEN VAN A">
+                                        </div>
+
+                                        <div class="checkout-form-group">
+                                            <label for="cardExpiry">
+                                                Ngày hết hạn
+                                            </label>
+
+                                            <input
+                                                type="text"
+                                                id="cardExpiry"
+                                                maxlength="5"
+                                                placeholder="MM/YY">
+                                        </div>
+
+                                        <div class="checkout-form-group">
+                                            <label for="cardCVV">
+                                                CVV
+                                            </label>
+
+                                            <input
+                                                type="password"
+                                                id="cardCVV"
+                                                maxlength="4"
+                                                placeholder="***">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="payment-detail"
+                                    id="giftcardPaymentDetail">
+
+                                    <div class="checkout-form-group">
+                                        <label for="giftcardCode">
+                                            Mã Giftcard
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            id="giftcardCode"
+                                            placeholder="Nhập mã Giftcard">
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+
+                        <aside class="checkout-summary-card">
+                            <h2>Đơn hàng của bạn</h2>
+
+                            <div id="checkoutItems"></div>
+
+                            <div class="summary-row">
+                                <span>Tạm tính</span>
+                                <strong id="checkoutSubtotal">
+                                    0 ₫
+                                </strong>
+                            </div>
+
+                            <div class="summary-row">
+                                <span>Vận chuyển</span>
+                                <strong>Miễn phí</strong>
+                            </div>
+
+                            <div class="summary-row summary-total">
+                                <span>Tổng cộng</span>
+
+                                <strong id="checkoutTotal">
+                                    0 ₫
+                                </strong>
+                            </div>
+
+                            <div
+                                class="checkout-message"
+                                id="checkoutMessage">
+                            </div>
+
+                            <button
+                                type="button"
+                                class="action-btn action-btn-primary action-btn-block"
+                                id="placeOrderBtn">
+                                Đặt hàng
+                            </button>
+
+                            <a
+                                href="#cart"
+                                class="back-cart-link">
+                                ← Quay lại giỏ hàng
+                            </a>
+                        </aside>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- #success: Đặt hàng thành công -->
+        <div id="view-success" class="success-order-page" data-view hidden>
+            <main class="customer-main">
+                <div class="container">
+                    <section class="success-order-box">
+                        <div class="success-order-icon">
+                            ✓
+                        </div>
+                        <h1>Đặt hàng thành công!</h1>
+
+                        <p class="success-description">
+                            Cảm ơn bạn đã mua hàng tại BookHub.
+                        </p>
+
+                        <div class="success-order-info">
+                            <div class="success-info-row">
+                                <span>Mã đơn hàng</span>
+                                <strong id="successOrderId">
+                                    ---
+                                </strong>
+                            </div>
+
+                            <div class="success-info-row">
+                                <span>Ngày đặt</span>
+                                <strong id="successOrderDate">
+                                    ---
+                                </strong>
+                            </div>
+
+                            <div class="success-info-row">
+                                <span>Địa chỉ nhận hàng</span>
+                                <strong id="successAddress">
+                                    ---
+                                </strong>
+                            </div>
+
+                            <div class="success-info-row">
+                                <span>Phương thức thanh toán</span>
+                                <strong id="successPayment">
+                                    ---
+                                </strong>
+                            </div>
+
+                            <div class="success-info-row">
+                                <span>Tổng tiền</span>
+                                <strong
+                                    class="success-total"
+                                    id="successTotal">
+                                    0 ₫
+                                </strong>
+                            </div>
+                        </div>
+
+                        <div class="success-products">
+                            <h2>Sản phẩm đã đặt</h2>
+                            <div id="successOrderItems"></div>
+                        </div>
+
+                        <div class="success-actions">
+                            <a
+                                href="#orders"
+                                class="action-btn action-btn-primary">
+                                Xem đơn hàng
+                            </a>
+
+                            <a
+                                href="products.html"
+                                class="action-btn action-btn-secondary">
+                                Tiếp tục mua sắm
+                            </a>
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </div>
+
+        <!-- #orders: Đơn hàng của tôi -->
+        <div id="view-orders" class="customer-orders-page" data-view hidden>
+            <main class="customer-main">
+                <div class="container">
+                    <div class="page-heading-customer">
+                        <h1>Đơn hàng của tôi</h1>
+                        <p>Theo dõi lịch sử và trạng thái các đơn hàng.</p>
+                    </div>
+
+                    <div
+                        class="empty-state"
+                        id="emptyOrders"
+                        hidden>
+
+                        <h2>Chưa có đơn hàng</h2>
+                        <p>Bạn chưa thực hiện đơn hàng nào.</p>
+                        <a
+                            href="products.html"
+                            class="action-btn action-btn-primary">
+                            Mua sắm ngay
+                        </a>
+                    </div>
+
+                    <div
+                        class="order-list"
+                        id="customerOrderList">
+                    </div>
+                </div>
+            </main>
+
+            <div
+                class="order-modal"
+                id="customerOrderModal">
+
+                <div class="order-modal-content">
+                    <div class="order-modal-header">
+                        <h2>Chi tiết đơn hàng</h2>
+
+                        <button
+                            type="button"
+                            class="order-modal-close"
+                            id="closeCustomerOrderModal">
+                            ×
+                        </button>
+                    </div>
+
+                    <div id="customerOrderDetail"></div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="site-footer">
+            <div class="footer-main">
+                <!-- Cột trái: Thông tin Đồ án & Logo -->
+                <div class="footer-col brand-info">
+                    <div class="footer-logo">
+                    
+                        <img src="../images/logoweb.png" alt="Nhà Sách SGU" width="40" height="40">
+                        <span class="logo-text">BOOKHUB</span>
+                    </div>
+                    <p class="project-desc">
+                        Hệ thống website cửa hàng bán sách trực tuyến<br>
+                        Đồ án môn <strong>Lập trình web và ứng dụng</strong>.
+                    </p>
+                    <p class="faculty-info">
+                    
+                        Khoa Công nghệ Thông tin - SGU
+                    </p>
+                </div>
+
+                <!-- Cột phải: Thông tin Liên hệ -->
+                <div class="footer-col contact-info">
+                    <h3 class="footer-heading">THÔNG TIN LIÊN HỆ</h3>
+                    <ul class="contact-list">
+                        <li>
+                            <img src="../images/location.png" alt="Location" width="16" height="16">
+                            <span>Số 273 An Dương Vương, Phường Chợ Quán, TP.HCM</span>
+                        </li>
+                        <li>
+                            <img src="../images/phone.png" alt="Phone" width="16" height="16">
+                            <span>(028) 3838 2664 (Văn phòng Khoa CNTT)</span>
+                        </li>
+                        <li>
+                            <img src="../images/mail.png" alt="Email" width="16" height="16">
+                            <a class="mail" href="mailto:vpkcntt@sgu.edu.vn">vpkcntt@sgu.edu.vn</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Thanh thông tin nhóm -->
+            <div class="footer-bottom">
+                <div class="bottom-left">
+                    Nhóm 10: Nguyễn Bá Khang - Huỳnh Minh Khánh - Lê Hoàng Duy Long - Cao Hoàng Nam - Lê Văn Tiến
+                </div>
+                <div class="bottom-right">
+                    Giảng viên giảng dạy: Nguyễn Thanh Sang
+                </div>
+            </div>
+        </footer>
+        <script src="../js/data.js"></script>
+        <script src="../js/products.js"></script>
+        <script src="../js/index.js"></script>
+        <script src="../js/cart.js"></script>
+        <script src="../js/checkout.js"></script>
+        <script src="../js/order.js"></script>
+        <script src="../js/profile.js"></script>
+        <script>
+            (function () {
+                const VIEWS = {
+                    profile:  { cls: "",                    enter: null },
+                    cart:     { cls: "cart-page",            enter: () => renderCartPage() },
+                    checkout: { cls: "checkout-page",        enter: () => initCheckoutPage() },
+                    success:  { cls: "success-order-page",   enter: () => renderSuccessOrder() },
+                    orders:   { cls: "customer-orders-page", enter: () => renderCustomerOrders() }
+                };
+
+                function route(isFirstLoad) {
+                    const name = location.hash.replace("#", "");
+                    
+                    // Chưa đăng nhập thì sang trang đăng nhập của index.html
+                    if ("login".includes(name)) {
+                        sessionStorage.setItem("returnUrl", location.href);
+                        location.replace("../index.html#" + name);
+                        return;
+                    }
+                    
+                    const key = VIEWS[name] ? name : "profile";
+
+                    document.body.classList.remove("cart-page", "checkout-page", "success-order-page", "customer-orders-page");
+                    if (VIEWS[key].cls) document.body.classList.add(VIEWS[key].cls);
+                    document.querySelectorAll("[data-view]").forEach(v => { v.hidden = v.id !== "view-" + key; });
+                    window.scrollTo(0, 0);
+
+                    // Lần tải đầu các file js tự chạy ở DOMContentLoaded, không gọi enter() để khỏi chạy 2 lần
+                    if (!isFirstLoad && VIEWS[key].enter) VIEWS[key].enter();
+                }
+
+                window.addEventListener("hashchange", () => route(false));
+                route(true);
+            })();
+        </script>
+    </body>
+</html>

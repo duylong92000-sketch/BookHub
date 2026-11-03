@@ -204,7 +204,7 @@ function checkAuth() {
   $('#loginView').hidden = ok; $('#adminView').hidden = !ok;
   if (ok) route();
 }
-function logout() { localStorage.removeItem("adminLoggedIn"); window.location.replace("../index.html"); }
+function logout() { localStorage.removeItem("adminLoggedIn"); window.location.replace("../index.html#home"); }
 
 (function initLogin() {
   const form = $('#adminLoginForm'), u = $('#adminUsername'), p = $('#adminPassword'), ue = $('#userError'), pe = $('#passwordError');
