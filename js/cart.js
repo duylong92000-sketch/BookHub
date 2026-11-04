@@ -94,7 +94,7 @@ function findProduct(productId) {
 function addToCart(productId, quantity = 1) {
     if (!getCurrentCustomer()) {
     alert("Vui lòng đăng nhập để sử dụng giỏ hàng.");
-    window.location.href = "login.html";
+    window.location.href = "../index.html#login";
     return false;
     }
     
@@ -262,7 +262,7 @@ function renderCartPage() {
 document.addEventListener("DOMContentLoaded", function () {
     if (document.body.classList.contains("cart-page") && !getCurrentCustomer()) {
         alert("Vui lòng đăng nhập để xem giỏ hàng.");
-        window.location.replace("login.html");
+        window.location.href = "../index.html#login";
         return;
     }
 
@@ -296,7 +296,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!getCurrentCustomer()) {
                 event.preventDefault();
                 alert("Vui lòng đăng nhập trước khi đặt hàng.");
-                window.location.href = "login.html";
+                window.location.href = "../index.html#login";
             } else if (getDetailedCart().length === 0) {
                 event.preventDefault();
                 alert("Giỏ hàng đang trống.");
@@ -317,5 +317,3 @@ window.BookHubCart = {
     updateCartCount,
     addToCart
 };
-
-window.addToCart = addToCart;

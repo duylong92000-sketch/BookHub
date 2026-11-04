@@ -212,9 +212,9 @@
         ========================================================== */
         const PAGES = {};
         function checkAuth() {
-        const ok = localStorage.getItem("adminLoggedIn") === "true";
-        $('#loginView').hidden = ok; $('#adminView').hidden = !ok;
-        if (ok) route();
+          const ok = localStorage.getItem("adminLoggedIn") === "true";
+          $('#loginView').hidden = ok; $('#adminView').hidden = !ok;
+          if (ok) route();
         }
         function logout() { localStorage.removeItem("adminLoggedIn"); window.location.replace("../index.html"); }
 

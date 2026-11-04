@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="vi">
-    <head> 
+    <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>SGU - BookHub</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/customer.css">
     </head>
 
@@ -14,13 +14,14 @@
         <header class="top">
             <!-- Logo + Danh mục sách -->
             <div class="left-section">
-                <div class="logo-section">
+                <a class="logo-section" href="#home" title="Về trang chủ">
                     <img src="images/logoweb.png" alt="Logo" width="50" height="50">
                     <div>
                         <h1>BOOKHUB</h1>
                         <p>Chắp cánh tri thức</p>
                     </div>
-                </div>
+                </a>
+
                 <!-- Danh mục thể loại-->
                 <div class="category-wrapper">
                     <button class="category-btn" type="button">
@@ -30,11 +31,11 @@
 
                     <!-- Bảng danh mục-->
                     <ul class="category-dropdown">
-                        <li><a href="customer/products.html">Tất cả sách</a></li>
-                        <li><a href="customer/products.html?category=vanhoc">Văn học &amp; Tiểu thuyết</a></li>
-                        <li><a href="customer/products.html?category=kinhte">Kinh tế &amp; Quản trị</a></li>
-                        <li><a href="customer/products.html?category=cntt">Công nghệ thông tin</a></li>
-                        <li><a href="customer/products.html?category=thieunhi">Sách thiếu nhi</a></li>
+                        <li><a href="#products">Tất cả sách</a></li>
+                        <li><a href="#products?category=vanhoc">Văn học &amp; Tiểu thuyết</a></li>
+                        <li><a href="#products?category=kinhte">Kinh tế &amp; Quản trị</a></li>
+                        <li><a href="#products?category=cntt">Công nghệ thông tin</a></li>
+                        <li><a href="#products?category=thieunhi">Sách thiếu nhi</a></li>
                     </ul>
                     <button type="button" class="category-back" id="categoryBack">← Quay lại</button>
                 </div>
@@ -43,29 +44,68 @@
                 <div class="search-wrapper">
                     <input type="text" id="searchInput" placeholder="Nhập tên sách hoặc tác giả" class="search-input" aria-label="Tìm kiếm sách">
 
+                    <button type="button" id="btnAdvancedFilter" class="filter-btn" title="Tìm kiếm nâng cao" aria-label="Tìm kiếm nâng cao" aria-expanded="false">
+                        <img src="images/filter.png" alt="Lọc" width="20" height="20">
+                    </button>
+
                     <button type="button" id="btnSearch" class="search-btn" aria-label="Tìm kiếm">
                         <img src="images/icon-search.png" alt="Tìm kiếm" width="20" height="20">
                     </button>
+                    <!-- Khối thả xuống chứa Mức giá và Phân loại (Ẩn mặc định, hiển thị khi bấm nút Filter) -->
+                    <div id="advanced-search-dropdown" class="adv-dropdown">
+                        <!-- Các ô input giá và select danh mục -->
+                        <h4 class="adv-title">Tìm kiếm nâng cao</h4>
+                            <!-- Tiêu chí 1: Thể loại -->
+                            <div class="adv-group">
+                                <label for="adv-category">Thể loại sách:</label>
+                                <select id="adv-category">
+                                    <option value="all">Tất cả thể loại</option>
+                                    <option value="vanhoc">Văn học & Tiểu thuyết</option>
+                                    <option value="kinhte">Kinh tế & Quản trị</option>
+                                    <option value="cntt">Công nghệ thông tin</option>
+                                    <option value="thieunhi">Sách thiếu nhi</option>
+                                </select>
+                            </div>
+
+                            <!-- Tiêu chí 2: Mức giá -->
+                            <div class="adv-group">
+                                <label>Mức giá (VNĐ):</label>
+                                <div class="price-inputs">
+                                    <input type="number" id="adv-price-min" placeholder="Từ" min="0">
+                                    <span>-</span>
+                                    <input type="number" id="adv-price-max" placeholder="Đến" min="0">
+                                </div>
+                            </div>
+
+                            <!-- Tiêu chí 3: Tình trạng -->
+                            <div class="adv-group checkbox-group">
+                                <input type="checkbox" id="adv-in-stock">
+                                <label for="adv-in-stock">Chỉ hiện sản phẩm còn hàng</label>
+                            </div>
+
+                            <!-- Nút áp dụng -->
+                            <button type="button" id="btnApplyFilter" class="btn-apply">Áp dụng bộ lọc</button>
                     </div>
+                </div>
             </div>
 
             <!-- Cụm phải: Chức năng -->
             <div class="action-section">
-                <a href="customer/cart.html" target="_self" title="Xem giỏ hàng">
+                <a href="customer/customer.html#cart" target="_self" title="Xem giỏ hàng">
                     <img src="images/cart.png" alt="Giỏ hàng" width="20" height="20">
                     Giỏ hàng
                 </a>
 
-                <a href="customer/login.html" target="_self" title="Đăng nhập">
+                <a href="#login" target="_self" title="Đăng nhập">
                     <img src="images/login.png" alt="Đăng nhập" width="20" height="20">
                     Đăng nhập
                 </a>
 
-                <a href="customer/register.html" target="_self" title="Đăng ký tài khoản">
+                <a href="#register" target="_self" title="Đăng ký tài khoản">
                     <img src="images/signup.png" alt="Đăng ký tài khoản" width="20" height="20">
                     Đăng ký
                 </a>
-                
+            
                 <div class="user-view">
                     <button type="button" id="user" class="user-btn">
                         <span id="usernameDisplay">Tên tài khoản</span>
@@ -73,11 +113,11 @@
                     </button>
 
                     <div class="user-dropdown" id="userDropdown">
-                        <a href="customer/profile.html">
+                        <a href="customer/customer.html#profile">
                             Hồ sơ cá nhân
                         </a>
-                        
-                        <a href="customer/orders.html">
+                    
+                        <a href="customer/customer.html#orders">
                             Đơn hàng của tôi
                         </a>
 
@@ -86,7 +126,7 @@
                         </button>
                     </div>
                 </div>
-            
+        
                 <a href="admin/admin.html" target="_self" title="Đi đến khu vực admin">
                     <img src="images/admin.png" alt="Admin" width="20" height="20">
                     Admin
@@ -94,75 +134,187 @@
             </div>
         </header>
 
-        <main>
-            <!-- Banner -->
-            <section class="hero">
-                <div class="hero-container">
-                    <!-- Cột trái: Nội dung -->
-                    <div class="hero-content">
-                        <span class="hero-tag">BOOKHUB - NHÓM 10</span>
-                        <h2 class="hero-title">Nơi tri thức hội tụ</h2>
-                        <p class="hero-text">Nhiều thể loại sách, giao hàng toàn quốc, cam kết chính hãng 100%.</p>
-                        
-                        <div class="hero-actions">
-                            <a href="customer/products.html" class="hero-btn">Xem tất cả sách</a>
+        <!-- ===== CÁC VIEW: chuyển bằng #hash, mặc định là #home ===== -->
+
+        <!-- #home: Trang chủ (mặc định) -->
+        <div id="view-home" data-view hidden>
+            <main>
+                <!-- Banner -->
+                <section class="hero">
+                    <div class="hero-container">
+                        <!-- Cột trái: Nội dung -->
+                        <div class="hero-content">
+                            <span class="hero-tag">BOOKHUB - NHÓM 10</span>
+                            <h2 class="hero-title">Nơi tri thức hội tụ</h2>
+                            <p class="hero-text">Nhiều thể loại sách, giao hàng toàn quốc, cam kết chính hãng 100%.</p>
+                    
+                            <div class="hero-actions">
+                                <a href="#products" class="hero-btn">Xem tất cả sách</a>
+                            </div>
+        
+                    
+                            <div class="hero-stats">
+                                <div class="stat-item">
+                                    <strong>5,000+</strong>
+                                    <span>Đầu sách đa dạng</span>
+                                </div>
+                                <div class="stat-item">
+                                    <strong>100%</strong>
+                                    <span>Sách có bản quyền</span>
+                                </div>
+                                <div class="stat-item">
+                                    <strong>Frereship</strong>
+                                    <span>Đơn từ 250k</span>
+                                </div>
+                            </div>
                         </div>
-            
-                        
-                        <div class="hero-stats">
-                            <div class="stat-item">
-                                <strong>5,000+</strong>
-                                <span>Đầu sách đa dạng</span>
-                            </div>
-                            <div class="stat-item">
-                                <strong>100%</strong>
-                                <span>Sách có bản quyền</span>
-                            </div>
-                            <div class="stat-item">
-                                <strong>Frereship</strong>
-                                <span>Đơn từ 250k</span>
+        
+                        <!-- Cột phải: banner trượt giữa các cuốn sách -->
+                        <div class="hero-slider" id="heroSlider" role="region" aria-roledescription="carousel" aria-label="Sách nổi bật">
+                            <div class="hero-slides" id="heroSlides"></div>
+                            <div class="hero-controls">
+                                <button type="button" class="hero-nav" id="heroPrev" aria-label="Sách trước">&#8249;</button>
+                                <div class="hero-dots" id="heroDots"></div>
+                                <button type="button" class="hero-nav" id="heroNext" aria-label="Sách tiếp theo">&#8250;</button>
                             </div>
                         </div>
                     </div>
-            
-                    <!-- Cột phải: banner trượt giữa các cuốn sách -->
-                    <div class="hero-slider" id="heroSlider" role="region" aria-roledescription="carousel" aria-label="Sách nổi bật">
-                        <div class="hero-slides" id="heroSlides"></div>
-                        <div class="hero-controls">
-                            <button type="button" class="hero-nav" id="heroPrev" aria-label="Sách trước">&#8249;</button>
-                            <div class="hero-dots" id="heroDots"></div>
-                            <button type="button" class="hero-nav" id="heroNext" aria-label="Sách tiếp theo">&#8250;</button>
+                </section>
+
+                <div class="main-content">
+                    <!-- Danh mục sách -->
+                    <section class="home-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Danh mục sách</h2>
                         </div>
-                    </div>
+                        <div class="category-grid" id="categoryList"></div>
+                    </section>
+
+                    <!-- Sản phẩm nổi bật -->
+                    <section class="home-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Sản phẩm nổi bật</h2>
+                            <a href="#products" class="section-link">Xem tất cả &rarr;</a>
+                        </div>
+                        <div class="product-grid" id="featuredList"></div>
+                    </section>
                 </div>
-            </section>
+            </main>
+        </div>
 
-            <div class="main-content">
-                <!-- Danh mục sách -->
-                <section class="home-section">
-                    <div class="section-header">
-                        <h2 class="section-title">Danh mục sách</h2>
-                    </div>
-                    <div class="category-grid" id="categoryList"></div>
-                </section>
+        <!-- #products: Danh sách sách -->
+        <div id="view-products" data-view hidden>
+            <main class="main-content">
+                <!-- Tiêu đề trang -->
+                <div class="page-header">
+                    <h2 class="page-title">
+                        <img src="images/allbooks.png" alt="Icon" width="20" height="20">
+                        Tất cả sách
+                    </h2>
+                </div>
 
-                <!-- Sản phẩm nổi bật -->
-                <section class="home-section">
-                    <div class="section-header">
-                        <h2 class="section-title">Sản phẩm nổi bật</h2>
-                        <a href="customer/products.html" class="section-link">Xem tất cả &rarr;</a>
+                <div class="product-grid" id="productList">
+                </div>
+
+                <!-- Phân trang -->
+                <div class="pagination">
+                    <!-- Nút phân trang do products.js tạo -->
+                </div>
+            </main>
+        </div>
+
+        <!-- #detail: Chi tiết sách -->
+        <div id="view-detail" data-view hidden>
+            <main class="main-content">
+                <a href="#products" class="back-link">&larr; Quay lại danh sách sách</a>
+
+                <!-- Nội dung do js/product-detail.js tạo -->
+                <div id="detailContainer"></div>
+
+                <section class="related" id="relatedSection" hidden>
+                    <div class="related-header">
+                        <h2 class="section-title">Sách cùng thể loại gợi ý</h2>
+                        <span class="related-note" id="relatedNote"></span>
                     </div>
-                    <div class="product-grid" id="featuredList"></div>
+                    <div class="related-grid" id="relatedList"></div>
                 </section>
-            </div>
-        </main>
+            </main>
+        </div>
+
+        <!-- #login: Đăng nhập -->
+        <div id="view-login" data-view hidden>
+            <main class="top">
+                <!--Bảng đăng nhập-->
+                <div class="form">
+                    <h2>Đăng nhập tài khoản</h2>
+                    <form id="customersLoginForm">
+                        <label for="userName">Tên hiển thị</label>
+                        <input type="text" id="userName" maxlength="30" placeholder="Tên tài khoản" >
+                        <div id="userError" class="error"></div>
+
+                        <label for="password">Mật khẩu</label>
+                        <input type="password" id="password" minlength="8" placeholder="Nhập mật khẩu">
+                        <div id="passwordError" class="error" ></div>
+                
+                        <button type="submit">Đăng nhập</button>
+                    </form>
+
+                    <p class="login-link">
+                        Chưa có tài khoản? <a href="#register">Đăng ký</a>
+                    </p>
+                </div>
+            </main>
+        </div>
+
+        <!-- #register: Đăng ký -->
+        <div id="view-register" data-view hidden>
+            <main class="top">
+                <div class="form">
+                    <h2>Đăng ký tài khoản</h2>
+                    <form id="formRegister">
+                        <label for="fullName">Họ và tên</label>
+                        <input type="text" id="fullName" placeholder="Họ và tên" maxlength="30">
+                        <div id="nameError" class="error"></div>
+
+                        <label for="regUserName">Tên hiển thị</label>
+                        <input type="text" id="regUserName" maxlength="30" placeholder="Tên tài khoản" >
+                        <div id="usernameError" class="error"></div>
+
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="Nhập email">
+                        <div id="emailError" class="error" ></div>
+
+                        <label for="phone">Số điện thoại</label>
+                        <input type="tel" id="phone" placeholder="Số điện thoại" pattern="0[0-9]{9}" maxlength="12">
+                        <div id="phoneError" class="error"></div>
+                
+                        <label for="regPassword">Mật khẩu</label>
+                        <input type="password" id="regPassword" placeholder="Nhập mật khẩu" >
+                        <div id="regPasswordError" class="error"></div>
+
+                        <label for="repassword">Xác nhận mật khẩu</label>
+                        <input type="password" id="repassword" placeholder="Nhập lại mật khẩu">
+                        <div id="repasswordError" class="error"></div>
+
+                        <label for="address">Địa chỉ</label>
+                        <input type="text" id="address" placeholder="Số nhà + tên đường, phường, thành phố">
+
+                        <button type="submit">Đăng ký</button>
+                    </form>
+
+                    <p class="login-link">
+                        Đã có tài khoản? <a href="#login">Đăng nhập</a>
+                    </p>
+                </div>
+            </main>
+        </div>
 
         <footer class="site-footer">
             <div class="footer-main">
                 <!-- Cột trái: Thông tin Đồ án & Logo -->
                 <div class="footer-col brand-info">
                     <div class="footer-logo">
-                        
+                    
                         <img src="images/logoweb.png" alt="Nhà Sách SGU" width="40" height="40">
                         <span class="logo-text">BOOKHUB</span>
                     </div>
@@ -171,7 +323,7 @@
                         Đồ án môn <strong>Lập trình web và ứng dụng</strong>.
                     </p>
                     <p class="faculty-info">
-                        
+                    
                         Khoa Công nghệ Thông tin - SGU
                     </p>
                 </div>
@@ -206,9 +358,58 @@
                 </div>
             </div>
         </footer>
-        
+
         <script src="js/data.js"></script>
         <script src="js/products.js"></script>
         <script src="js/index.js"></script>
+        <script src="js/login.js"></script>
+        <script src="js/register.js"></script>
+        <script>
+        (function () {
+            const VIEWS = {
+                home:     { enter: () => initHome() },
+                products: { enter: () => initProducts() },
+                detail:   { enter: () => initDetail() },
+                login:    {},
+                register: {}
+            };
+
+            function route(isFirstLoad) {
+                const name = location.hash.replace("#", "").split("?")[0];
+                const key = VIEWS[name] ? name : "home";
+                const view = VIEWS[key];
+
+                document.body.dataset.page = key;   // products.js dùng data-page để biết đang ở trang nào
+                document.querySelectorAll("[data-view]").forEach(v => { v.hidden = v.id !== "view-" + key; });
+
+                // Nút lọc nâng cao chỉ dùng ở trang danh sách
+                const filterBtn = document.getElementById("btnAdvancedFilter");
+                const filterBox = document.getElementById("advanced-search-dropdown");
+                if (filterBtn) filterBtn.style.display = key === "products" ? "" : "none";
+                if (filterBox) filterBox.style.display = "none";
+
+                if (key !== "detail") document.title = "SGU - BookHub";
+                window.scrollTo(0, 0);
+
+                // Lần tải đầu các file js tự chạy ở DOMContentLoaded nên không gọi lại
+                if (!isFirstLoad && view.enter) {
+                    BOOKS = loadSiteBooks();            // dữ liệu sách mới nhất
+                    CATEGORY_MAP = makeCategoryMap();
+                    view.enter();
+                }
+            }
+
+            window.addEventListener("hashchange", () => route(false));
+
+            // Bấm lại đúng link của trang đang xem (hash không đổi) 
+            document.addEventListener("click", e => {
+                const a = e.target.closest('a[href^="#"]');
+                if (a && a.getAttribute("href") === location.hash) route(false);
+            });
+
+            route(true);
+        })();
+        </script>
+
     </body>
 </html>
