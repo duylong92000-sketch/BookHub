@@ -1,5 +1,3 @@
-
-
 const ORDERS_STORAGE_KEY = "orders";
 
 function orderReadJSON(key, defaultValue = []) {
@@ -82,7 +80,7 @@ function renderSuccessOrder() {
             box.innerHTML = `
                 <h1>Không tìm thấy đơn hàng</h1>
                 <p>Không có thông tin đơn hàng gần nhất.</p>
-                <a href="orders.html" class="action-btn action-btn-primary">Xem đơn hàng</a>
+                <a href="#orders" class="action-btn action-btn-primary">Xem đơn hàng</a>
             `;
         }
         return;
@@ -116,7 +114,7 @@ function renderCustomerOrders() {
     const customer = orderGetCurrentCustomer();
     if (!customer) {
         alert("Bạn cần đăng nhập để xem đơn hàng.");
-        window.location.href = "login.html";
+        window.location.href = "#login";
         return;
     }
 

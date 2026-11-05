@@ -1,7 +1,5 @@
 /* ==========================================================
-   BOOKHUB - data.js
    Dữ liệu và hàm dùng chung cho admin.js và products.js.
-   PHẢI nạp file này TRƯỚC admin.js / products.js.
 
    Quy ước localStorage (nguồn dữ liệu duy nhất):
      categories : [{ categoryId, key, categoryName, status }]
@@ -13,7 +11,7 @@
                      totalAmount, orderStatus }]
      imports    : [{ importId, importDate, items, totalAmount, status }]
      cart       : { "MS001": 2 }   (do trang khách quản lý)
-   ========================================================== */
+========================================================== */
 
 const getData = key => {
     try {
@@ -160,3 +158,4 @@ function seedData() {
         if (localStorage.getItem(key) === null) setData(key, []);
     });
 }
+seedData();

@@ -1,11 +1,4 @@
-/* ==========================================================
-   BOOKHUB - admin.js
-   Logic cho trang quản trị một trang (admin.html): mỗi mục menu được
-   vẽ vào <main id="app"> bằng innerHTML.
-
-   Phải nạp SAU data.js (dùng getData, setData, seedData):
-     <script src="../js/data.js"></script>
-     <script src="../js/admin.js"></script>
+/* ==================== DATA ==================== */
 
    Khóa localStorage (cùng trang khách):
      categories, products, customers, orders, imports

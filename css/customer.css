@@ -10,13 +10,9 @@
     --green: var(--accent-dark);
     --green-dark: #843300;
     --green-light: #F5EFEB;
-    --beige: #fff;
-    --cream: #F5EFEB;
-    --white: #ffffff;
     --text: #333;
     --gray: #777;
     --red: #C0392B;
-    --orange: var(--accent);
     --shadow: 0 5px 18px rgba(74, 53, 37, 0.10);
 }
 
@@ -574,6 +570,7 @@ a.logo-section { text-decoration: none; }
     font-size: 14px;
     font-weight: bold;
     text-decoration: none;
+    box-shadow: 0 4px 14px rgba(198, 81, 2, 0.4);
     transition: background-color 0.2s;
 }
 
@@ -866,7 +863,7 @@ a.logo-section { text-decoration: none; }
     transition: background-color 0.2s;
 }
 
-.btn-add-cart:hover { background-color: #843300; }
+.btn-add-cart:hover { background-color: var(--green-dark); }
 .btn-add-cart:disabled { background-color: #bbb; cursor: not-allowed; }
 
 
@@ -1229,14 +1226,6 @@ a.logo-section { text-decoration: none; }
         box-sizing: border-box;
     }
 
-    .action-section .user-dropdown a {
-        gap: 0;
-        padding: 10px 19px;
-        font-size: 16px;
-    }
-    .action-section .user-dropdown a:hover {
-        color: #f58220;
-    }
     
     header.top { flex-wrap: wrap; justify-content: flex-start; gap: 10px 12px; padding: 10px 20px; }
     .left-section { display: contents; }   
@@ -1513,7 +1502,7 @@ a.logo-section { text-decoration: none; }
 }
 
 .action-btn-primary:hover {
-    background: #843300;
+    background: var(--green-dark);
 }
 
 .action-btn-secondary {

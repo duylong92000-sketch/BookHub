@@ -229,7 +229,12 @@ if(customersLoginForm) {
                 const returnUrl = sessionStorage.getItem("returnUrl");
                 sessionStorage.removeItem("returnUrl");
 
-                window.location.href = isSafeReturnUrl(returnUrl)? returnUrl: "../index.html";
+                // Kiểm tra URL hợp lệ
+                if (isSafeReturnUrl(returnUrl)) {
+                    window.location.href = returnUrl;
+                } else {
+                    window.location.href = "index.html#home";
+                }
             }
 
     });

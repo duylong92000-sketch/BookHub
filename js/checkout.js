@@ -1,4 +1,3 @@
-
 const ORDER_KEY = "orders";
 const LAST_ORDER_KEY = "lastOrderId";
 
@@ -52,7 +51,7 @@ function renderCustomerInfo() {
     const customer = checkoutGetCustomer();
     if (!customer) {
         alert("Vui lòng đăng nhập để thanh toán.");
-        window.location.href = "login.html";
+        window.location.href = "../index.html#login";
         return false;
     }
 
@@ -77,7 +76,7 @@ function renderCheckoutSummary() {
     const cart = window.BookHubCart.getDetailedCart();
     if (cart.length === 0) {
         alert("Giỏ hàng đang trống hoặc sản phẩm không còn tồn tại.");
-        window.location.href = "cart.html";
+        window.location.hash = "#cart";
         return false;
     }
 
@@ -320,7 +319,7 @@ function placeOrder() {
 
         // 10. Thông báo và chuyển trang
         showCheckoutMessage("Đặt hàng thành công.", "success");
-        window.location.href = "successorder.html";
+        window.location.hash = "#success";
 
     } catch (error) {
         showCheckoutMessage(error.message, "error");
@@ -363,18 +362,31 @@ function setupCardFormatting() {
     }
 }
 
-// Khởi chạy trang thanh toán
-document.addEventListener("DOMContentLoaded", function () {
+// Khởi chạy trang thanh toán (gọi mỗi lần vào #checkout)
+function initCheckoutPage() {
     if (!document.body.classList.contains("checkout-page")) return;
     if (!renderCustomerInfo() || !renderCheckoutSummary()) return;
 
+    // Vào lại trang: mở khóa nút đặt hàng, xóa thông báo cũ
+    checkoutSubmitting = false;
+    const btn = document.getElementById("placeOrderBtn");
+    if (btn) btn.disabled = false;
+
+    const msg = document.getElementById("checkoutMessage");
+    if (msg) {
+        msg.textContent = "";
+        msg.className = "checkout-message";
+    }
+
     updateAddressBox();
     updatePaymentDetail();
+}
 
+// Gắn sự kiện (chỉ 1 lần)
+document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll('input[name="shippingAddressType"]').forEach(input => {
         input.addEventListener("change", updateAddressBox);
     });
-
     document.querySelectorAll('input[name="paymentMethod"]').forEach(input => {
         input.addEventListener("change", updatePaymentDetail);
     });
@@ -383,4 +395,5 @@ document.addEventListener("DOMContentLoaded", function () {
     if (btn) btn.addEventListener("click", placeOrder);
 
     setupCardFormatting();
+    initCheckoutPage();
 });

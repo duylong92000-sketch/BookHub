@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .split(/\s+/)
             .filter(Boolean);
 
-        // Lấy chữ cái đầu của 2 từ cuối (tên đệm + tên): "Bá Khang" -> BK
+        // Lấy chữ cái đầu của 2 từ cuối (tên đệm + tên)
         let avatar = "BH";
 
         if (words.length >= 2) {
@@ -332,7 +332,8 @@ document.addEventListener("DOMContentLoaded", function () {
             alert("Tài khoản đã được xóa thành công!");
 
             // Chuyển về trang đăng nhập
-            window.location.replace("login.html");
+            window.location.replace("index.html#login");
+            window.location.reload();
 
         } catch (error) {
             console.error("Lỗi xóa tài khoản:", error);

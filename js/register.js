@@ -1,10 +1,10 @@
 // Lấy ra elements 
 const form = document.getElementById("formRegister")
 const fullName = document.getElementById("fullName")
-const userName = document.getElementById("userName")
+const userName = document.getElementById("regUserName")
 const email= document.getElementById("email")
 const phone = document.getElementById("phone")
-const password = document.getElementById("password")
+const password = document.getElementById("regPassword")
 const repassword = document.getElementById("repassword")
 const address = document.getElementById("address")
 
@@ -13,7 +13,7 @@ const nameError = document.getElementById("nameError")
 const usernameError = document.getElementById("usernameError")
 const emailError = document.getElementById("emailError")
 const phoneError = document.getElementById("phoneError")
-const passwordError = document.getElementById("passwordError")
+const passwordError = document.getElementById("regPasswordError")
 const repasswordError = document.getElementById("repasswordError")
 const addressError = document.getElementById("addressError")
 
@@ -115,16 +115,34 @@ form.addEventListener("submit", function(e){
         password.value.trim() === repassword.value.trim())
     {
         
-        //kiểm tra trùng userName
+        //kiểm tra trùng userName, email, số điện thoại
         const daTonTai = customersLocal.some(c =>
             String(c.userName).toLowerCase() === userName.value.trim().toLowerCase()
         );
+        const emailTonTai = customersLocal.some(c =>
+            String(c.email).toLowerCase() === email.value.trim().toLowerCase()
+        );
+        const phoneTonTai = customersLocal.some(c =>
+            String(c.phone).trim() === phone.value.trim()
+        );
+
         if (daTonTai) {
             usernameError.style.display = "block";
             usernameError.textContent = "Tên hiển thị đã được sử dụng";
-            return;
+        }
+        if (emailTonTai) {
+            emailError.style.display = "block";
+            emailError.textContent = "Email đã được sử dụng";
+        }
+        if (phoneTonTai) {
+            phoneError.style.display = "block";
+            phoneError.textContent = "Số điện thoại đã được sử dụng";
         }
         
+        if (daTonTai || emailTonTai || phoneTonTai) {
+            return;
+        }
+
         //Lấy dữ liệu từ form và gộp thành đối tượng user
         const customers = {
             customerId: taoID(),
@@ -150,7 +168,7 @@ form.addEventListener("submit", function(e){
         
         //chuyển hướng về trang đăng nhập
         setTimeout(function(){
-        window.location.href = "login.html"
+        window.location.hash = "#login"
         }, 500);
     }
     
