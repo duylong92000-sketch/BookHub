@@ -281,6 +281,10 @@
                                             <div class="search-wrapper">
                                                 <input id="currentPassword" type="password" class="search-input"
                                                     autocomplete="current-password" required>
+                                                <button type="button" class="togglePassword"
+                                                data-target="currentPassword" aria-label="Giữ để hiện mật khẩu">
+                                                <i data-lucide="eye-off" class="eyeOff"></i>
+                                                <i data-lucide="eye" class="eyeOn"></i>
                                             </div>
                                         </div>
                                         <div class="adv-group">
@@ -288,16 +292,32 @@
                                             <div class="search-wrapper">
                                                 <input id="newPassword" type="password" class="search-input"
                                                     autocomplete="new-password" minlength="8" required>
+
+                                                <button type="button" class="togglePassword"
+                                                    data-target="newPassword" aria-label="Giữ để hiện mật khẩu">
+                                                    <i data-lucide="eye-off" class="eyeOff"></i>
+                                                    <i data-lucide="eye" class="eyeOn"></i>
+                                                </button>
                                             </div>
                                         </div>
                                         <div class="adv-group">
                                             <label for="confirmNewPassword">Nhập lại mật khẩu mới *</label>
                                             <div class="search-wrapper">
                                                 <input id="confirmNewPassword" type="password" class="search-input"
-                                                    autocomplete="new-password" minlength="8" required>
+                                                    autocomplete="confirm-new-password" minlength="8" required>
+
+                                                <button type="button" class="togglePassword"
+                                                    data-target="confirmNewPassword" aria-label="Giữ để hiện mật khẩu">
+                                                    <i data-lucide="eye-off" class="eyeOff"></i>
+                                                    <i data-lucide="eye" class="eyeOn"></i>
+                                                </button>
                                             </div>
                                         </div>
-                                        <p id="passwordMessage" role="status" aria-live="polite" hidden></p>
+                                        
+                                        <p id="passwordMessage" 
+                                            role="status" 
+                                            aria-live="polite" 
+                                            hidden></p>
                                         <div class="purchase-row">
                                             <button type="submit" class="action-btn action-btn-primary">
                                                 Cập nhật mật khẩu
@@ -308,9 +328,9 @@
 
                         
                                 <!-- ================= XÓA TÀI KHOẢN ================= -->
-                                <div class="summary-box" style="margin-top: 24px; border: 1px solid #d6a4a4;">
+                                <div class="summary-box" style="margin-top: 24px; border: 1px">
 
-                                    <h3 class="section-title" style="color: #b83232;">
+                                    <h3 class="section-title">
                                         ⚠ Xóa tài khoản
                                     </h3>
 
@@ -334,6 +354,11 @@
                                                     placeholder="Nhập mật khẩu để xác nhận"
                                                     autocomplete="current-password"
                                                     required>
+                                                <button type="button" class="togglePassword"
+                                                    data-target="deleteAccountPassword" aria-label="Giữ để hiện mật khẩu">
+                                                    <i data-lucide="eye-off" class="eyeOff"></i>
+                                                    <i data-lucide="eye" class="eyeOn"></i>
+                                                </button>
                                             </div>
                                         </div>
 
@@ -384,7 +409,7 @@
                         <h2>Giỏ hàng đang trống</h2>
                         <p>Bạn chưa có sản phẩm nào trong giỏ hàng.</p>
 
-                        <a href="../index.html#product" class="action-btn action-btn-primary">
+                        <a href="../index.html#products" class="action-btn action-btn-primary">
                             Tiếp tục mua sắm
                         </a>
                     </div>
@@ -841,7 +866,7 @@
                             </a>
 
                             <a
-                                href="products.html"
+                                href="../index.html#products"
                                 class="action-btn action-btn-secondary">
                                 Tiếp tục mua sắm
                             </a>
@@ -868,7 +893,7 @@
                         <h2>Chưa có đơn hàng</h2>
                         <p>Bạn chưa thực hiện đơn hàng nào.</p>
                         <a
-                            href="products.html"
+                            href="../index.html#products"
                             class="action-btn action-btn-primary">
                             Mua sắm ngay
                         </a>
@@ -992,6 +1017,10 @@
                 window.addEventListener("hashchange", () => route(false));
                 route(true);
             })();
+        </script>
+        <script src="https://unpkg.com/lucide@latest"></script>
+        <script>
+            lucide.createIcons();
         </script>
     </body>
 </html>
