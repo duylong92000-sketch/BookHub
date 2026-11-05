@@ -115,16 +115,34 @@ form.addEventListener("submit", function(e){
         password.value.trim() === repassword.value.trim())
     {
         
-        //kiểm tra trùng userName
+        //kiểm tra trùng userName, email, số điện thoại
         const daTonTai = customersLocal.some(c =>
             String(c.userName).toLowerCase() === userName.value.trim().toLowerCase()
         );
+        const emailTonTai = customersLocal.some(c =>
+            String(c.email).toLowerCase() === email.value.trim().toLowerCase()
+        );
+        const phoneTonTai = customersLocal.some(c =>
+            String(c.phone).trim() === phone.value.trim()
+        );
+
         if (daTonTai) {
             usernameError.style.display = "block";
             usernameError.textContent = "Tên hiển thị đã được sử dụng";
-            return;
+        }
+        if (emailTonTai) {
+            emailError.style.display = "block";
+            emailError.textContent = "Email đã được sử dụng";
+        }
+        if (phoneTonTai) {
+            phoneError.style.display = "block";
+            phoneError.textContent = "Số điện thoại đã được sử dụng";
         }
         
+        if (daTonTai || emailTonTai || phoneTonTai) {
+            return;
+        }
+
         //Lấy dữ liệu từ form và gộp thành đối tượng user
         const customers = {
             customerId: taoID(),
