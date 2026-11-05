@@ -1,10 +1,5 @@
 /* ==================== DATA ==================== */
 
-   Khóa localStorage (cùng trang khách):
-     categories, products, customers, orders, imports
-     adminLoggedIn = "true"  (trạng thái đăng nhập admin)
-   ========================================================== */
-
 /* Hiện lỗi JS (nếu có) để dễ tìm nguyên nhân */
 window.addEventListener('error', e => { if (e.message) alert('Lỗi: ' + e.message + (e.lineno ? ' (dòng ' + e.lineno + ')' : '')); });
 window.addEventListener('unhandledrejection', e => alert('Lỗi: ' + (e.reason && e.reason.message || e.reason)));
