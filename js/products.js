@@ -1,5 +1,4 @@
 /* ==========================================================
-    BOOKHUB - products.js
     Mục lục:
     A. Dữ liệu & hàm dùng chung
     B. Trang chủ         -> initHome()
@@ -11,7 +10,6 @@
 /* ==========================================================
     A. DỮ LIỆU & HÀM DÙNG CHUNG
    ========================================================== */
-
 
 const SITE_ROOT = new URL('../', document.currentScript.src).href;   // thư mục cha của js/
 const PAGE_PRODUCTS = '#products';

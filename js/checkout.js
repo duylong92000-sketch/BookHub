@@ -1,4 +1,3 @@
-
 const ORDER_KEY = "orders";
 const LAST_ORDER_KEY = "lastOrderId";
 

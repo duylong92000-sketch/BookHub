@@ -1,10 +1,3 @@
-/* ==========================================================
-   BOOKHUB - admin.js
-   Yêu cầu: nạp data.js TRƯỚC file này (getData / setData nằm ở data.js).
-   Mọi thay đổi về giá bán và tồn kho ghi vào localStorage "products",
-   trang khách (products.js) đọc đúng nguồn này nên luôn đồng bộ.
-   ========================================================== */
-
 /* ==================== DATA ==================== */
 
 const money = v => Number(v || 0).toLocaleString("vi-VN") + " VNĐ";

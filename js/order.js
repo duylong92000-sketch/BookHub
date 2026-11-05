@@ -1,5 +1,3 @@
-
-
 const ORDERS_STORAGE_KEY = "orders";
 
 function orderReadJSON(key, defaultValue = []) {
