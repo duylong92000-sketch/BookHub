@@ -1,13 +1,4 @@
 /* ==========================================================
-    Mục lục:
-    A. Dữ liệu & hàm dùng chung
-    B. Trang chủ         -> initHome()
-    C. Trang danh sách   -> initProducts()
-    D. Trang chi tiết    -> initDetail()
-    E. Khởi chạy theo thuộc tính <body data-page="...">
-   ========================================================== */
-
-/* ==========================================================
     A. DỮ LIỆU & HÀM DÙNG CHUNG
    ========================================================== */
 
@@ -300,7 +291,6 @@ function initHome() {
     }).join('');
 
     // Sản phẩm nổi bật: tạm lấy các cuốn còn hàng đầu tiên
-    // (có thể thêm trường featured: true vào BOOK_LIST để chọn thủ công)
     const featured = BOOKS.filter((b) => b.stock > 0).slice(0, FEATURED_COUNT);
     document.getElementById('featuredList').innerHTML = featured.map(createCardHTML).join('');
 }
