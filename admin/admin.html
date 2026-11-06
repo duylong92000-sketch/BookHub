@@ -6,7 +6,9 @@
     <title>BookHub Admin</title>
     <link rel="stylesheet" href="../css/admin.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@600;700&display=swap">
+
     <style>
+        /* Bổ sung tối thiểu (admin.css vẫn là nguồn style chính) */
         [hidden]{display:none !important}
         .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center;z-index:1000;overflow:auto}
         .modal-content{max-height:92vh;overflow:auto}
@@ -18,72 +20,78 @@
     </style>
 
     <!-- Bắt buộc đăng nhập: chưa có phiên hợp lệ thì chuyển về auth.html -->
-    <script src="../js/admin-auth.js"></script>
-    <script>AdminAuth.requireLogin();</script>
+    <script src="../js/auth.js"></script>
+    <script>requireAdminLogin();</script>
 </head>
 
 <body data-admin-page>
 
     <!-- ============ KHUNG ADMIN ============ -->
     <div id="adminView" hidden>
-    <header class="admin-header">
-        <div class="left-section">
-        <div class="logo-section">
-            <img src="../images/logoweb.png" alt="Logo" width="50" height="50">
-            <div><h1>BOOKHUB</h1><p>Chắp cánh tri thức</p></div>
-        </div>
-        </div>
-        <nav class="admin-nav" id="adminNav">
-        <a href="#dashboard" data-page="dashboard">Dashboard</a>
-        <a href="#products" data-page="products">Sản phẩm</a>
-        <a href="#categories" data-page="categories">Danh mục</a>
-        <a href="#customers" data-page="customers">Khách hàng</a>
-        <a href="#orders" data-page="orders">Đơn hàng</a>
-        <a href="#import" data-page="import">Nhập hàng</a>
-        <a href="#inventory" data-page="inventory">Tồn kho</a>
-        <a href="#prices" data-page="prices">Giá bán</a>
-        </nav>
-        <div class="admin-user">
-        <span>Admin</span>
-        <a href="#" class="logout-link" onclick="logout();return false;">Đăng xuất</a>
-        </div>
-    </header>
-
-    <main class="admin-content" id="app"></main>
-
-    <div class="modal" id="modal"></div>
-    <div class="modal" id="modal2"></div>
-
-    <footer class="site-footer">
-        <div class="footer-main">
-        <div class="footer-col brand-info">
-            <div class="footer-logo">
-            <img src="../images/logoweb.png" alt="Nhà Sách SGU" width="40" height="40">
-            <span class="logo-text">BOOKHUB</span>
+        <header class="admin-header">
+            <div class="left-section">
+                <div class="logo-section">
+                    <img src="../images/logoweb.png" alt="Logo" width="50" height="50">
+                    <div><h1>BOOKHUB</h1><p>Chắp cánh tri thức</p></div>
+                </div>
             </div>
-            <p class="project-desc">Hệ thống website cửa hàng bán sách trực tuyến<br>Đồ án môn <strong>Lập trình web và ứng dụng</strong>.</p>
-            <p class="faculty-info">Khoa Công nghệ Thông tin - SGU</p>
-        </div>
-        <div class="footer-col contact-info">
-            <h3 class="footer-heading">THÔNG TIN LIÊN HỆ</h3>
-            <ul class="contact-list">
-            <li><img src="../images/location.png" alt="Location" width="16" height="16"><span>Số 273 An Dương Vương, Phường Chợ Quán, TP.HCM</span></li>
-            <li><img src="../images/phone.png" alt="Phone" width="16" height="16"><span>(028) 3838 2664 (Văn phòng Khoa CNTT)</span></li>
-            <li><img src="../images/mail.png" alt="Email" width="16" height="16"><a class="mail" href="mailto:vpkcntt@sgu.edu.vn">vpkcntt@sgu.edu.vn</a></li>
-            </ul>
-        </div>
-        </div>
-        <div class="footer-bottom">
-        <div class="bottom-left">Nhóm 10: Nguyễn Bá Khang - Huỳnh Minh Khánh - Lê Hoàng Duy Long - Cao Hoàng Nam - Lê Văn Tiến</div>
-        <div class="bottom-right">Giảng viên giảng dạy: Nguyễn Thanh Sang</div>
-        </div>
-    </footer>
+            <nav class="admin-nav" id="adminNav">
+                <a href="#dashboard" data-page="dashboard">Dashboard</a>
+                <a href="#products" data-page="products">Sản phẩm</a>
+                <a href="#categories" data-page="categories">Danh mục</a>
+                <a href="#customers" data-page="customers">Khách hàng</a>
+                <a href="#orders" data-page="orders">Đơn hàng</a>
+                <a href="#import" data-page="import">Nhập hàng</a>
+                <a href="#inventory" data-page="inventory">Tồn kho</a>
+                <a href="#prices" data-page="prices">Giá bán</a>
+            </nav>
+            <div class="admin-user">
+                <span>Admin</span>
+                <a href="#" class="logout-link" onclick="logout();return false;">Đăng xuất</a>
+            </div>
+        </header>
+
+        <main class="admin-content" id="app"></main>
+
+        <div class="modal" id="modal"></div>
+        <div class="modal" id="modal2"></div>
+
+        <footer class="site-footer">
+            <div class="footer-main">
+                <div class="footer-col brand-info">
+                    <div class="footer-logo">
+                        <img src="../images/logoweb.png" alt="Nhà Sách SGU" width="40" height="40">
+                        <span class="logo-text">BOOKHUB</span>
+                    </div>
+                    <p class="project-desc">Hệ thống website cửa hàng bán sách trực tuyến<br>Đồ án môn <strong>Lập trình web và ứng dụng</strong>.</p>
+                    <p class="faculty-info">Khoa Công nghệ Thông tin - SGU</p>
+                </div>
+                <div class="footer-col contact-info">
+                    <h3 class="footer-heading">THÔNG TIN LIÊN HỆ</h3>
+                    <ul class="contact-list">
+                        <li>
+                            <img src="../images/location.png" alt="Location" width="16" height="16">
+                            <span>Số 273 An Dương Vương, Phường Chợ Quán, TP.HCM</span>
+                        </li>
+                        <li>
+                            <img src="../images/phone.png" alt="Phone" width="16" height="16">
+                            <span>(028) 3838 2664 (Văn phòng Khoa CNTT)</span>
+                        </li>
+                        <li>
+                            <img src="../images/mail.png" alt="Email" width="16" height="16">
+                            <a class="mail" href="mailto:vpkcntt@sgu.edu.vn">vpkcntt@sgu.edu.vn</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="bottom-left">Nhóm 10: Nguyễn Bá Khang - Huỳnh Minh Khánh - Lê Hoàng Duy Long - Cao Hoàng Nam - Lê Văn Tiến</div>
+                <div class="bottom-right">Giảng viên giảng dạy: Nguyễn Thanh Sang</div>
+            </div>
+        </footer>
     </div>
 
-<<<<<<< Updated upstream
-    <script src="../js/data.js"></script>
-    <script src="../js/admin.js"></script>
-=======
     <script>
         /* ==========================================================
         1. DỮ LIỆU DÙNG CHUNG (lấy nguyên từ data.js — cùng khóa localStorage
@@ -707,6 +715,5 @@
         /* ============ KHỞI ĐỘNG ============ */
         checkAuth();
     </script>
->>>>>>> Stashed changes
 </body>
 </html>

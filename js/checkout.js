@@ -1,3 +1,4 @@
+
 const ORDER_KEY = "orders";
 const LAST_ORDER_KEY = "lastOrderId";
 
@@ -51,7 +52,7 @@ function renderCustomerInfo() {
     const customer = checkoutGetCustomer();
     if (!customer) {
         alert("Vui lòng đăng nhập để thanh toán.");
-        window.location.href = "../index.html#login";
+        goToAuth("login");
         return false;
     }
 

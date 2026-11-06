@@ -54,12 +54,12 @@
                     Giỏ hàng
                 </a>
 
-                <a href="../index.html#login" target="_self" title="Đăng nhập">
+                <a href="../auth.html#login" target="_self" title="Đăng nhập">
                     <img src="../images/login.png" alt="Đăng nhập" width="20" height="20">
                     Đăng nhập
                 </a>
 
-                <a href="../index.html#register" target="_self" title="Đăng ký tài khoản">
+                <a href="../auth.html#register" target="_self" title="Đăng ký tài khoản">
                     <img src="../images/signup.png" alt="Đăng ký tài khoản" width="20" height="20">
                     Đăng ký
                 </a>
@@ -281,10 +281,6 @@
                                             <div class="search-wrapper">
                                                 <input id="currentPassword" type="password" class="search-input"
                                                     autocomplete="current-password" required>
-                                                <button type="button" class="togglePassword"
-                                                data-target="currentPassword" aria-label="Giữ để hiện mật khẩu">
-                                                <i data-lucide="eye-off" class="eyeOff"></i>
-                                                <i data-lucide="eye" class="eyeOn"></i>
                                             </div>
                                         </div>
                                         <div class="adv-group">
@@ -292,32 +288,16 @@
                                             <div class="search-wrapper">
                                                 <input id="newPassword" type="password" class="search-input"
                                                     autocomplete="new-password" minlength="8" required>
-
-                                                <button type="button" class="togglePassword"
-                                                    data-target="newPassword" aria-label="Giữ để hiện mật khẩu">
-                                                    <i data-lucide="eye-off" class="eyeOff"></i>
-                                                    <i data-lucide="eye" class="eyeOn"></i>
-                                                </button>
                                             </div>
                                         </div>
                                         <div class="adv-group">
                                             <label for="confirmNewPassword">Nhập lại mật khẩu mới *</label>
                                             <div class="search-wrapper">
                                                 <input id="confirmNewPassword" type="password" class="search-input"
-                                                    autocomplete="confirm-new-password" minlength="8" required>
-
-                                                <button type="button" class="togglePassword"
-                                                    data-target="confirmNewPassword" aria-label="Giữ để hiện mật khẩu">
-                                                    <i data-lucide="eye-off" class="eyeOff"></i>
-                                                    <i data-lucide="eye" class="eyeOn"></i>
-                                                </button>
+                                                    autocomplete="new-password" minlength="8" required>
                                             </div>
                                         </div>
-                                        
-                                        <p id="passwordMessage" 
-                                            role="status" 
-                                            aria-live="polite" 
-                                            hidden></p>
+                                        <p id="passwordMessage" role="status" aria-live="polite" hidden></p>
                                         <div class="purchase-row">
                                             <button type="submit" class="action-btn action-btn-primary">
                                                 Cập nhật mật khẩu
@@ -328,9 +308,9 @@
 
                         
                                 <!-- ================= XÓA TÀI KHOẢN ================= -->
-                                <div class="summary-box" style="margin-top: 24px; border: 1px">
+                                <div class="summary-box" style="margin-top: 24px; border: 1px solid #d6a4a4;">
 
-                                    <h3 class="section-title">
+                                    <h3 class="section-title" style="color: #b83232;">
                                         ⚠ Xóa tài khoản
                                     </h3>
 
@@ -354,11 +334,6 @@
                                                     placeholder="Nhập mật khẩu để xác nhận"
                                                     autocomplete="current-password"
                                                     required>
-                                                <button type="button" class="togglePassword"
-                                                    data-target="deleteAccountPassword" aria-label="Giữ để hiện mật khẩu">
-                                                    <i data-lucide="eye-off" class="eyeOff"></i>
-                                                    <i data-lucide="eye" class="eyeOn"></i>
-                                                </button>
                                             </div>
                                         </div>
 
@@ -996,10 +971,9 @@
                 function route(isFirstLoad) {
                     const name = location.hash.replace("#", "");
                     
-                    // Chưa đăng nhập thì sang trang đăng nhập của index.html
-                    if ("login".includes(name)) {
-                        sessionStorage.setItem("returnUrl", location.href);
-                        location.replace("../index.html#" + name);
+                    // #login / #register không còn là view của trang này: sang auth.html
+                    if (name === "login" || name === "register") {
+                        location.replace(getAuthUrl(name));
                         return;
                     }
                     
@@ -1017,10 +991,6 @@
                 window.addEventListener("hashchange", () => route(false));
                 route(true);
             })();
-        </script>
-        <script src="https://unpkg.com/lucide@latest"></script>
-        <script>
-            lucide.createIcons();
         </script>
     </body>
 </html>

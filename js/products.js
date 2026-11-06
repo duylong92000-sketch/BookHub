@@ -1,4 +1,5 @@
 /* ==========================================================
+    BOOKHUB - products.js
     Mục lục:
     A. Dữ liệu & hàm dùng chung
     B. Trang chủ         -> initHome()
@@ -10,6 +11,7 @@
 /* ==========================================================
     A. DỮ LIỆU & HÀM DÙNG CHUNG
    ========================================================== */
+
 
 const SITE_ROOT = new URL('../', document.currentScript.src).href;   // thư mục cha của js/
 const PAGE_PRODUCTS = '#products';
@@ -109,7 +111,7 @@ function addToCart(sku, qty = 1) {
     // Chưa đăng nhập không được thêm sách
     if (!user) {
         alert("Vui lòng đăng nhập trước khi thêm sách vào giỏ hàng!");
-        window.location.hash = "#login";
+        goToAuth("login");
         return -1;
     }
 

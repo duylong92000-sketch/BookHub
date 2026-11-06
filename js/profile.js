@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const get = id => document.getElementById(id);
 
     const form = get("profileForm");
+    const message = get("profileMessage");
 
     // Các ô được chỉnh sửa: id trên form -> tên thuộc tính trong dữ liệu
     const editableFields = {
@@ -19,13 +20,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let customer = null;
     let isEditing = false;
-
-    function showDeleteMessage(text, massage = "profileMessage") {
-        const message = get(massage);
-        message.textContent = text;
-        message.hidden = false;
-        message.className = "out-stock";
-    }
 
     // Đọc danh sách khách hàng
     function getCustomers() {
@@ -56,8 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Hiển thị thông báo
-    function showMessage(text, error = false, massage = "profileMessage") {
-        const message = get(massage);
+    function showMessage(text, error = false) {
         message.textContent = text;
         message.hidden = !text;
         message.className = error ? "out-stock" : "in-stock";
@@ -243,83 +236,7 @@ document.addEventListener("DOMContentLoaded", function () {
             showMessage("Không thể lưu thông tin.", true);
         }
     });
-// ================= Đổi mật khẩu ==================
-
-   
-get("changePasswordForm").addEventListener("submit", function (event) {
-
-    event.preventDefault();
-
-    if (!customer) {
-        showDeleteMessage("Vui lòng đăng nhập để đổi mật khẩu.", "passwordMessage");
-        return;
-    }
-
-    const currentPassword = get("currentPassword").value;
-    const newPassword = get("newPassword").value;
-    const confirmPassword = get("confirmNewPassword").value;
-
-    const currentSession = JSON.parse(
-        localStorage.getItem(currentUserKey) || "null"
-    );
-
-    if (
-        !currentSession ||
-        currentSession.customerId !== customer.customerId
-    ) {
-        showDeleteMessage("Phiên đăng nhập không hợp lệ.", "passwordMessage");
-        return;
-    }
-
-    const customers = getCustomers();
-
-    const index = customers.findIndex(
-        c => c.customerId === customer.customerId
-    );
-
-    if (index === -1 || customers[index].status === "inactive") {
-        showDeleteMessage("Tài khoản không tồn tại hoặc đã bị khóa.", "passwordMessage");
-        return;
-    }
-
-    if (currentPassword !== customers[index].password) {
-        showDeleteMessage("Mật khẩu không chính xác!", "passwordMessage");
-        return;
-    }
-
-    if (newPassword === customers[index].password) {
-        showDeleteMessage("Mật khẩu mới phải khác mật khẩu hiện tại.", "passwordMessage");
-        return;
-    }
-
-    if (newPassword.length < 8) {
-        showDeleteMessage("Mật khẩu mới phải có ít nhất 8 ký tự.", "passwordMessage");
-        return;
-    }
-
-    if (newPassword !== confirmPassword) {
-        showDeleteMessage("Mật khẩu xác nhận không khớp.", "passwordMessage");
-        return;
-    }
-
-    const confirmed = window.confirm(
-            "Bạn có chắc chắn muốn XÓA TÀI KHOẢN?\n" +
-            "Sau khi xóa, bạn sẽ không thể đăng nhập lại."
-        );
-
-    if (!confirmed) return;
-    customers[index].password = newPassword;
-
-    localStorage.setItem("customers", JSON.stringify(customers));
-
-
-    showDeleteMessage("Đổi mật khẩu thành công!", "passwordMessage");
-    get("changePasswordForm").reset();
-});
-
-
-
-        
+    
 // ================= XÓA TÀI KHOẢN =================
 
     get("deleteAccountForm").addEventListener("submit", function (event) {
@@ -328,12 +245,15 @@ get("changePasswordForm").addEventListener("submit", function (event) {
         const password = get("deleteAccountPassword").value;
         const message = get("deleteAccountMessage");
 
+        function showDeleteMessage(text) {
+            message.textContent = text;
+            message.hidden = false;
+            message.className = "out-stock";
+        }
+
         // Kiểm tra tài khoản đang đăng nhập
         if (!customer) {
-            showDeleteMessage(
-                "Vui lòng đăng nhập để xóa tài khoản.",
-                "deleteAccountMessage"
-            );
+            showDeleteMessage("Vui lòng đăng nhập để xóa tài khoản.");
             return;
         }
 
@@ -343,9 +263,7 @@ get("changePasswordForm").addEventListener("submit", function (event) {
 
         if (!currentSession ||
             currentSession.customerId !== customer.customerId) {
-            showDeleteMessage(
-                "Phiên đăng nhập không hợp lệ.",
-                "deleteAccountMessage");
+            showDeleteMessage("Phiên đăng nhập không hợp lệ.");
             return;
         }
 
@@ -357,17 +275,13 @@ get("changePasswordForm").addEventListener("submit", function (event) {
         );
 
         if (index === -1 || customers[index].status === "inactive") {
-            showDeleteMessage(
-                "Tài khoản không tồn tại hoặc đã bị khóa.",
-                "deleteAccountMessage");
+            showDeleteMessage("Tài khoản không tồn tại hoặc đã bị khóa.");
             return;
         }
 
         // Bắt buộc nhập đúng mật khẩu hiện tại
         if (password !== customers[index].password) {
-            showDeleteMessage(
-                "Mật khẩu không chính xác!",
-                 "deleteAccountMessage");
+            showDeleteMessage("Mật khẩu không chính xác!");
             return;
         }
 
@@ -418,77 +332,15 @@ get("changePasswordForm").addEventListener("submit", function (event) {
             alert("Tài khoản đã được xóa thành công!");
 
             // Chuyển về trang đăng nhập
-            window.location.replace("index.html#login");
-            window.location.reload();
+            window.location.replace(getAuthUrl("login"));
 
         } catch (error) {
             console.error("Lỗi xóa tài khoản:", error);
 
             showDeleteMessage(
-                "Không thể xóa tài khoản. Vui lòng thử lại.",
-                "deleteAccountMessage"
+                "Không thể xóa tài khoản. Vui lòng thử lại."
             );
         }
-    });
-
-    
-    document.querySelectorAll(".togglePassword").forEach(button => {
-        // Lấy input tương ứng thông qua data-target
-        const input = document.getElementById(button.dataset.target);
-
-        // Nếu không tìm thấy input thì bỏ qua
-        if (!input) return;
-
-        // Hiện mật khẩu
-        function showPassword() {
-            input.type = "text";
-            button.classList.add("is-visible");
-        }
-
-        // Ẩn mật khẩu
-        function hidePassword() {
-            input.type = "password";
-            button.classList.remove("is-visible");
-        }
-
-        // Nhấn chuột hoặc chạm màn hình
-        button.addEventListener("pointerdown", function(event) {
-            event.preventDefault();
-
-            showPassword();
-            button.setPointerCapture(event.pointerId);
-        });
-
-        // Thả chuột hoặc ngón tay
-        button.addEventListener("pointerup", hidePassword);
-
-        // Khi thao tác bị hủy
-        button.addEventListener("pointercancel", hidePassword);
-
-        // Khi mất quyền theo dõi pointer
-        button.addEventListener("lostpointercapture", hidePassword);
-
-        // Khi cửa sổ mất focus
-        window.addEventListener("blur", hidePassword);
-
-        // Hỗ trợ bàn phím
-        button.addEventListener("keydown", function(event) {
-            if (
-                (event.key === " " || event.key === "Enter") &&
-                !event.repeat
-            ) {
-                event.preventDefault();
-                showPassword();
-            }
-        });
-
-        button.addEventListener("keyup", function(event) {
-            if (event.key === " " || event.key === "Enter") {
-                hidePassword();
-            }
-        });
-
-        button.addEventListener("blur", hidePassword);
     });
 
     // Khởi tạo trang
@@ -496,5 +348,4 @@ get("changePasswordForm").addEventListener("submit", function (event) {
     setEditing(false);
     renderProfile();
 
-}
-);
+});

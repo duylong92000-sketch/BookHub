@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Đăng nhập - BookHub</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="css/customer.css">
+        <style>
+            /* Chọn vai trò: Khách hàng / Quản trị viên */
+            .auth-tabs { display: flex; gap: 8px; margin-bottom: 8px; }
+            .auth-tabs a {
+                flex: 1;
+                padding: 10px 12px;
+                text-align: center;
+                font-size: 14px;
+                font-weight: bold;
+                color: #777;
+                text-decoration: none;
+                border: 1px solid #ccc;
+                border-radius: 7px;
+            }
+            .auth-tabs a:hover { color: #333; border-color: #999; }
+            .auth-tabs a.active { color: #fff; background-color: var(--brown-dark); border-color: var(--brown-dark); }
+            .auth-tabs a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+            .auth-back { text-align: center; margin-top: 16px; font-size: 14px; }
+            .auth-back a { color: var(--accent-dark); text-decoration: none; font-weight: bold; }
+            .auth-back a:hover { text-decoration: underline; }
+        </style>
+    </head>
+
+    <body id="authPage" data-page="auth">
+        <header class="top">
+            <div class="left-section">
+                <a class="logo-section" href="index.html#home" title="Về trang chủ">
+                    <img src="images/logoweb.png" alt="Logo" width="50" height="50">
+                    <div>
+                        <h1>BOOKHUB</h1>
+                        <p>Chắp cánh tri thức</p>
+                    </div>
+                </a>
+            </div>
+        </header>
+
+        <main class="top">
+            <div class="form">
+                <nav class="auth-tabs" aria-label="Chọn loại tài khoản">
+                    <a href="#login" data-tab="customer">Khách hàng</a>
+                    <a href="#admin" data-tab="admin">Quản trị viên</a>
+                </nav>
+
+                <!-- #login: Đăng nhập khách hàng -->
+                <section id="view-login" data-view hidden>
+                    <h2>Đăng nhập tài khoản</h2>
+                    <form id="customersLoginForm" novalidate>
+                        <label for="userName">Tên hiển thị</label>
+                        <input type="text" id="userName" maxlength="30" placeholder="Tên tài khoản" autocomplete="username">
+                        <div id="userError" class="error"></div>
+
+                        <label for="password">Mật khẩu</label>
+                        <input type="password" id="password" minlength="8" placeholder="Nhập mật khẩu" autocomplete="current-password">
+                        <div id="passwordError" class="error"></div>
+
+                        <button type="submit">Đăng nhập</button>
+                    </form>
+
+                    <p class="login-link">
+                        Chưa có tài khoản? <a href="#register">Đăng ký</a>
+                    </p>
+                </section>
+
+                <!-- #register: Đăng ký khách hàng -->
+                <section id="view-register" data-view hidden>
+                    <h2>Đăng ký tài khoản</h2>
+                    <form id="formRegister">
+                        <label for="fullName">Họ và tên</label>
+                        <input type="text" id="fullName" placeholder="Họ và tên" maxlength="30">
+                        <div id="nameError" class="error"></div>
+
+                        <label for="regUserName">Tên hiển thị</label>
+                        <input type="text" id="regUserName" maxlength="30" placeholder="Tên tài khoản" autocomplete="username">
+                        <div id="usernameError" class="error"></div>
+
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="Nhập email">
+                        <div id="emailError" class="error"></div>
+
+                        <label for="phone">Số điện thoại</label>
+                        <input type="tel" id="phone" placeholder="Số điện thoại" pattern="0[0-9]{9}" maxlength="12">
+                        <div id="phoneError" class="error"></div>
+
+                        <label for="regPassword">Mật khẩu</label>
+                        <input type="password" id="regPassword" placeholder="Nhập mật khẩu" autocomplete="new-password">
+                        <div id="regPasswordError" class="error"></div>
+
+                        <label for="repassword">Xác nhận mật khẩu</label>
+                        <input type="password" id="repassword" placeholder="Nhập lại mật khẩu" autocomplete="new-password">
+                        <div id="repasswordError" class="error"></div>
+
+                        <label for="address">Địa chỉ</label>
+                        <input type="text" id="address" placeholder="Số nhà + tên đường, phường, thành phố">
+
+                        <button type="submit">Đăng ký</button>
+                    </form>
+
+                    <p class="login-link">
+                        Đã có tài khoản? <a href="#login">Đăng nhập</a>
+                    </p>
+                </section>
+
+                <!-- #admin: Đăng nhập quản trị viên -->
+                <section id="view-admin" data-view hidden>
+                    <h2>Đăng nhập quản trị</h2>
+                    <form id="adminLoginForm" novalidate>
+                        <label for="adminUsername">Tên tài khoản</label>
+                        <input type="text" id="adminUsername" placeholder="Tên tài khoản" autocomplete="username">
+                        <div id="adminUserError" class="error" role="alert"></div>
+
+                        <label for="adminPassword">Mật khẩu</label>
+                        <input type="password" id="adminPassword" placeholder="Nhập mật khẩu" autocomplete="current-password">
+                        <div id="adminPasswordError" class="error" role="alert"></div>
+
+                        <button type="submit">Đăng nhập</button>
+                    </form>
+                </section>
+
+                <p class="auth-back"><a href="index.html#home">← Về trang cửa hàng</a></p>
+            </div>
+        </main>
+
+        <script src="js/auth.js"></script>
+    </body>
+</html>

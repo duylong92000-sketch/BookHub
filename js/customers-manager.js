@@ -1,4 +1,6 @@
+
 /* ==========================================================
+   BOOKHUB - ADMIN CUSTOMERS
    Quản lý tài khoản khách hàng đã đăng ký
    Dữ liệu dùng chung: localStorage["customers"]
    ========================================================== */
