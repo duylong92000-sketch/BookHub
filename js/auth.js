@@ -536,6 +536,64 @@
                 hideError(repasswordError);
             }
         });
+        document.querySelectorAll(".togglePassword").forEach(button => {
+            // Lấy input tương ứng thông qua data-target
+            const input = document.getElementById(button.dataset.target);
+
+            // Nếu không tìm thấy input thì bỏ qua
+            if (!input) return;
+
+            // Hiện mật khẩu
+            function showPassword() {
+                input.type = "text";
+                button.classList.add("is-visible");
+            }
+
+            // Ẩn mật khẩu
+            function hidePassword() {
+                input.type = "password";
+                button.classList.remove("is-visible");
+            }
+
+            // Nhấn chuột hoặc chạm màn hình
+            button.addEventListener("pointerdown", function(event) {
+                event.preventDefault();
+
+                showPassword();
+                button.setPointerCapture(event.pointerId);
+            });
+
+            // Thả chuột hoặc ngón tay
+            button.addEventListener("pointerup", hidePassword);
+
+            // Khi thao tác bị hủy
+            button.addEventListener("pointercancel", hidePassword);
+
+            // Khi mất quyền theo dõi pointer
+            button.addEventListener("lostpointercapture", hidePassword);
+
+            // Khi cửa sổ mất focus
+            window.addEventListener("blur", hidePassword);
+
+            // Hỗ trợ bàn phím
+            button.addEventListener("keydown", function(event) {
+                if (
+                    (event.key === " " || event.key === "Enter") &&
+                    !event.repeat
+                ) {
+                    event.preventDefault();
+                    showPassword();
+                }
+            });
+
+            button.addEventListener("keyup", function(event) {
+                if (event.key === " " || event.key === "Enter") {
+                    hidePassword();
+                }
+            });
+
+            button.addEventListener("blur", hidePassword);
+        });
     }
 
     /* ---------- Đăng nhập quản trị viên ---------- */

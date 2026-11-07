@@ -4,9 +4,8 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Đăng nhập - BookHub</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="css/google.css">
         <link rel="stylesheet" href="css/customer.css">
         <style>
             /* Chọn vai trò: Khách hàng / Quản trị viên */
@@ -60,7 +59,14 @@
                         <div id="userError" class="error"></div>
 
                         <label for="password">Mật khẩu</label>
-                        <input type="password" id="password" minlength="8" placeholder="Nhập mật khẩu" autocomplete="current-password">
+                            <div class="search-wrapper">
+                            <input type="password" id="password" minlength="8" placeholder="Nhập mật khẩu" autocomplete="current-password">
+                            <button type="button" class="togglePassword"
+                            data-target="regPassword" aria-label="Giữ để hiện mật khẩu">
+                                <i data-lucide="eye-off" class="eyeOff"></i>
+                                <i data-lucide="eye" class="eyeOn"></i>
+                            </button>
+                        </div>
                         <div id="passwordError" class="error"></div>
 
                         <button type="submit">Đăng nhập</button>
@@ -92,11 +98,24 @@
                         <div id="phoneError" class="error"></div>
 
                         <label for="regPassword">Mật khẩu</label>
-                        <input type="password" id="regPassword" placeholder="Nhập mật khẩu" autocomplete="new-password">
+                        <div class="search-wrapper">
+                            <input type="password" id="regPassword" placeholder="Nhập mật khẩu" autocomplete="new-password">
+                            <button type="button" class="togglePassword"
+                            data-target="regPassword" aria-label="Giữ để hiện mật khẩu">
+                                <i data-lucide="eye-off" class="eyeOff"></i>
+                                <i data-lucide="eye" class="eyeOn"></i>
+                            </button>
+                        </div>
                         <div id="regPasswordError" class="error"></div>
-
                         <label for="repassword">Xác nhận mật khẩu</label>
-                        <input type="password" id="repassword" placeholder="Nhập lại mật khẩu" autocomplete="new-password">
+                        <div class="search-wrapper">
+                            <input type="password" id="repassword" placeholder="Nhập lại mật khẩu" autocomplete="new-password">
+                            <button type="button" class="togglePassword"
+                            data-target="repassword" aria-label="Giữ để hiện mật khẩu">
+                                <i data-lucide="eye-off" class="eyeOff"></i>
+                                <i data-lucide="eye" class="eyeOn"></i>
+                            </button>
+                        </div>
                         <div id="repasswordError" class="error"></div>
 
                         <label for="address">Địa chỉ</label>
@@ -119,9 +138,15 @@
                         <div id="adminUserError" class="error" role="alert"></div>
 
                         <label for="adminPassword">Mật khẩu</label>
-                        <input type="password" id="adminPassword" placeholder="Nhập mật khẩu" autocomplete="current-password">
-                        <div id="adminPasswordError" class="error" role="alert"></div>
-
+                        <div class="search-wrapper">
+                            <input type="password" id="adminPassword" placeholder="Nhập mật khẩu" autocomplete="current-password">
+                            <div id="adminPasswordError" class="error" role="alert"></div>
+                            <button type="button" class="togglePassword"
+                            data-target="repassword" aria-label="Giữ để hiện mật khẩu">
+                                <i data-lucide="eye-off" class="eyeOff"></i>
+                                <i data-lucide="eye" class="eyeOn"></i>
+                            </button>
+                        </div>
                         <button type="submit">Đăng nhập</button>
                     </form>
                 </section>
@@ -131,5 +156,9 @@
         </main>
 
         <script src="js/auth.js"></script>
+        <script src="./js/lucide.js"></script>
+        <script>
+            lucide.createIcons();
+        </script>
     </body>
 </html>

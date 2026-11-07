@@ -201,7 +201,7 @@ document.addEventListener("DOMContentLoaded", function () {
         );
 
         if (userNameExists) {
-            showMessage("Tên đăng nhập đã được sử dụng.", true);
+            showDeleteMessage("Tên đăng nhập đã được sử dụng.", true);
             return;
         }
 
@@ -212,7 +212,7 @@ document.addEventListener("DOMContentLoaded", function () {
         );
 
         if (emailExists) {
-            showMessage("Email đã được sử dụng.", true);
+            showDeleteMessage("Email đã được sử dụng.", true);
             return;
         }
 
