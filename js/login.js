@@ -9,67 +9,7 @@ function getCustomersSafe() {
     }
 }
 
-
-/* Admin login */
-const adminLoginForm = document.getElementById("adminLoginForm")
-
-if(adminLoginForm) {
-    const usernameAdmin = document.getElementById("adminUsername")
-    const passwordAdmin = document.getElementById("adminPassword")
-    const userError = document.getElementById("userError")
-    const passwordError =document.getElementById("passwordError")   
-
-    adminLoginForm.addEventListener("submit", function(event) {
-        event.preventDefault();
-        let isValid = true;
-
-        if (!usernameAdmin.value.trim()){
-            userError.style.display = "block";
-            userError.innerHTML = "Tên không được để trống"
-            isValid = false;
-        }
-        else{
-            userError.style.display = "none"
-        }
-
-        if (passwordAdmin.value.trim() === ""){
-            passwordError.style.display = "block";
-            passwordError.innerHTML = "Mật khẩu không được để trống"
-            isValid = false;
-        }
-        else{
-            passwordError.style.display = "none"
-        }        
-
-        //Đối chiếu tên và mật khẩu admin
-        if(isValid) {
-            if (usernameAdmin.value.trim() === "admin" && passwordAdmin.value === "12345678") {
-
-                localStorage.setItem("adminLoggedIn", "true");
-                window.location.href = "dashboard.html";
-            }
-            else{
-                passwordError.style.display = "block";
-                passwordError.innerHTML = "Tài khoản hoặc mật khẩu không đúng "
-            }
-        }
-    });
-
-    passwordAdmin.addEventListener("input", function () {
-        if(passwordAdmin.value.trim() === "") {
-            passwordError.textContent = "Vui lòng nhập password";
-        }
-        else if (passwordAdmin.validity.tooShort) {
-            passwordError.textContent = "Mật khẩu phải có ít nhất 8 ký tự";
-        } 
-        else {
-            passwordError.textContent = "";
-        }
-    });
-    
-}
-
-/* CUstomer login */
+/* Customer login */
 const customersLoginForm = document.getElementById("customersLoginForm")
 
 if(customersLoginForm) {
@@ -263,4 +203,62 @@ if(customersLoginForm) {
         }
     });
     
+    document.querySelectorAll(".togglePassword").forEach(button => {
+        // Lấy input tương ứng thông qua data-target
+        const input = document.getElementById(button.dataset.target);
+
+        // Nếu không tìm thấy input thì bỏ qua
+        if (!input) return;
+
+        // Hiện mật khẩu
+        function showPassword() {
+            input.type = "text";
+            button.classList.add("is-visible");
+        }
+
+        // Ẩn mật khẩu
+        function hidePassword() {
+            input.type = "password";
+            button.classList.remove("is-visible");
+        }
+
+        // Nhấn chuột hoặc chạm màn hình
+        button.addEventListener("pointerdown", function(event) {
+            event.preventDefault();
+
+            showPassword();
+            button.setPointerCapture(event.pointerId);
+        });
+
+        // Thả chuột hoặc ngón tay
+        button.addEventListener("pointerup", hidePassword);
+
+        // Khi thao tác bị hủy
+        button.addEventListener("pointercancel", hidePassword);
+
+        // Khi mất quyền theo dõi pointer
+        button.addEventListener("lostpointercapture", hidePassword);
+
+        // Khi cửa sổ mất focus
+        window.addEventListener("blur", hidePassword);
+
+        // Hỗ trợ bàn phím
+        button.addEventListener("keydown", function(event) {
+            if (
+                (event.key === " " || event.key === "Enter") &&
+                !event.repeat
+            ) {
+                event.preventDefault();
+                showPassword();
+            }
+        });
+
+        button.addEventListener("keyup", function(event) {
+            if (event.key === " " || event.key === "Enter") {
+                hidePassword();
+            }
+        });
+
+        button.addEventListener("blur", hidePassword);
+    });
 }

@@ -249,11 +249,20 @@
                     <h2>Đăng nhập tài khoản</h2>
                     <form id="customersLoginForm">
                         <label for="userName">Tên hiển thị</label>
-                        <input type="text" id="userName" maxlength="30" placeholder="Tên tài khoản" >
+                        <div class="search-wrapper">
+                            <input type="text" id="userName" maxlength="30" placeholder="Tên tài khoản" >
+                        </div>
                         <div id="userError" class="error"></div>
-
+                        
                         <label for="password">Mật khẩu</label>
-                        <input type="password" id="password" minlength="8" placeholder="Nhập mật khẩu">
+                        <div class="search-wrapper">
+                            <input type="password" id="password" minlength="8" placeholder="Nhập mật khẩu">
+                            <button type="button" class="togglePassword"
+                                data-target="password" aria-label="Giữ để hiện mật khẩu">
+                                <i data-lucide="eye-off" class="eyeOff"></i>
+                                <i data-lucide="eye" class="eyeOn"></i>
+                            </button>
+                        </div>
                         <div id="passwordError" class="error" ></div>
                 
                         <button type="submit">Đăng nhập</button>
@@ -289,11 +298,25 @@
                         <div id="phoneError" class="error"></div>
                 
                         <label for="regPassword">Mật khẩu</label>
-                        <input type="password" id="regPassword" placeholder="Nhập mật khẩu" >
+                        <div class="search-wrapper">
+                            <input type="password" id="regPassword" placeholder="Nhập mật khẩu" >
+                            <button type="button" class="togglePassword"
+                                data-target="password" aria-label="Giữ để hiện mật khẩu">
+                                <i data-lucide="eye-off" class="eyeOff"></i>
+                                <i data-lucide="eye" class="eyeOn"></i>
+                            </button>
+                        </div>
                         <div id="regPasswordError" class="error"></div>
 
                         <label for="repassword">Xác nhận mật khẩu</label>
-                        <input type="password" id="repassword" placeholder="Nhập lại mật khẩu">
+                        <div class="search-wrapper">
+                            <input type="password" id="repassword" placeholder="Nhập lại mật khẩu">
+                            <button type="button" class="togglePassword"
+                                data-target="password" aria-label="Giữ để hiện mật khẩu">
+                                <i data-lucide="eye-off" class="eyeOff"></i>
+                                <i data-lucide="eye" class="eyeOn"></i>
+                            </button>
+                            </div>
                         <div id="repasswordError" class="error"></div>
 
                         <label for="address">Địa chỉ</label>
@@ -364,6 +387,10 @@
         <script src="js/index.js"></script>
         <script src="js/login.js"></script>
         <script src="js/register.js"></script>
+        <script src="https://unpkg.com/lucide@latest"></script>
+        <script>
+            lucide.createIcons();
+        </script>
         <script>
         (function () {
             const VIEWS = {
@@ -410,6 +437,5 @@
             route(true);
         })();
         </script>
-
     </body>
 </html>
