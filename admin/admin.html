@@ -22,30 +22,13 @@
         .badge-cancelled,.badge-inactive{background:#f8d7da;color:#721c24}
         .badge-processing{background:#d1ecf1;color:#0c5460}
     </style>
+
+    <!-- Bắt buộc đăng nhập: chưa có phiên hợp lệ thì chuyển về auth.html -->
+    <script src="../js/auth.js"></script>
+    <script>requireAdminLogin();</script>
 </head>
 
-<body>
-
-    <!-- ============ ĐĂNG NHẬP ============ -->
-    <div id="loginView" hidden>
-    <div class="form">
-        <div style="text-align:center">
-        <img src="../images/logoweb.png" alt="Logo" width="50" height="50">
-        <h1>BOOKHUB</h1><p>Chắp cánh tri thức</p>
-        </div>
-        <h2>Đăng nhập tài khoản</h2>
-        <form id="adminLoginForm">
-        <label for="adminUsername">Tên tài khoản</label>
-        <input type="text" id="adminUsername" placeholder="Tên tài khoản">
-        <div id="userError" class="error"></div>
-        <label for="adminPassword">Mật khẩu</label>
-        <input type="password" id="adminPassword" minlength="8" placeholder="Nhập mật khẩu">
-        <div id="passwordError" class="error"></div>
-        <button type="submit">Đăng nhập</button>
-        </form>
-    </div>
-    </div>
-
+<body data-admin-page>
     <!-- ============ KHUNG ADMIN ============ -->
     <div id="adminView" hidden>
     <header class="admin-header">
@@ -101,7 +84,10 @@
         </div>
     </footer>
     </div>
-
+    <script src="../js/lucide.js"></script>
+        <script>
+            lucide.createIcons();
+        </script>
     <script src="../js/data.js"></script>
     <script src="../js/admin.js"></script>
 </body>

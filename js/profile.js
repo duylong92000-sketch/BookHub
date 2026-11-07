@@ -50,12 +50,19 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Hiển thị thông báo
-    function showMessage(text, error = false) {
+    function showMessage(text, error = false, massage = "profileMessage") {
+        const message = get(massage);
         message.textContent = text;
         message.hidden = !text;
         message.className = error ? "out-stock" : "in-stock";
     }
-
+    // Hiển thị thông báo xóa tài khoản hoặc đổi mật khẩu
+    function showDeleteMessage(text, massage = "profileMessage") {
+        const message = get(massage);
+        message.textContent = text;
+        message.hidden = false;
+        message.className = "out-stock";
+    }
     // Bật hoặc tắt chế độ chỉnh sửa
     function setEditing(value) {
         isEditing = Boolean(value && customer);
@@ -86,7 +93,7 @@ document.addEventListener("DOMContentLoaded", function () {
             get("editWrapper").hidden = true;
             get("profileActions").hidden = true;
 
-            showMessage("Vui lòng đăng nhập để xem hồ sơ.", true);
+            showDeleteMessage("Vui lòng đăng nhập để xem hồ sơ.", true);
             return;
         }
 
@@ -129,7 +136,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!customer) return;
 
         setEditing(true);
-        showMessage("");
+        showDeleteMessage("");
         get("username").focus();
     });
 
@@ -137,7 +144,7 @@ document.addEventListener("DOMContentLoaded", function () {
     get("cancelProfileBtn").addEventListener("click", function () {
         setEditing(false);
         renderProfile();   // đưa dữ liệu về như cũ
-        showMessage("Đã hủy thay đổi.");
+        showDeleteMessage("Đã hủy thay đổi.");
     });
 
     // Lưu thay đổi
@@ -156,19 +163,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Kiểm tra tên đăng nhập
         if (changes.userName.length < 2 || changes.userName.length > 30) {
-            showMessage("Tên đăng nhập phải từ 2 đến 30 ký tự.", true);
+            showDeleteMessage("Tên đăng nhập phải từ 2 đến 30 ký tự.", true);
             return;
         }
 
         // Kiểm tra email
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(changes.email)) {
-            showMessage("Email không hợp lệ.", true);
+            showDeleteMessage("Email không hợp lệ.", true);
             return;
         }
 
         // Kiểm tra số điện thoại
         if (!/^0\d{9}$/.test(changes.phone)) {
-            showMessage(
+            showDeleteMessage(
                 "Số điện thoại phải có 10 chữ số và bắt đầu bằng 0.",
                 true
             );
@@ -183,7 +190,7 @@ document.addEventListener("DOMContentLoaded", function () {
         );
 
         if (index === -1) {
-            showMessage("Không tìm thấy tài khoản trong hệ thống.", true);
+            showDeleteMessage("Không tìm thấy tài khoản trong hệ thống.", true);
             return;
         }
 
@@ -194,7 +201,7 @@ document.addEventListener("DOMContentLoaded", function () {
         );
 
         if (userNameExists) {
-            showMessage("Tên đăng nhập đã được sử dụng.", true);
+            showDeleteMessage("Tên đăng nhập đã được sử dụng.", true);
             return;
         }
 
@@ -205,7 +212,7 @@ document.addEventListener("DOMContentLoaded", function () {
         );
 
         if (emailExists) {
-            showMessage("Email đã được sử dụng.", true);
+            showDeleteMessage("Email đã được sử dụng.", true);
             return;
         }
 
@@ -229,13 +236,86 @@ document.addEventListener("DOMContentLoaded", function () {
             setEditing(false);
             renderProfile();
 
-            showMessage("Cập nhật thông tin thành công!");
+            showDeleteMessage("Cập nhật thông tin thành công!");
 
         } catch (error) {
             console.error("Lỗi lưu hồ sơ:", error);
-            showMessage("Không thể lưu thông tin.", true);
+            showDeleteMessage("Không thể lưu thông tin.", true);
         }
     });
+
+    // ================= Đổi mật khẩu ==================
+
+get("changePasswordForm").addEventListener("submit", function (event) {
+
+    event.preventDefault();
+
+    if (!customer) {
+        showDeleteMessage("Vui lòng đăng nhập để đổi mật khẩu.", "passwordMessage");
+        return;
+    }
+
+    const currentPassword = get("currentPassword").value;
+    const newPassword = get("newPassword").value;
+    const confirmPassword = get("confirmNewPassword").value;
+
+    const currentSession = JSON.parse(
+        localStorage.getItem(currentUserKey) || "null"
+    );
+
+    if (
+        !currentSession ||
+        currentSession.customerId !== customer.customerId
+    ) {
+        showDeleteMessage("Phiên đăng nhập không hợp lệ.", "passwordMessage");
+        return;
+    }
+
+    const customers = getCustomers();
+
+    const index = customers.findIndex(
+        c => c.customerId === customer.customerId
+    );
+
+    if (index === -1 || customers[index].status === "inactive") {
+        showDeleteMessage("Tài khoản không tồn tại hoặc đã bị khóa.", "passwordMessage");
+        return;
+    }
+
+    if (currentPassword !== customers[index].password) {
+        showDeleteMessage("Mật khẩu không chính xác!", "passwordMessage");
+        return;
+    }
+
+    if (newPassword === customers[index].password) {
+        showDeleteMessage("Mật khẩu mới phải khác mật khẩu hiện tại.", "passwordMessage");
+        return;
+    }
+
+    if (newPassword.length < 8) {
+        showDeleteMessage("Mật khẩu mới phải có ít nhất 8 ký tự.", "passwordMessage");
+        return;
+    }
+
+    if (newPassword !== confirmPassword) {
+        showDeleteMessage("Mật khẩu xác nhận không khớp.", "passwordMessage");
+        return;
+    }
+
+    const confirmed = window.confirm(
+            "Bạn có chắc chắn muốn ĐỔI MẬT KHẨU?\n" +
+            "Sau khi đổi, bạn sẽ không thể đăng nhập lại với mật khẩu cũ."
+        );
+
+    if (!confirmed) return;
+    customers[index].password = newPassword;
+
+    localStorage.setItem("customers", JSON.stringify(customers));
+
+
+    showDeleteMessage("Đổi mật khẩu thành công!", "passwordMessage");
+    get("changePasswordForm").reset();
+});
     
 // ================= XÓA TÀI KHOẢN =================
 
@@ -243,13 +323,6 @@ document.addEventListener("DOMContentLoaded", function () {
         event.preventDefault();
 
         const password = get("deleteAccountPassword").value;
-        const message = get("deleteAccountMessage");
-
-        function showDeleteMessage(text) {
-            message.textContent = text;
-            message.hidden = false;
-            message.className = "out-stock";
-        }
 
         // Kiểm tra tài khoản đang đăng nhập
         if (!customer) {
@@ -332,8 +405,7 @@ document.addEventListener("DOMContentLoaded", function () {
             alert("Tài khoản đã được xóa thành công!");
 
             // Chuyển về trang đăng nhập
-            window.location.replace("index.html#login");
-            window.location.reload();
+            window.location.replace(getAuthUrl("login"));
 
         } catch (error) {
             console.error("Lỗi xóa tài khoản:", error);
@@ -342,6 +414,64 @@ document.addEventListener("DOMContentLoaded", function () {
                 "Không thể xóa tài khoản. Vui lòng thử lại."
             );
         }
+    });
+    document.querySelectorAll(".togglePassword").forEach(button => {
+        // Lấy input tương ứng thông qua data-target
+        const input = document.getElementById(button.dataset.target);
+
+        // Nếu không tìm thấy input thì bỏ qua
+        if (!input) return;
+
+        // Hiện mật khẩu
+        function showPassword() {
+            input.type = "text";
+            button.classList.add("is-visible");
+        }
+
+        // Ẩn mật khẩu
+        function hidePassword() {
+            input.type = "password";
+            button.classList.remove("is-visible");
+        }
+
+        // Nhấn chuột hoặc chạm màn hình
+        button.addEventListener("pointerdown", function(event) {
+            event.preventDefault();
+
+            showPassword();
+            button.setPointerCapture(event.pointerId);
+        });
+
+        // Thả chuột hoặc ngón tay
+        button.addEventListener("pointerup", hidePassword);
+
+        // Khi thao tác bị hủy
+        button.addEventListener("pointercancel", hidePassword);
+
+        // Khi mất quyền theo dõi pointer
+        button.addEventListener("lostpointercapture", hidePassword);
+
+        // Khi cửa sổ mất focus
+        window.addEventListener("blur", hidePassword);
+
+        // Hỗ trợ bàn phím
+        button.addEventListener("keydown", function(event) {
+            if (
+                (event.key === " " || event.key === "Enter") &&
+                !event.repeat
+            ) {
+                event.preventDefault();
+                showPassword();
+            }
+        });
+
+        button.addEventListener("keyup", function(event) {
+            if (event.key === " " || event.key === "Enter") {
+                hidePassword();
+            }
+        });
+
+        button.addEventListener("blur", hidePassword);
     });
 
     // Khởi tạo trang

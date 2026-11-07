@@ -2,6 +2,7 @@
     A. DỮ LIỆU & HÀM DÙNG CHUNG
    ========================================================== */
 
+
 const SITE_ROOT = new URL('../', document.currentScript.src).href;   // thư mục cha của js/
 const PAGE_PRODUCTS = '#products';
 const PAGE_DETAIL   = '#detail';
@@ -100,7 +101,7 @@ function addToCart(sku, qty = 1) {
     // Chưa đăng nhập không được thêm sách
     if (!user) {
         alert("Vui lòng đăng nhập trước khi thêm sách vào giỏ hàng!");
-        window.location.hash = "#login";
+        goToAuth("login");
         return -1;
     }
 

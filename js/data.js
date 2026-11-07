@@ -1,5 +1,7 @@
 /* ==========================================================
+   BOOKHUB - data.js
    Dữ liệu và hàm dùng chung cho admin.js và products.js.
+   PHẢI nạp file này TRƯỚC admin.js / products.js.
 
    Quy ước localStorage (nguồn dữ liệu duy nhất):
      categories : [{ categoryId, key, categoryName, status }]
@@ -11,7 +13,7 @@
                      totalAmount, orderStatus }]
      imports    : [{ importId, importDate, items, totalAmount, status }]
      cart       : { "MS001": 2 }   (do trang khách quản lý)
-========================================================== */
+   ========================================================== */
 
 const getData = key => {
     try {
@@ -159,3 +161,20 @@ function seedData() {
     });
 }
 seedData();
+
+
+/* ==================== ĐĂNG NHẬP / ĐĂNG KÝ ====================
+   Form đăng nhập, đăng ký nằm ở auth.html (thư mục gốc, cùng cấp index.html).
+   Trang trong /customer cần thêm "../" nên dùng chung 2 hàm này. */
+
+// Địa chỉ auth.html: view = "login" | "register" | "admin"
+function getAuthUrl(view) {
+    const prefix = window.location.pathname.includes("/customer/") ? "../" : "";
+    return prefix + "auth.html#" + (view || "login");
+}
+
+// Nhớ trang đang xem rồi chuyển sang auth.html; đăng nhập xong sẽ quay lại trang này
+function goToAuth(view) {
+    sessionStorage.setItem("returnUrl", window.location.href);
+    window.location.href = getAuthUrl(view);
+}

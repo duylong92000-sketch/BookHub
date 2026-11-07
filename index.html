@@ -4,9 +4,8 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>SGU - BookHub</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="css/google.css">
         <link rel="stylesheet" href="css/customer.css">
     </head>
 
@@ -96,12 +95,12 @@
                     Giỏ hàng
                 </a>
 
-                <a href="#login" target="_self" title="Đăng nhập">
+                <a href="auth.html#login" target="_self" title="Đăng nhập">
                     <img src="images/login.png" alt="Đăng nhập" width="20" height="20">
                     Đăng nhập
                 </a>
 
-                <a href="#register" target="_self" title="Đăng ký tài khoản">
+                <a href="auth.html#register" target="_self" title="Đăng ký tài khoản">
                     <img src="images/signup.png" alt="Đăng ký tài khoản" width="20" height="20">
                     Đăng ký
                 </a>
@@ -126,7 +125,7 @@
                         </button>
                     </div>
                 </div>
-            
+        
                 <a href="admin/admin.html" target="_self" title="Đi đến khu vực admin">
                     <img src="images/admin.png" alt="Admin" width="20" height="20">
                     Admin
@@ -241,74 +240,6 @@
             </main>
         </div>
 
-        <!-- #login: Đăng nhập -->
-        <div id="view-login" data-view hidden>
-            <main class="top">
-                <!--Bảng đăng nhập-->
-                <div class="form">
-                    <h2>Đăng nhập tài khoản</h2>
-                    <form id="customersLoginForm">
-                        <label for="userName">Tên hiển thị</label>
-                        <input type="text" id="userName" maxlength="30" placeholder="Tên tài khoản" >
-                        <div id="userError" class="error"></div>
-
-                        <label for="password">Mật khẩu</label>
-                        <input type="password" id="password" minlength="8" placeholder="Nhập mật khẩu">
-                        <div id="passwordError" class="error" ></div>
-                
-                        <button type="submit">Đăng nhập</button>
-                    </form>
-
-                    <p class="login-link">
-                        Chưa có tài khoản? <a href="#register">Đăng ký</a>
-                    </p>
-                </div>
-            </main>
-        </div>
-
-        <!-- #register: Đăng ký -->
-        <div id="view-register" data-view hidden>
-            <main class="top">
-                <div class="form">
-                    <h2>Đăng ký tài khoản</h2>
-                    <form id="formRegister">
-                        <label for="fullName">Họ và tên</label>
-                        <input type="text" id="fullName" placeholder="Họ và tên" maxlength="30">
-                        <div id="nameError" class="error"></div>
-
-                        <label for="regUserName">Tên hiển thị</label>
-                        <input type="text" id="regUserName" maxlength="30" placeholder="Tên tài khoản" >
-                        <div id="usernameError" class="error"></div>
-
-                        <label for="email">Email</label>
-                        <input type="email" id="email" placeholder="Nhập email">
-                        <div id="emailError" class="error" ></div>
-
-                        <label for="phone">Số điện thoại</label>
-                        <input type="tel" id="phone" placeholder="Số điện thoại" pattern="0[0-9]{9}" maxlength="12">
-                        <div id="phoneError" class="error"></div>
-                
-                        <label for="regPassword">Mật khẩu</label>
-                        <input type="password" id="regPassword" placeholder="Nhập mật khẩu" >
-                        <div id="regPasswordError" class="error"></div>
-
-                        <label for="repassword">Xác nhận mật khẩu</label>
-                        <input type="password" id="repassword" placeholder="Nhập lại mật khẩu">
-                        <div id="repasswordError" class="error"></div>
-
-                        <label for="address">Địa chỉ</label>
-                        <input type="text" id="address" placeholder="Số nhà + tên đường, phường, thành phố">
-
-                        <button type="submit">Đăng ký</button>
-                    </form>
-
-                    <p class="login-link">
-                        Đã có tài khoản? <a href="#login">Đăng nhập</a>
-                    </p>
-                </div>
-            </main>
-        </div>
-
         <footer class="site-footer">
             <div class="footer-main">
                 <!-- Cột trái: Thông tin Đồ án & Logo -->
@@ -362,16 +293,12 @@
         <script src="js/data.js"></script>
         <script src="js/products.js"></script>
         <script src="js/index.js"></script>
-        <script src="js/login.js"></script>
-        <script src="js/register.js"></script>
         <script>
         (function () {
             const VIEWS = {
                 home:     { enter: () => initHome() },
                 products: { enter: () => initProducts() },
-                detail:   { enter: () => initDetail() },
-                login:    {},
-                register: {}
+                detail:   { enter: () => initDetail() }
             };
 
             function route(isFirstLoad) {
