@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BookHub Admin</title>
     <link rel="stylesheet" href="../css/admin.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@600;700&display=swap">
+    <link rel="stylesheet" href="../css/google.css">
 
     <style>
         /* Bổ sung tối thiểu (admin.css vẫn là nguồn style chính) */
@@ -17,6 +17,8 @@
         .badge-pending{background:#fff3cd;color:#856404}
         .badge-cancelled,.badge-inactive{background:#f8d7da;color:#721c24}
         .badge-processing{background:#d1ecf1;color:#0c5460}
+        .field-error{color:#c0392b;font-size:13px;min-height:18px;margin:4px 0 8px}
+        input[aria-invalid="true"]{border-color:#c0392b}
     </style>
 
     <!-- Bắt buộc đăng nhập: chưa có phiên hợp lệ thì chuyển về auth.html -->
@@ -501,11 +503,13 @@
             <div class="panel-header"><h2>Tra cứu đơn hàng</h2></div>
             <div class="admin-order-filter">
             <div class="admin-order-filter-group"><label for="adminOrderSearch">Mã đơn</label><input type="text" id="adminOrderSearch" placeholder="Ví dụ: DH001"></div>
-            <div class="admin-order-filter-group"><label for="adminDateFrom">Từ ngày</label><input type="date" id="adminDateFrom"></div>
-            <div class="admin-order-filter-group"><label for="adminDateTo">Đến ngày</label><input type="date" id="adminDateTo"></div>
+            <div class="admin-order-filter-group"><label for="adminDateFrom">Từ ngày</label><input type="text" id="adminDateFrom" inputmode="numeric" placeholder="dd/mm/yyyy" autocomplete="off"></div>
+            <div class="admin-order-filter-group"><label for="adminDateTo">Đến ngày</label><input type="text" id="adminDateTo" inputmode="numeric" placeholder="dd/mm/yyyy" autocomplete="off"></div>
             <div class="admin-order-filter-group"><label for="adminStatusFilter">Trạng thái</label>
-                <select id="adminStatusFilter"><option value="">Tất cả</option>${Object.entries(statusText).map(([k, v]) => `<option value="${k}">${v}</option>`).join('')}</select></div>
+            <select id="adminStatusFilter"><option value="">Tất cả</option>${Object.entries(statusText).map(([k, v]) => `<option value="${k}">${v}</option>`).join('')}</select></div>
             </div>
+            <div class="field-error" id="adminDateError" role="alert"></div>
+            <div class="admin-filter-actions">
             <div class="admin-filter-actions">
             <button type="button" class="btn btn-primary" id="adminFilterBtn">Tìm kiếm</button>
             <button type="button" class="btn" id="adminResetFilterBtn">Làm mới</button>
@@ -518,27 +522,52 @@
             <tbody id="adminOrderTableBody"></tbody></table></div>
             <div class="empty" id="adminEmptyOrders" hidden>Không tìm thấy đơn hàng phù hợp.</div>
         </section>`;
-        $('#adminFilterBtn').onclick = renderOrders;
+        $('#adminFilterBtn').onclick = () => renderOrders(true);
         $('#adminResetFilterBtn').onclick = () => { ['adminOrderSearch','adminDateFrom','adminDateTo','adminStatusFilter'].forEach(i => $('#' + i).value = ''); renderOrders(); };
-        $('#adminOrderSearch').oninput = renderOrders;
+        $('#adminOrderSearch').oninput = () => renderOrders();
+        ['#adminDateFrom', '#adminDateTo'].forEach(sel => {
+            const el = $(sel);
+            el.oninput = () => { maskDateInput(el); renderOrders(); };
+            el.onblur = () => renderOrders(true);
+            el.onkeydown = e => { if (e.key === 'Enter') renderOrders(true); };
+        });
         renderOrders();
         };
-        function renderOrders() {
-        const customers = getData("customers"), q = norm($('#adminOrderSearch').value.trim()), st = $('#adminStatusFilter').value;
-        const from = $('#adminDateFrom').value ? new Date($('#adminDateFrom').value).getTime() : null;
-        const to = $('#adminDateTo').value ? new Date($('#adminDateTo').value).getTime() + 86400000 - 1 : null;
-        const list = getData("orders").filter(o => {
-            const t = new Date(o.orderDate).getTime();
-            return norm(o.orderId).includes(q) && (!st || o.orderStatus === st) && (from === null || isNaN(t) || t >= from) && (to === null || isNaN(t) || t <= to);
-        }).sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
-        $('#adminOrderCount').textContent = list.length + ' đơn hàng';
-        $('#adminEmptyOrders').hidden = list.length > 0;
-        $('#adminOrderTableBody').innerHTML = list.map(o => {
-            const c = customers.find(x => x.customerId === o.customerId);
-            return `<tr><td>${esc(o.orderId)}</td><td>${esc(c?.fullName || o.customerId)}</td><td>${esc(o.orderDate)}</td><td>${money(o.totalAmount)}</td>
-            <td>${esc(o.paymentMethod || o.payment || '—')}</td><td>${badge(o.orderStatus, getOrderStatus(o.orderStatus))}</td>
-            <td><button class="btn btn-small" onclick="viewOrder('${o.orderId}')">Chi tiết</button></td></tr>`;
-        }).join('');
+        /* Ô lọc ngày dùng định dạng dd/mm/yyyy (không dùng <input type="date"> vì định dạng hiển thị phụ thuộc ngôn ngữ trình duyệt) */
+        function maskDateInput(el) {
+            let v = el.value.trim();
+            const iso = v.match(/^(\d{4})-(\d{2})-(\d{2})$/);   // dán dạng yyyy-mm-dd thì đổi sang dd/mm/yyyy
+            if (iso) v = iso[3] + iso[2] + iso[1];
+            const d = v.replace(/\D/g, '').slice(0, 8);
+            el.value = d.length > 4 ? d.slice(0, 2) + '/' + d.slice(2, 4) + '/' + d.slice(4)
+                    : d.length > 2 ? d.slice(0, 2) + '/' + d.slice(2) : d;
+        }
+
+        // dd/mm/yyyy -> yyyy-mm-dd (null nếu sai định dạng hoặc ngày không tồn tại, vd 31/02/2026)
+        function parseVNDate(str) {
+            const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(str);
+            if (!m) return null;
+            const [, dd, mm, yyyy] = m, d = new Date(+yyyy, +mm - 1, +dd);
+            if (d.getFullYear() !== +yyyy || d.getMonth() !== +mm - 1 || d.getDate() !== +dd) return null;
+            return `${yyyy}-${mm}-${dd}`;
+        }
+
+        // strict = true (bấm Tìm kiếm, Enter, rời ô): báo lỗi cả khi mới nhập dở; khi đang gõ chỉ báo lỗi lúc đủ 10 ký tự
+        function renderOrders(strict) {
+            const customers = getData("customers"), q = norm($('#adminOrderSearch').value.trim()), st = $('#adminStatusFilter').value;
+            const fromEl = $('#adminDateFrom'), toEl = $('#adminDateTo'), errors = [];
+            const readDate = (el, label) => {
+                const text = el.value.trim(), iso = parseVNDate(text),
+                    bad = text !== '' && !iso && (strict === true || text.length === 10);
+                el.setAttribute('aria-invalid', bad ? 'true' : 'false');
+                if (bad) errors.push(label + ' không hợp lệ (nhập dạng dd/mm/yyyy, ví dụ 25/12/2026).');
+                return iso;
+            };
+            const fromIso = readDate(fromEl, 'Từ ngày'), toIso = readDate(toEl, 'Đến ngày');
+            if (fromIso && toIso && fromIso > toIso) errors.push('Từ ngày phải trước hoặc bằng Đến ngày.');
+            $('#adminDateError').textContent = errors.join(' ');
+            const from = fromIso ? new Date(fromIso).getTime() : null;
+            const to = toIso ? new Date(toIso).getTime() + 86400000 - 1 : null;
         }
         function viewOrder(id) {
         const o = getData("orders").find(x => x.orderId === id); if (!o) return;

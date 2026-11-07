@@ -281,6 +281,11 @@
                                             <div class="search-wrapper">
                                                 <input id="currentPassword" type="password" class="search-input"
                                                     autocomplete="current-password" required>
+                                                <button type="button" class="togglePassword"
+                                                data-target="currentPassword" aria-label="Giữ để hiện mật khẩu">
+                                                <i data-lucide="eye-off" class="eyeOff"></i>
+                                                <i data-lucide="eye" class="eyeOn"></i>
+                                                </button>
                                             </div>
                                         </div>
                                         <div class="adv-group">
@@ -288,6 +293,11 @@
                                             <div class="search-wrapper">
                                                 <input id="newPassword" type="password" class="search-input"
                                                     autocomplete="new-password" minlength="8" required>
+                                                <button type="button" class="togglePassword"
+                                                data-target="newPassword" aria-label="Giữ để hiện mật khẩu">
+                                                <i data-lucide="eye-off" class="eyeOff"></i>
+                                                <i data-lucide="eye" class="eyeOn"></i>
+                                                </button>
                                             </div>
                                         </div>
                                         <div class="adv-group">
@@ -295,6 +305,11 @@
                                             <div class="search-wrapper">
                                                 <input id="confirmNewPassword" type="password" class="search-input"
                                                     autocomplete="new-password" minlength="8" required>
+                                                <button type="button" class="togglePassword"
+                                                    data-target="confirmNewPassword" aria-label="Giữ để hiện mật khẩu">
+                                                    <i data-lucide="eye-off" class="eyeOff"></i>
+                                                    <i data-lucide="eye" class="eyeOn"></i>
+                                                </button>
                                             </div>
                                         </div>
                                         <p id="passwordMessage" role="status" aria-live="polite" hidden></p>
@@ -308,7 +323,7 @@
 
                         
                                 <!-- ================= XÓA TÀI KHOẢN ================= -->
-                                <div class="summary-box" style="margin-top: 24px; border: 1px solid #d6a4a4;">
+                                <div class="summary-box" style="margin-top: 24px; border: 1px">
 
                                     <h3 class="section-title" style="color: #b83232;">
                                         ⚠ Xóa tài khoản
@@ -991,6 +1006,10 @@
                 window.addEventListener("hashchange", () => route(false));
                 route(true);
             })();
+        </script>
+        <script src="../js/lucide.js"></script>
+        <script>
+            lucide.createIcons();
         </script>
     </body>
 </html>
