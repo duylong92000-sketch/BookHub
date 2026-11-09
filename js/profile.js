@@ -326,7 +326,7 @@ get("changePasswordForm").addEventListener("submit", function (event) {
 
         // Kiểm tra tài khoản đang đăng nhập
         if (!customer) {
-            showDeleteMessage("Vui lòng đăng nhập để xóa tài khoản.");
+            showDeleteMessage("Vui lòng đăng nhập để xóa tài khoản.", "deleteAccountMessage");
             return;
         }
 
@@ -336,7 +336,7 @@ get("changePasswordForm").addEventListener("submit", function (event) {
 
         if (!currentSession ||
             currentSession.customerId !== customer.customerId) {
-            showDeleteMessage("Phiên đăng nhập không hợp lệ.");
+            showDeleteMessage("Phiên đăng nhập không hợp lệ.", "deleteAccountMessage");
             return;
         }
 
@@ -348,13 +348,13 @@ get("changePasswordForm").addEventListener("submit", function (event) {
         );
 
         if (index === -1 || customers[index].status === "inactive") {
-            showDeleteMessage("Tài khoản không tồn tại hoặc đã bị khóa.");
+            showDeleteMessage("Tài khoản không tồn tại hoặc đã bị khóa.", "deleteAccountMessage");
             return;
         }
 
         // Bắt buộc nhập đúng mật khẩu hiện tại
         if (password !== customers[index].password) {
-            showDeleteMessage("Mật khẩu không chính xác!");
+            showDeleteMessage("Mật khẩu không chính xác!", "deleteAccountMessage");
             return;
         }
 
@@ -411,7 +411,8 @@ get("changePasswordForm").addEventListener("submit", function (event) {
             console.error("Lỗi xóa tài khoản:", error);
 
             showDeleteMessage(
-                "Không thể xóa tài khoản. Vui lòng thử lại."
+                "Không thể xóa tài khoản. Vui lòng thử lại.",
+                "deleteAccountMessage"
             );
         }
     });
