@@ -90,7 +90,7 @@ function logout() {
     }
 
     // Đang ở index.html: nếu đang ở view cần đăng nhập thì đưa về #home
-    const protectedViews = ["#cart", "#checkout", "#profile", "#orders", "#success", "#login", "#register"];
+    const protectedViews = ["#cart", "#checkout", "#profile", "#orders", "#success"];
     if (protectedViews.some(v => window.location.hash.startsWith(v))) {
         window.location.hash = "#home";
     }

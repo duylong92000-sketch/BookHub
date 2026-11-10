@@ -36,46 +36,28 @@ function openModal(html, id = 'modal') {
 function closeModal(id = 'modal') {
   const m = $('#' + id); m.classList.remove('show'); m.style.display = 'none'; m.innerHTML = '';
 }
+ /* ==========================================================
+        3. XÁC THỰC / ĐIỀU HƯỚNG (form đăng nhập nằm ở auth.html)
+        ========================================================== */
+        const PAGES = {};
+        function checkAuth() {
+          // Guard ở <head> đã chặn người chưa đăng nhập; kiểm tra lại để chắc chắn (vd. phiên hết hạn)
+          if (!AdminAuth.isLoggedIn()) { AdminAuth.requireLogin(); return; }
+          $('#adminView').hidden = false;
+          route();
+        }
+        function logout() { AdminAuth.logout(); }
 
-/* ==========================================================
-   3. ĐĂNG NHẬP / ĐIỀU HƯỚNG
-   ========================================================== */
-const PAGES = {};
-function checkAuth() {
-  const ok = localStorage.getItem("adminLoggedIn") === "true";
-  $('#loginView').hidden = ok; $('#adminView').hidden = !ok;
-  if (ok) route();
-}
-function logout() { localStorage.removeItem("adminLoggedIn"); window.location.replace("../index.html"); }
-
-(function initLogin() {
-  const form = $('#adminLoginForm'), u = $('#adminUsername'), p = $('#adminPassword'), ue = $('#userError'), pe = $('#passwordError');
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    let ok = true;
-    if (!u.value.trim()) { ue.textContent = "Tên không được để trống"; ok = false; } else ue.textContent = "";
-    if (p.value.trim() === "") { pe.textContent = "Mật khẩu không được để trống"; ok = false; } else pe.textContent = "";
-    if (!ok) return;
-    if (u.value.trim() === "admin" && p.value === "12345678") {
-      localStorage.setItem("adminLoggedIn", "true"); u.value = p.value = ''; location.hash = '#dashboard'; checkAuth();
-    } else pe.textContent = "Tài khoản hoặc mật khẩu không đúng";
-  });
-  p.addEventListener('input', () => {
-    pe.textContent = p.value.trim() === "" ? "Vui lòng nhập password" : p.validity.tooShort ? "Mật khẩu phải có ít nhất 8 ký tự" : "";
-  });
-})();
-
-function route() {
-  if (localStorage.getItem("adminLoggedIn") !== "true") return;
-  let page = location.hash.slice(1);
-  if (!PAGES[page]) page = 'dashboard';
-  document.querySelectorAll('#adminNav a').forEach(a => a.classList.toggle('active', a.dataset.page === page));
-  closeModal(); closeModal('modal2');
-  PAGES[page]();
-  window.scrollTo(0, 0);
-}
-window.addEventListener('hashchange', route);
-
+        function route() {
+        if (!AdminAuth.isLoggedIn()) { AdminAuth.requireLogin(); return; }
+        let page = location.hash.slice(1);
+        if (!PAGES[page]) page = 'dashboard';
+        document.querySelectorAll('#adminNav a').forEach(a => a.classList.toggle('active', a.dataset.page === page));
+        closeModal(); closeModal('modal2');
+        PAGES[page]();
+        window.scrollTo(0, 0);
+        }
+        window.addEventListener('hashchange', route);
 /* ==========================================================
    4. DASHBOARD
    ========================================================== */
@@ -346,8 +328,8 @@ function openReset(id) {
   openModal(mh('Đặt lại mật khẩu', "closeModal('modal2')") + `
   <p>Đặt lại mật khẩu cho: <strong>${esc(c.fullName)}</strong></p>
   <form id="resetPasswordForm">
-    <div class="form-group" style="margin-top:16px"><label for="adminNewPassword">Mật khẩu mới</label><input type="password" id="adminNewPassword" minlength="8" autocomplete="new-password" required></div>
-    <div class="form-group" style="margin-top:16px"><label for="adminConfirmPassword">Nhập lại mật khẩu mới</label><input type="password" id="adminConfirmPassword" minlength="8" autocomplete="new-password" required></div>
+    <div class="form-group" style="margin-top:16px"><label for="adminNewPassword">Mật khẩu mới</label><div class="search-wrapper"><input type="password" id="adminNewPassword" minlength="8" autocomplete="new-password" required><button type="button" class="togglePassword"data-target="currentPassword" aria-label="Giữ để hiện mật khẩu"><i data-lucide="eye-off" class="eyeOff"></i><i data-lucide="eye" class="eyeOn"></i></button></div></div>
+    <div class="form-group" style="margin-top:16px"><label for="adminConfirmPassword">Nhập lại mật khẩu mới</label><div class="search-wrapper"><input type="password" id="adminConfirmPassword" minlength="8" autocomplete="new-password" required><button type="button" class="togglePassword"data-target="currentPassword" aria-label="Giữ để hiện mật khẩu"><i data-lucide="eye-off" class="eyeOff"></i><i data-lucide="eye" class="eyeOn"></i></button></div></div>
     <p id="resetPasswordNotice" class="notice" role="status" hidden></p>
     <div class="form-actions"><button type="button" class="btn" onclick="closeModal('modal2')">Hủy</button><button type="submit" class="btn btn-primary">Xác nhận đặt lại</button></div>
   </form>`, 'modal2');

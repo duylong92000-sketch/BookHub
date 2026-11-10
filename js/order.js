@@ -1,3 +1,5 @@
+
+
 const ORDERS_STORAGE_KEY = "orders";
 
 function orderReadJSON(key, defaultValue = []) {
@@ -114,7 +116,7 @@ function renderCustomerOrders() {
     const customer = orderGetCurrentCustomer();
     if (!customer) {
         alert("Bạn cần đăng nhập để xem đơn hàng.");
-        window.location.href = "#login";
+        goToAuth("login");
         return;
     }
 
