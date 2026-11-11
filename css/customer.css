@@ -2507,8 +2507,6 @@ form button:hover {
 .togglePassword.is-visible .eyeOn {
     display: block;
 }
-
-
 @media (max-width: 850px) {
     .checkout-layout {
         grid-template-columns: 1fr;
