@@ -58,6 +58,10 @@ function closeModal(id = 'modal') {
         window.scrollTo(0, 0);
         }
         window.addEventListener('hashchange', route);
+        // Esc đóng popup đang mở (ở mọi màn hình admin)
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeModal('modal2'); } });
+        // Tab khác đổi danh sách khách hàng thì vẽ lại bảng ở tab này
+        window.addEventListener('storage', e => { if (e.key === 'customers' && $('#customerList')) renderCustomers(); });
 /* ==========================================================
    4. DASHBOARD
    ========================================================== */
@@ -233,6 +237,11 @@ function deleteProduct(id) {
    ========================================================== */
 const CUS = {page: 1, size: 5};
 const cUser = c => c.userName || c.username || "";
+// Hiện / ẩn dòng thông báo (text rỗng thì ẩn)
+function showNotice(id, text) {
+  const n = $('#' + id); if (!n) return;
+  n.textContent = text || ''; n.hidden = !text;
+}
 PAGES.customers = () => {
   CUS.page = 1;
   $('#app').innerHTML = heading('Quản lý khách hàng', 'Quản lý thông tin và trạng thái tài khoản khách hàng') + `
@@ -262,7 +271,7 @@ PAGES.customers = () => {
   $('#customerSearch').oninput = () => { CUS.page = 1; renderCustomers(); };
   $('#customerFilter').onchange = () => { CUS.page = 1; renderCustomers(); };
   $('#clearFilterBtn').onclick = () => { $('#customerSearch').value = ''; $('#customerFilter').value = 'all'; CUS.page = 1; renderCustomers(); };
-  $('#refreshBtn').onclick = () => { CUS.page = 1; renderCustomers(); };
+$('#refreshBtn').onclick = () => { CUS.page = 1; renderCustomers(); showNotice('customerNotice', 'Đã làm mới danh sách khách hàng.'); };
   $('#prevBtn').onclick = () => { CUS.page--; renderCustomers(); };
   $('#nextBtn').onclick = () => { CUS.page++; renderCustomers(); };
   renderCustomers();
@@ -289,9 +298,13 @@ function renderCustomers() {
 }
 function toggleCustomer(id) {
   const data = getData("customers"), c = data.find(x => x.customerId === id); if (!c) return;
-  const lock = c.status !== 'inactive';
-  if (!confirm((lock ? 'Khóa' : 'Mở khóa') + ' tài khoản ' + cUser(c) + '?')) return;
-  c.status = lock ? 'inactive' : 'active'; setData("customers", data); renderCustomers();
+  const lock = c.status !== 'inactive', action = lock ? 'khóa' : 'mở khóa';
+  if (!confirm(`Bạn có muốn ${action} tài khoản ${id}?`)) return;
+  c.status = lock ? 'inactive' : 'active';
+  try {
+    setData("customers", data); renderCustomers();
+    showNotice('customerNotice', `Đã ${action} tài khoản ${id}.`);
+  } catch (e) { showNotice('customerNotice', 'Không thể cập nhật trạng thái.'); }
 }
 function viewCustomer(id) {
   const data = getData("customers"), c = data.find(x => x.customerId === id); if (!c) return;
@@ -301,7 +314,7 @@ function viewCustomer(id) {
     ${inp('customerId','Mã khách hàng',c.customerId)}${inp('userName','Tên đăng nhập',cUser(c))}
     ${inp('fullName','Họ và tên *',c.fullName,'required minlength="2" maxlength="80"')}
     ${inp('email','Email *',c.email,'type="email" required')}
-    ${inp('phone','Số điện thoại *',c.phone,'type="tel" maxlength="11" required')}
+    ${inp('phone','Số điện thoại *',c.phone,'type="tel" maxlength="10" required')}
     ${inp('customerStatus','Trạng thái',c.status !== 'inactive' ? 'Hoạt động' : 'Đã khóa')}
     ${inp('address','Địa chỉ',c.address,'maxlength="200"')}
   </div>
@@ -316,29 +329,54 @@ function viewCustomer(id) {
     $('#editBtn').hidden = true; $('#saveBtn').hidden = false;
   };
   $('#customerForm').onsubmit = e => {
-    e.preventDefault();
-    const n = $('#modalNotice');
-    if (!/^\d{9,11}$/.test($('#phone').value.trim())) { n.textContent = 'Số điện thoại không hợp lệ (9–11 chữ số).'; n.hidden = false; return; }
-    Object.assign(c, {fullName: $('#fullName').value.trim(), email: $('#email').value.trim(), phone: $('#phone').value.trim(), address: $('#address').value.trim()});
-    setData("customers", data); closeModal(); renderCustomers();
-  };
+  e.preventDefault();
+  const fullName = $('#fullName').value.trim(), email = $('#email').value.trim();
+  const phone = $('#phone').value.trim().replace(/\s/g, ''), address = $('#address').value.trim();
+  if (fullName.length < 2) return showNotice('modalNotice', 'Họ tên phải có ít nhất 2 ký tự.');
+  if (!/^0\d{9}$/.test(phone)) return showNotice('modalNotice', 'Số điện thoại phải có 10 chữ số và bắt đầu bằng 0.');
+  if (data.some(x => x.customerId !== id && String(x.email || '').toLowerCase() === email.toLowerCase()))
+    return showNotice('modalNotice', 'Email đã được sử dụng.');
+  Object.assign(c, {fullName, email, phone, address});
+  try {
+    setData("customers", data);
+    // Đồng bộ nếu đang đăng nhập đúng tài khoản này ở trang khách
+    try {
+      const cur = JSON.parse(localStorage.getItem('currentUser') || 'null');
+      if (cur && cur.customerId === id) localStorage.setItem('currentUser', JSON.stringify(c));
+    } catch (err) { /* không ảnh hưởng việc lưu khách hàng */ }
+    closeModal(); renderCustomers();
+    showNotice('customerNotice', 'Cập nhật khách hàng thành công!');
+  } catch (err) { showNotice('modalNotice', 'Không thể lưu thông tin khách hàng.'); }
+};
+
 }
 function openReset(id) {
   const data = getData("customers"), c = data.find(x => x.customerId === id); if (!c) return;
   openModal(mh('Đặt lại mật khẩu', "closeModal('modal2')") + `
   <p>Đặt lại mật khẩu cho: <strong>${esc(c.fullName)}</strong></p>
   <form id="resetPasswordForm">
-    <div class="form-group" style="margin-top:16px"><label for="adminNewPassword">Mật khẩu mới</label><div class="search-wrapper"><input type="password" id="adminNewPassword" minlength="8" autocomplete="new-password" required><button type="button" class="togglePassword"data-target="currentPassword" aria-label="Giữ để hiện mật khẩu"><i data-lucide="eye-off" class="eyeOff"></i><i data-lucide="eye" class="eyeOn"></i></button></div></div>
-    <div class="form-group" style="margin-top:16px"><label for="adminConfirmPassword">Nhập lại mật khẩu mới</label><div class="search-wrapper"><input type="password" id="adminConfirmPassword" minlength="8" autocomplete="new-password" required><button type="button" class="togglePassword"data-target="currentPassword" aria-label="Giữ để hiện mật khẩu"><i data-lucide="eye-off" class="eyeOff"></i><i data-lucide="eye" class="eyeOn"></i></button></div></div>
+    <div class="form-group" style="margin-top:16px"><label for="adminNewPassword">Mật khẩu mới</label><input type="password" id="adminNewPassword" minlength="8" autocomplete="new-password" required></div>
+    <div class="form-group" style="margin-top:16px"><label for="adminConfirmPassword">Nhập lại mật khẩu mới</label><input type="password" id="adminConfirmPassword" minlength="8" autocomplete="new-password" required></div>
     <p id="resetPasswordNotice" class="notice" role="status" hidden></p>
     <div class="form-actions"><button type="button" class="btn" onclick="closeModal('modal2')">Hủy</button><button type="submit" class="btn btn-primary">Xác nhận đặt lại</button></div>
   </form>`, 'modal2');
   $('#resetPasswordForm').onsubmit = e => {
     e.preventDefault();
-    const n = $('#resetPasswordNotice');
-    if ($('#adminNewPassword').value !== $('#adminConfirmPassword').value) { n.textContent = 'Mật khẩu nhập lại không khớp.'; n.hidden = false; return; }
-    c.password = $('#adminNewPassword').value; setData("customers", data); closeModal('modal2');
-    const cn = $('#customerNotice'); cn.textContent = 'Đã đặt lại mật khẩu cho ' + c.fullName + '.'; cn.hidden = false;
+    const pw = $('#adminNewPassword').value, pw2 = $('#adminConfirmPassword').value;
+    if (pw.length < 8 || !pw.trim()) return showNotice('resetPasswordNotice', 'Mật khẩu mới phải dài ít nhất 8 ký tự.');
+    if (pw !== pw2) return showNotice('resetPasswordNotice', 'Hai lần nhập mật khẩu không khớp.');
+    if (c.password === pw) return showNotice('resetPasswordNotice', 'Mật khẩu mới phải khác mật khẩu cũ.');
+    c.password = pw;
+    try {
+      setData("customers", data);
+      // Đăng xuất khách đó nếu họ đang đăng nhập bằng đúng tài khoản này
+      try {
+        const cur = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        if (cur && cur.customerId === id) localStorage.removeItem('currentUser');
+      } catch (err) { /* bỏ qua */ }
+      closeModal('modal2');
+      showNotice('customerNotice', `Đã đặt lại mật khẩu cho ${id}.`);
+    } catch (err) { showNotice('resetPasswordNotice', 'Không thể lưu mật khẩu.'); }
   };
 }
 

@@ -2508,6 +2508,17 @@ form button:hover {
     display: block;
 }
 
+i[data-lucide="eye"],
+i[data-lucide="eye-off"] {
+    display: inline-block;
+    width: 19px;
+    height: 19px;
+    background: url("../images/icons-eye.svg") no-repeat;
+    background-size: 200% 100%;   /* ảnh gồm 2 icon cạnh nhau */
+}
+
+i[data-lucide="eye"]     { background-position: 0 0; }       /* nửa trái */
+i[data-lucide="eye-off"] { background-position: 100% 0; }    /* nửa phải */
 
 @media (max-width: 850px) {
     .checkout-layout {
